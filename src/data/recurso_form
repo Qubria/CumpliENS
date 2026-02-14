@@ -1,0 +1,5319 @@
+I. ENCABEZAMIENTO FORMAL 
+
+El encabezamiento no es un mero formalismo: delimita la competencia, el tipo de procedimiento y el objeto procesal. 
+
+Debe contener: 
+
+A continuación te dejo una arquitectura “full-scope” (muy superior en extensión y granularidad) para un REMC (recurso especial en materia de contratación) frente a licitación pública, diseñada como si fuera una demanda contenciosa: con capas, subcapas, checklist probatorio, matriz de riesgos y lógica de persuasión. Está pensada para Madrid (España) y para maximizar admisión + cautelar + estimación. 
+
+0. PORTADA TÉCNICA Y CONTROL DE VERSIONES 
+
+(Estándar de calidad documental en entornos de consultoría jurídica y auditoría pública) 
+
+La portada técnica no es un elemento estético; constituye el primer mecanismo de control interno, delimitación del objeto procesal y aseguramiento de la calidad técnica del documento. En procedimientos de alta litigiosidad (REMC), su correcta configuración facilita: 
+
+Trazabilidad interna. 
+
+Control de riesgos procesales. 
+
+Identificación inequívoca del objeto impugnado. 
+
+Coordinación entre equipo jurídico y técnico. 
+
+Preparación para eventual recurso contencioso-administrativo. 
+
+0.1. IDENTIFICACIÓN DOCUMENTAL (CAPA DE IDENTIDAD Y PERÍMETRO JURÍDICO) 
+
+Este bloque debe figurar en la primera página y contener información estructurada y completa. 
+
+1. Título del documento 
+
+Denominación exacta: 
+
+“RECURSO ESPECIAL EN MATERIA DE CONTRATACIÓN” 
+
+Puede completarse con subtítulo técnico: 
+
+“Contra el anuncio/pliegos/acuerdo de adjudicación del expediente nº XXXXX” 
+
+En caso de incluir medidas cautelares: 
+
+“Con solicitud de suspensión del procedimiento” 
+
+🔎 Recomendación técnica: 
+El título debe coincidir exactamente con la naturaleza jurídica del acto, evitando denominaciones ambiguas (“reclamación”, “impugnación”, etc.). 
+
+2. Número interno de documento (control de calidad) 
+
+Elemento esencial en entornos de consultoría estructurada. 
+
+Debe incluir: 
+
+Código interno del cliente. 
+
+Área de práctica (ej. PUB-REC). 
+
+Año. 
+
+Número correlativo. 
+
+Ejemplo técnico: 
+
+EYD/PUB-REC/2026/014 
+
+Función: 
+
+Permite trazabilidad. 
+
+Vincula versiones. 
+
+Facilita auditoría interna. 
+
+Evita confusión entre recursos similares. 
+
+🔎 En proyectos complejos con múltiples recursos, este código es crítico para la defensa posterior en vía contenciosa. 
+
+3. Identificación del cliente / operador económico recurrente 
+
+Debe incluir: 
+
+Denominación social completa. 
+
+CIF. 
+
+Domicilio social. 
+
+Datos registrales básicos. 
+
+Sector de actividad. 
+
+Representante legal. 
+
+Ejemplo estructural: 
+
+Recurrente: XXXXX S.L. 
+CIF: B-XXXXXXXX 
+Domicilio: Calle X, nº X, CP XXXXX 
+Inscrita en el Registro Mercantil de XXXXX, Tomo X, Folio X, Hoja X. 
+
+🔎 Función estratégica: 
+
+Refuerza identidad jurídica. 
+
+Evita defectos formales. 
+
+Conecta inmediatamente con legitimación activa. 
+
+4. Identificación del expediente impugnado 
+
+Debe figurar de manera completa y visible: 
+
+Número de expediente. 
+
+Denominación oficial del contrato. 
+
+Tipo contractual. 
+
+Procedimiento. 
+
+Valor estimado. 
+
+Publicación (perfil / DOUE si procede). 
+
+Ejemplo: 
+
+Expediente nº 2026/AB-045 
+“Servicio de mantenimiento integral de infraestructuras digitales del Ayuntamiento de X” 
+Procedimiento abierto – Contrato de servicios 
+Valor estimado: 4.850.000 € 
+Publicado en PLACSP el 10/02/2026. 
+
+🔎 Importancia jurídica: 
+La identificación precisa evita alegaciones de indeterminación del objeto. 
+
+5. Órgano de contratación 
+
+Debe indicarse: 
+
+Denominación oficial completa. 
+
+Naturaleza jurídica. 
+
+Nivel territorial (estatal/autonómico/local). 
+
+Ejemplo: 
+
+Órgano de contratación: Junta de Gobierno Local del Ayuntamiento de X. 
+
+🔎 Es recomendable evitar abreviaturas que puedan generar ambigüedad. 
+
+6. Tribunal competente 
+
+Debe identificarse expresamente el órgano revisor: 
+
+Tribunal Administrativo Central de Recursos Contractuales. 
+
+Tribunal autonómico correspondiente. 
+
+Ejemplo: 
+
+Tribunal competente: Tribunal Administrativo Central de Recursos Contractuales. 
+
+La correcta identificación evita problemas de competencia funcional. 
+
+7. Fecha del documento 
+
+Debe constar: 
+
+Día. 
+
+Mes. 
+
+Año. 
+
+Ejemplo: 
+
+Madrid, 12 de febrero de 2026. 
+
+🔎 Importancia estratégica: 
+
+Permite correlacionar con plazo legal. 
+
+Facilita control de versiones. 
+
+Sirve como referencia en recurso contencioso posterior. 
+
+8. Clasificación documental: Interno / Externo 
+
+Debe indicarse claramente: 
+
+BORRADOR – USO INTERNO 
+
+CONFIDENCIAL 
+
+EXTERNO – PRESENTACIÓN OFICIAL 
+
+En fase de presentación, debe figurar: 
+
+Clasificación: EXTERNO 
+
+🔎 En consultoría estructurada es recomendable incluir pie de página con: 
+
+Nivel de confidencialidad. 
+
+Código del documento. 
+
+Número de página. 
+
+0.2. CONTROL DE CAMBIOS (GOBERNANZA Y TRAZABILIDAD JURÍDICA) 
+
+Este apartado es crítico en entornos de alto riesgo procesal. 
+
+1. Tabla de versiones 
+
+Debe incluir: 
+
+Versión 
+
+Fecha 
+
+Responsable 
+
+Descripción cambios 
+
+0.1 
+
+08/02/2026 
+
+Área Jurídica 
+
+Primera redacción 
+
+0.2 
+
+10/02/2026 
+
+Área Técnica 
+
+Se añade análisis económico 
+
+1.0 
+
+12/02/2026 
+
+Dirección Jurídica 
+
+Versión final validada 
+
+ 
+
+2. Responsable de redacción 
+
+Debe indicarse: 
+
+Nombre. 
+
+Cargo. 
+
+Área (jurídica/técnica/económica). 
+
+Ejemplo: 
+
+Redactado por: Departamento de Derecho Público – Área de Contratación. 
+
+3. Responsable de revisión 
+
+Es altamente recomendable establecer doble validación: 
+
+Revisión jurídica. 
+
+Revisión técnica (cuando exista componente técnico). 
+
+Ejemplo: 
+
+Revisado por: Dirección Jurídica – Control de Calidad. 
+
+🔎 En recursos complejos, puede añadirse “Revisión económica”. 
+
+4. Descripción detallada de cambios relevantes 
+
+No basta “correcciones menores”. 
+
+Debe especificarse: 
+
+Incorporación de nuevo motivo. 
+
+Reformulación del test de proporcionalidad. 
+
+Inclusión de jurisprudencia. 
+
+Modificación del suplico. 
+
+Incorporación de informe pericial. 
+
+Ejemplo: 
+
+Se incorpora Motivo 3 relativo a solvencia técnica desproporcionada. 
+Se añade Anexo VIII – Informe económico sectorial. 
+Se refuerza solicitud cautelar con cronograma del procedimiento. 
+
+🔎 Función estratégica: 
+
+Permite reconstruir la lógica argumental. 
+
+Facilita defensa en caso de contradicción. 
+
+Demuestra diligencia profesional. 
+
+0.3. ÍNDICE EJECUTIVO (MAPA ESTRATÉGICO DEL DOCUMENTO) 
+
+Este apartado tiene función de: 
+
+Orientación del Tribunal. 
+
+Claridad estructural. 
+
+Profesionalización del recurso. 
+
+1. Índice numerado sistemático 
+
+Debe incluir: 
+
+Encabezamiento 
+
+Comparecencia 
+
+Identificación del expediente 
+
+Acto impugnado 
+
+Legitimación 
+
+Plazo 
+
+Hechos 
+
+Fundamentos de Derecho 
+8.1 Principios LCSP 
+8.2 Proporcionalidad 
+8.3 Solvencia 
+8.4 Criterios 
+8.5 Lotes 
+8.6 Doctrina 
+
+Medidas cautelares 
+
+Petición 
+
+Documentación 
+
+Si el formato es PDF, deben incorporarse: 
+
+Hipervínculos internos. 
+
+Marcadores de navegación. 
+
+Referencias cruzadas. 
+
+2. Lista estructurada de anexos 
+
+Debe presentarse con numeración correlativa: 
+
+ANEXOS 
+
+I. Poder de representación 
+II. Escritura y registro mercantil 
+III. Anuncio de licitación 
+IV. PCAP 
+V. PPT 
+VI. Aclaraciones 
+VII. Comparativa sectorial 
+VIII. Informe económico 
+IX. Cronograma del procedimiento 
+X. Justificante de registro 
+
+ 
+
+ 
+
+I. ENCABEZAMIENTO FORMAL 
+
+(CAPA COMPETENCIAL + DELIMITACIÓN DEL OBJETO PROCESAL) 
+
+El encabezamiento no es un formalismo protocolario: constituye el acto de delimitación competencial, funcional y objetiva del recurso, y condiciona directamente su admisibilidad. Una incorrecta construcción en esta fase puede generar: 
+
+Inadmisión. 
+
+Remisión competencial con pérdida de plazo. 
+
+Debate procesal innecesario. 
+
+Debilitamiento de la solicitud cautelar. 
+
+Debe redactarse con precisión quirúrgica y arquitectura sistemática. 
+
+I.1. IDENTIFICACIÓN DEL ÓRGANO ANTE EL QUE SE RECURRE (COMPETENCIA) 
+
+La competencia en el recurso especial es objetiva y funcional, no dispositiva. El Tribunal debe estar correctamente determinado desde la primera línea del escrito. 
+
+1. Determinación del Tribunal competente 
+
+Debe identificarse expresamente: 
+
+Denominación completa del tribunal. 
+
+Naturaleza jurídica. 
+
+Ámbito territorial. 
+
+Dirección electrónica oficial de presentación. 
+
+En el ámbito estatal: 
+
+Tribunal Administrativo Central de Recursos Contractuales 
+
+En el ámbito autonómico, el tribunal administrativo propio correspondiente. 
+
+Redacción técnica recomendada: 
+
+AL TRIBUNAL ADMINISTRATIVO …………………… 
+
+2. Dirección y registro electrónico aplicable 
+
+Debe indicarse: 
+
+Registro electrónico oficial habilitado. 
+
+Canal telemático válido. 
+
+Referencia normativa que impone la tramitación electrónica. 
+
+🔎 Es recomendable incluir en anexo el justificante de registro electrónico. 
+
+ 
+
+3. Norma competencial aplicable 
+
+Debe fundamentarse la competencia en: 
+
+Artículos 44 a 49 de la Ley 9/2017 de Contratos del Sector Público. 
+
+Norma autonómica específica (si existe). 
+
+Norma de creación del tribunal autonómico (cuando proceda). 
+
+Ejemplo estructural: 
+
+El presente recurso se interpone al amparo de los artículos 44 y siguientes de la LCSP, siendo competente este Tribunal en virtud de …………. 
+
+4. Análisis técnico previo obligatorio (Checklist de competencia) 
+
+Antes de redactar, debe verificarse internamente: 
+
+A) Naturaleza del poder adjudicador 
+
+Administración General del Estado. 
+
+Comunidad Autónoma. 
+
+Entidad Local. 
+
+Entidad pública empresarial. 
+
+Sociedad mercantil pública. 
+
+Fundación del sector público. 
+
+B) Naturaleza del contrato 
+
+¿Contrato sujeto a regulación armonizada (SARA)? 
+
+¿Valor estimado supera umbrales? 
+
+¿Contrato administrativo o privado del sector público? 
+
+C) Existencia de tribunal autonómico propio 
+
+Algunas CCAA tienen tribunal propio. 
+
+Otras no, en cuyo caso es competente el TACRC. 
+
+D) ¿Entidad del sector público no Administración? 
+
+Puede ser poder adjudicador aunque no tenga condición de Administración. 
+
+Determinar si aplica régimen del recurso especial. 
+
+E) Acto recurrible conforme al art. 44 LCSP 
+
+Anuncio. 
+
+Pliegos. 
+
+Exclusión. 
+
+Adjudicación. 
+
+Modificación contractual. 
+
+5. Riesgo procesal crítico 
+
+Error típico: 
+
+Presentar ante tribunal incompetente → remisión → consumo del plazo de 15 días hábiles → inadmisión por extemporaneidad. 
+
+Aunque en algunos casos se salva por fecha de registro inicial válida, no debe confiarse en ello. 
+
+🔎 Recomendación estratégica: incluir siempre fundamentación expresa de competencia para blindar la admisibilidad. 
+
+I.2. “ASUNTO / OBJETO DEL RECURSO” (DELIMITACIÓN PROCESAL) 
+
+Este apartado fija el perímetro jurídico del litigio administrativo. 
+
+Debe estructurarse con absoluta precisión. 
+
+1. Identificación exacta del acto impugnado 
+
+Debe indicarse: 
+
+Documento concreto. 
+
+Fecha. 
+
+Tipo de acto. 
+
+Ubicación dentro del expediente. 
+
+Ejemplos: 
+
+“Anuncio de licitación publicado en el perfil del contratante el día …” 
+
+“Cláusula 8.2 del PCAP”. 
+
+“Acuerdo de exclusión de fecha …”. 
+
+“Acuerdo de adjudicación de fecha …”. 
+
+🔎 Es fundamental evitar fórmulas genéricas como “la licitación en su conjunto”. 
+
+2. Naturaleza jurídica del acto 
+
+Debe calificarse expresamente: 
+
+Acto de trámite cualificado. 
+
+Acto definitivo. 
+
+Acto que determina la apertura del procedimiento. 
+
+Acto que impide continuar en el procedimiento. 
+
+Esta calificación es esencial para superar posibles objeciones de inadmisibilidad. 
+
+ 
+
+3. Delimitación material del recurso 
+
+Debe indicarse si el recurso: 
+
+Impugna la totalidad del pliego. 
+
+Impugna cláusulas concretas. 
+
+Se limita a criterios de adjudicación. 
+
+Se limita a solvencia. 
+
+Se limita a falta de división en lotes. 
+
+🔎 Cuanto más delimitado esté el objeto, más difícil será que el Tribunal alegue indeterminación. 
+
+ 
+
+4. Petición cautelar 
+
+Debe indicarse desde el encabezamiento si: 
+
+Se solicita suspensión automática. 
+
+Se solicita suspensión expresa. 
+
+Se solicita medida cautelar específica. 
+
+Ejemplo: 
+
+Con solicitud de suspensión del procedimiento de adjudicación. 
+
+ 
+
+I.3. IDENTIFICACIÓN DEL EXPEDIENTE (CIERRE DE PERÍMETRO JURÍDICO) 
+
+Este apartado debe cerrar definitivamente el objeto del recurso. 
+
+ 
+
+1. Datos esenciales del expediente 
+
+Debe incluirse: 
+
+Número de expediente administrativo. 
+
+Denominación completa del contrato. 
+
+Órgano de contratación. 
+
+Plataforma de publicación (PLACSP u otra). 
+
+CPV principal. 
+
+CPV secundarios (si existen). 
+
+ 
+
+2. Caracterización contractual 
+
+Tipo contractual: obras, servicios, suministros, concesión. 
+
+Procedimiento: abierto, restringido, negociado, diálogo competitivo. 
+
+Tramitación: ordinaria, urgente, emergencia. 
+
+Sistema de adjudicación: un único criterio o varios. 
+
+Si existe mesa de contratación. 
+
+ 
+
+3. Magnitudes económicas 
+
+Valor estimado. 
+
+Presupuesto base de licitación. 
+
+Importe IVA excluido/incluido. 
+
+Sistema de revisión de precios. 
+
+Posibles modificaciones previstas. 
+
+ 
+
+4. Duración y prórrogas 
+
+Plazo inicial. 
+
+Número máximo de prórrogas. 
+
+Duración total máxima. 
+
+Régimen de penalidades. 
+
+ 
+
+5. Elementos estructurales relevantes 
+
+Solvencia económica exigida. 
+
+Solvencia técnica exigida. 
+
+Clasificación (si procede). 
+
+Criterios de adjudicación y ponderación. 
+
+Fórmulas matemáticas. 
+
+Criterios sujetos a juicio de valor. 
+
+Condiciones especiales de ejecución. 
+
+Subcontratación permitida o limitada. 
+
+ 
+
+6. Plazo de presentación de ofertas 
+
+Fecha de inicio. 
+
+Fecha límite. 
+
+Posibles ampliaciones. 
+
+Incidencia de aclaraciones. 
+
+ 
+
+7. Publicaciones relevantes 
+
+Fecha publicación en perfil del contratante. 
+
+Fecha publicación en DOUE (si SARA). 
+
+Fecha correcciones o rectificaciones. 
+
+Fecha respuestas a consultas que alteren condiciones. 
+
+ 
+
+8. Aclaraciones y modificaciones 
+
+Debe incluirse referencia expresa a: 
+
+Respuestas a preguntas. 
+
+Rectificaciones de errores. 
+
+Modificaciones de pliegos. 
+
+Ampliaciones de plazo. 
+
+🔎 Muchas veces la ilegalidad se introduce en una aclaración posterior. 
+
+ 
+
+REGLA ESTRATÉGICA FUNDAMENTAL 
+
+El objeto debe quedar definido con tal precisión que: 
+
+No pueda alegarse indeterminación. 
+
+No pueda ampliarse el debate fuera del perímetro fijado. 
+
+No pueda el Tribunal limitar el análisis a cuestiones formales. 
+
+Quede clara la lesión concreta desde el inicio. 
+
+CONCLUSIÓN TÉCNICA 
+
+El Encabezamiento Formal debe: 
+
+Blindar la competencia. 
+
+Delimitar con precisión quirúrgica el acto impugnado. 
+
+Cerrar el perímetro del expediente. 
+
+Anticipar la estrategia cautelar. 
+
+Reducir riesgos de inadmisión. 
+
+En recursos complejos, esta sección puede ocupar varias páginas y debe construirse con la misma rigurosidad que los fundamentos jurídico 
+
+ 
+
+II. COMPARECENCIA E IDENTIDAD DEL RECURRENTE 
+
+(CAPA DE “STANDING” – LEGITIMACIÓN FORMAL Y MATERIAL) 
+
+Esta sección no es meramente identificativa. Constituye la base estructural de la legitimación procesal y uno de los puntos donde con mayor frecuencia se producen inadmisiones o requerimientos de subsanación. 
+
+Debe construirse como un bloque autónomo, completo y autosuficiente. 
+
+Forma 
+
+II.1. PARTE RECURRENTE (IDENTIFICACIÓN COMPLETA Y CUALIFICADA) 
+
+La identificación debe permitir al Tribunal: 
+
+Verificar personalidad jurídica. 
+
+Confirmar existencia legal. 
+
+Comprobar adecuación del objeto social al contrato. 
+
+Validar coherencia entre actividad y licitación. 
+
+ 
+
+1. Denominación social 
+
+Debe consignarse la denominación íntegra y exacta, conforme a Registro Mercantil. 
+
+Ejemplo estructural: 
+
+La entidad mercantil XXXXX, S.L. 
+
+Evitar abreviaturas no oficiales o nombres comerciales. 
+
+ 
+
+2. CIF / NIF 
+
+Debe indicarse el número completo y correcto. 
+
+Su omisión puede generar requerimiento. 
+
+ 
+
+3. Domicilio social completo 
+
+Debe incluir: 
+
+Calle. 
+
+Número. 
+
+Código postal. 
+
+Municipio. 
+
+Provincia. 
+
+Este dato conecta con: 
+
+Registro Mercantil. 
+
+Notificaciones. 
+
+Competencia territorial indirecta. 
+
+ 
+
+4. Datos de contacto a efectos de notificación 
+
+Debe indicarse: 
+
+Correo electrónico habilitado. 
+
+Dirección electrónica oficial. 
+
+Teléfono (opcional pero recomendable). 
+
+Dirección para notificaciones electrónicas (si distinta). 
+
+En entornos electrónicos es recomendable indicar: 
+
+Dirección electrónica habilitada en ……… 
+
+ 
+
+5. CNAE (si estratégicamente útil) 
+
+No es obligatorio, pero puede reforzar legitimación cuando: 
+
+El objeto del contrato es sectorial. 
+
+Se cuestiona idoneidad o experiencia. 
+
+Ejemplo: 
+
+CNAE 6201 – Actividades de programación informática. 
+
+Sirve como elemento contextual. 
+
+ 
+
+6. Datos registrales completos 
+
+Debe incluirse: 
+
+Registro Mercantil. 
+
+Tomo. 
+
+Folio. 
+
+Hoja. 
+
+Inscripción vigente. 
+
+Ejemplo estructural: 
+
+Inscrita en el Registro Mercantil de Madrid, Tomo XXXX, Folio XX, Hoja M-XXXXX, Inscripción X. 
+
+🔎 Esto acredita existencia y regularidad jurídica. 
+
+ 
+
+7. Objeto social (extracto literal relevante) 
+
+Debe incorporarse extracto específico del objeto social que: 
+
+Coincida materialmente con la actividad licitada. 
+
+Demuestre adecuación sectorial. 
+
+Refuerce legitimación activa. 
+
+Ejemplo: 
+
+Constituye el objeto social de la entidad la prestación de servicios de mantenimiento integral de infraestructuras tecnológicas… 
+
+No es necesario transcribirlo íntegramente si es extenso, pero sí el fragmento relevante. 
+
+🔎 Relevancia estratégica: 
+Muchos tribunales valoran que el objeto social permita ejecutar el contrato. 
+
+ 
+
+II.2. CAPACIDAD Y HABILITACIÓN (CAPA DE APTITUD JURÍDICA) 
+
+Aquí se afirma formalmente la aptitud para contratar. 
+
+Debe declararse de forma expresa y categórica. 
+
+ 
+
+1. Capacidad de obrar 
+
+Debe incluir afirmación expresa de: 
+
+La entidad ostenta plena capacidad de obrar conforme al artículo 65 de la LCSP. 
+
+Es recomendable vincularlo a: 
+
+Existencia registral. 
+
+Actividad efectiva. 
+
+No suspensión de actividad. 
+
+ 
+
+2. Ausencia de prohibiciones de contratar 
+
+Debe declararse: 
+
+No concurre en la entidad ninguna de las prohibiciones de contratar previstas en el artículo 71 de la LCSP. 
+
+Puede añadirse: 
+
+Ausencia de sanciones firmes. 
+
+Cumplimiento obligaciones tributarias y Seguridad Social. 
+
+No estar en concurso culpable. 
+
+ 
+
+3. Habilitación profesional específica (cuando proceda) 
+
+Cuando el contrato exige: 
+
+Autorización administrativa. 
+
+Inscripción en registro sectorial. 
+
+Certificación técnica. 
+
+Licencia específica. 
+
+Debe acreditarse: 
+
+Existencia. 
+
+Vigencia. 
+
+Adecuación al objeto. 
+
+Ejemplo: 
+
+Registro de empresas instaladoras. 
+
+Autorización sanitaria. 
+
+Certificación ISO exigida. 
+
+ 
+
+4. Anexo recomendable 
+
+Cuando exista habilitación sectorial: 
+
+Declaración responsable firmada. 
+
+Copia de licencia. 
+
+Certificado vigente. 
+
+Inscripción en registro profesional. 
+
+🔎 Importancia estratégica: 
+Evita que el Tribunal dude de la condición de potencial licitador. 
+
+ 
+
+II.3. REPRESENTACIÓN (BLINDAJE FORMAL) 
+
+Este es uno de los puntos más sensibles. 
+
+La representación defectuosa genera: 
+
+Requerimiento de subsanación. 
+
+Pérdida de días críticos para cautelar. 
+
+Riesgo de inadmisión si no se subsana correctamente. 
+
+ 
+
+1. Modalidades de representación 
+
+A) Poder notarial 
+
+Debe verificarse: 
+
+Que el poder está vigente. 
+
+Que incluye facultades para: 
+
+Interponer recursos administrativos. 
+
+Formular solicitudes cautelares. 
+
+Firmar escritos. 
+
+Recibir notificaciones. 
+
+No basta un poder genérico de gestión ordinaria. 
+
+ 
+
+B) Apoderamiento apud acta 
+
+Válido si se formaliza ante órgano competente. 
+
+Debe acreditarse documentalmente. 
+
+ 
+
+C) Cargo orgánico 
+
+Si firma administrador único, solidario o consejero delegado: 
+
+Acreditar nombramiento. 
+
+Vigencia del cargo. 
+
+Facultades estatutarias. 
+
+Debe acompañarse: 
+
+Escritura de nombramiento. 
+
+Certificación registral actualizada. 
+
+ 
+
+2. Facultades expresas necesarias 
+
+El poder debe cubrir expresamente: 
+
+Interposición de recursos administrativos. 
+
+Solicitud de medidas cautelares. 
+
+Comparecencia ante tribunales administrativos. 
+
+Actuación en procedimientos contenciosos (si se prevé). 
+
+Si no lo incluye, debe subsanarse antes de presentar. 
+
+ 
+
+3. Riesgo procesal asociado 
+
+Si la representación es defectuosa: 
+
+El Tribunal puede requerir subsanación. 
+
+El plazo cautelar sigue corriendo. 
+
+Puede adjudicarse el contrato antes de que se resuelva la suspensión. 
+
+En escenarios críticos, esto puede neutralizar el recurso. 
+
+ 
+
+CONSTRUCCIÓN REDACCIONAL RECOMENDADA 
+
+La comparecencia debe estructurarse así: 
+
+Identificación de la entidad. 
+
+Identificación del representante. 
+
+Título de representación. 
+
+Declaración de capacidad. 
+
+Declaración de ausencia de prohibiciones. 
+
+Indicación de habilitación sectorial (si aplica). 
+
+ 
+
+FUNCIÓN ESTRATÉGICA DEL APARTADO II 
+
+Este bloque cumple cinco objetivos: 
+
+Blindar la admisibilidad formal. 
+
+Reforzar legitimación material. 
+
+Demostrar idoneidad sectorial. 
+
+Anticipar defensa frente a objeciones. 
+
+Evitar retrasos en cautelar. 
+
+En recursos estratégicos, esta sección debe ocupar varias páginas y no limitarse a una fórmula estándar. 
+
+ 
+
+A continuación se desarrolla con máxima profundidad técnico-jurídica y enfoque procesal estratégico el apartado: 
+
+III. LEGITIMACIÓN ACTIVA 
+
+(CAPA CENTRAL DE ADMISIÓN – NÚCLEO DE SUPERVIVENCIA DEL RECURSO) 
+
+En el recurso especial, la legitimación activa no es una formalidad; es el umbral de acceso al control de legalidad. Si no se supera con solvencia técnica, el Tribunal puede inadmitir sin entrar en el fondo. 
+
+Este apartado debe redactarse como pieza autónoma, autosuficiente y probatoriamente cerrada. 
+
+ 
+
+III.1. BASE NORMATIVA Y ESTÁNDAR DEL TRIBUNAL 
+
+1. Fundamento legal 
+
+La legitimación activa se sustenta en el artículo 48 de la Ley 9/2017 de Contratos del Sector Público, que reconoce legitimación a: 
+
+“Las personas físicas o jurídicas cuyos derechos o intereses legítimos se hayan visto perjudicados o puedan resultar afectados por las decisiones objeto de recurso.” 
+
+Este precepto debe interpretarse conforme a: 
+
+Principio de tutela judicial efectiva (art. 24 CE). 
+
+Principio de efectividad de los remedios en contratación pública. 
+
+Jurisprudencia del Tribunal de Justicia de la Unión Europea en materia de acceso a recursos eficaces. 
+
+ 
+
+2. Estándar exigido por los Tribunales Administrativos 
+
+La doctrina consolidada del Tribunal Administrativo Central de Recursos Contractuales exige: 
+
+Interés real y efectivo. 
+
+No meramente abstracto en la legalidad. 
+
+Conexión directa entre infracción alegada y afectación concreta. 
+
+Posición objetiva como potencial licitador. 
+
+No basta “defender la legalidad”; debe existir afectación individualizada. 
+
+ 
+
+3. Estructura técnica recomendada 
+
+La legitimación debe articularse en tres bloques probatorios concatenados: 
+
+Interés real y efectivo. 
+
+Condición de potencial licitador. 
+
+Perjuicio concreto derivado de la infracción. 
+
+La ausencia de cualquiera de ellos debilita estructuralmente el recurso. 
+
+ 
+
+III.2. LOS TRES PILARES PROBATORIOS (ARQUITECTURA OBLIGATORIA) 
+
+ 
+
+A) INTERÉS REAL Y EFECTIVO (NO ABSTRACTO) 
+
+1. Concepto 
+
+Debe demostrarse que el recurrente: 
+
+Tiene intención real de concurrir. 
+
+Posee expectativa legítima de adjudicación. 
+
+Sufre afectación directa por la configuración de la licitación. 
+
+No es suficiente alegar interés en la correcta aplicación de la ley. 
+
+ 
+
+2. Interés empresarial específico 
+
+Debe declararse expresamente: 
+
+Que la entidad pretende participar en la licitación. 
+
+Que el contrato encaja en su estrategia empresarial. 
+
+Que su actividad ordinaria coincide con el objeto contractual. 
+
+Puede incluirse: 
+
+Plan estratégico interno. 
+
+Segmentación de mercado. 
+
+Política de expansión en sector público. 
+
+ 
+
+3. Impacto económico esperable 
+
+Cuando sea posible, debe cuantificarse: 
+
+Volumen estimado de negocio potencial. 
+
+Margen medio del sector. 
+
+Impacto sobre facturación anual. 
+
+Ejemplo estructural: 
+
+El valor estimado del contrato representa aproximadamente el X% del volumen anual de negocio del recurrente en el sector correspondiente. 
+
+La cuantificación refuerza el carácter real del interés. 
+
+ 
+
+4. Prueba sugerida 
+
+Para consolidar este pilar: 
+
+Facturación sectorial de los últimos años. 
+
+Relación de contratos similares ejecutados. 
+
+Portfolio corporativo. 
+
+Oferta técnica preliminar o estudio interno de viabilidad. 
+
+Certificaciones de ejecución satisfactoria. 
+
+🔎 Cuanto más objetiva sea la prueba, más sólida será la legitimación. 
+
+ 
+
+B) POTENCIAL LICITADOR (APTITUD OBJETIVA PARA CONCURRIR) 
+
+Este es el segundo eje crítico. 
+
+La doctrina exige acreditar que el recurrente está en condiciones reales de concurrir, no que simplemente podría hacerlo en abstracto. 
+
+ 
+
+1. Experiencia acreditada 
+
+Debe aportarse: 
+
+Relación de contratos similares. 
+
+Entidades contratantes. 
+
+Importes. 
+
+Periodo de ejecución. 
+
+Certificados de buena ejecución. 
+
+Es recomendable demostrar: 
+
+Similitud material. 
+
+Volumen equiparable. 
+
+Cumplimiento satisfactorio. 
+
+ 
+
+2. Medios humanos 
+
+Debe describirse: 
+
+Organigrama. 
+
+Personal clave. 
+
+Técnicos especializados. 
+
+Certificaciones individuales. 
+
+Ejemplo: 
+
+Ingenieros colegiados. 
+
+Técnicos con certificación específica. 
+
+Directores de proyecto con experiencia acreditada. 
+
+ 
+
+3. Medios técnicos 
+
+Debe acreditarse: 
+
+Infraestructura propia. 
+
+Equipamiento. 
+
+Sistemas informáticos. 
+
+Herramientas especializadas. 
+
+Certificaciones técnicas (ISO, ENS, etc.). 
+
+ 
+
+4. Capacidad financiera 
+
+Puede acreditarse mediante: 
+
+Cuentas anuales. 
+
+Ratio de solvencia. 
+
+Volumen de negocio. 
+
+Líneas de crédito disponibles. 
+
+Esto es especialmente relevante cuando la impugnación afecta a solvencia económica. 
+
+ 
+
+5. Regla de oro 
+
+No basta afirmar: 
+
+“La entidad podría presentarse.” 
+
+Debe demostrarse: 
+
+“La entidad cumple o cumpliría todos los requisitos legales y técnicos para concurrir, de no existir la cláusula impugnada.” 
+
+ 
+
+C) PERJUICIO CONCRETO DERIVADO DE LA INFRACCIÓN 
+
+Este es el punto donde la legitimación se consolida definitivamente. 
+
+Debe explicarse con cadena causal estructurada. 
+
+ 
+
+1. Cadena causal obligatoria 
+
+Debe construirse así: 
+
+Cláusula X (pliego). 
+
+Impone requisito Y. 
+
+Produce efecto Z (exclusión / dificultad grave). 
+
+Genera perjuicio concreto. 
+
+Ejemplo estructural: 
+
+La cláusula 12.3 exige una solvencia técnica consistente en la ejecución de tres contratos idénticos en los últimos tres años. 
+El recurrente ha ejecutado contratos similares pero no idénticos en sentido literal. 
+Ello impide su concurrencia. 
+Se trata de una restricción desproporcionada y excluyente. 
+
+ 
+
+2. Diferenciación entre molestia y barrera de entrada 
+
+Debe argumentarse que: 
+
+No se trata de carga administrativa menor. 
+
+No es simple exigencia técnica razonable. 
+
+Es una restricción estructural que limita competencia. 
+
+Se debe demostrar: 
+
+Número reducido de operadores que cumplen el requisito. 
+
+Posible favorecimiento del contratista saliente. 
+
+Impacto en libre concurrencia. 
+
+ 
+
+3. Ventaja indebida a determinados operadores 
+
+Si procede, puede argumentarse: 
+
+Configuración del pliego alineada con experiencia concreta de un operador. 
+
+Exigencias técnicas propietarias. 
+
+Umbrales diseñados a medida. 
+
+Debe evitarse afirmaciones especulativas sin soporte probatorio. 
+
+ 
+
+4. Matriz de barreras (ANEXO TÉCNICO RECOMENDADO) 
+
+Se recomienda incorporar anexo estructurado: 
+
+Requisito 
+
+Impacto en el recurrente 
+
+Alternativa legal razonable 
+
+Efecto competitivo 
+
+Solvencia X 
+
+Impide concurrir 
+
+Reducción umbral 
+
+Mayor competencia 
+
+Certificación Y 
+
+Coste desproporcionado 
+
+Acreditación equivalente 
+
+Neutralidad 
+
+Este anexo facilita: 
+
+Visualización inmediata por el Tribunal. 
+
+Claridad argumental. 
+
+Fuerza probatoria. 
+
+ 
+
+ERRORES FRECUENTES EN LEGITIMACIÓN 
+
+Alegar interés abstracto. 
+
+No aportar prueba documental. 
+
+No demostrar experiencia real. 
+
+No vincular infracción con perjuicio. 
+
+Argumentación genérica sin datos. 
+
+ 
+
+ESTRUCTURA REDACCIONAL RECOMENDADA 
+
+Fundamento legal (art. 48 LCSP). 
+
+Doctrina aplicable. 
+
+Interés real y efectivo. 
+
+Potencial licitador. 
+
+Perjuicio concreto. 
+
+Conclusión de legitimación plena. 
+
+ 
+
+CONCLUSIÓN ESTRATÉGICA 
+
+La legitimación activa: 
+
+Es el filtro principal de admisión. 
+
+Debe construirse con rigor probatorio. 
+
+Debe incorporar evidencia documental. 
+
+Debe demostrar aptitud + afectación. 
+
+Debe anticipar objeciones del órgano de contratación. 
+
+En recursos estratégicos, este apartado puede ocupar varias páginas y debe redactarse con la misma intensidad técnica que los fundamentos jurídicos. 
+
+ 
+
+IV. ACTO RECURRIBLE 
+
+(ANÁLISIS DE RECURRIBILIDAD Y EFECTOS) 
+
+El análisis del acto recurrible constituye un presupuesto objetivo de admisión. Antes de entrar en el fondo, el Tribunal examinará: 
+
+Si el acto es susceptible de recurso especial. 
+
+Si encaja en el catálogo legal. 
+
+Si tiene entidad jurídica autónoma. 
+
+Si produce efectos lesivos directos. 
+
+Una incorrecta calificación del acto puede provocar inadmisión sin examen material. 
+
+ 
+
+IV.1. TIPOLOGÍA DEL ACTO IMPUGNABLE 
+
+La impugnación debe encuadrarse con precisión dentro de las categorías previstas en el artículo 44 de la Ley 9/2017 de Contratos del Sector Público. 
+
+Debe identificarse expresamente la categoría aplicable. 
+
+ 
+
+1. Pliegos (PCAP y PPT) 
+
+A) Pliego de Cláusulas Administrativas Particulares (PCAP) 
+
+Es impugnable cuando contiene: 
+
+Requisitos de solvencia desproporcionados. 
+
+Criterios de adjudicación ilegales. 
+
+Condiciones especiales de ejecución indebidas. 
+
+Régimen de penalidades desproporcionado. 
+
+Fórmulas matemáticas defectuosas. 
+
+El PCAP configura el marco jurídico del contrato y, por tanto, tiene efectos normativos internos. 
+
+B) Pliego de Prescripciones Técnicas (PPT) 
+
+Es impugnable cuando: 
+
+Introduce referencias a marca sin justificación. 
+
+Impone especificaciones restrictivas. 
+
+Configura requisitos que solo un operador puede cumplir. 
+
+Actúa como solvencia encubierta. 
+
+🔎 El PPT no es técnico-neutral si altera la competencia. 
+
+ 
+
+2. Anuncio de licitación (cuando contiene determinaciones sustantivas) 
+
+El anuncio es recurrible cuando: 
+
+Reproduce requisitos esenciales. 
+
+Establece criterios de adjudicación. 
+
+Determina condiciones de participación. 
+
+Fija plazos o exigencias no coherentes con pliegos. 
+
+Si el anuncio contiene elementos sustantivos autónomos, su impugnación es procedente. 
+
+En contratos sujetos a regulación armonizada, debe analizarse también la publicación en el Diario Oficial de la Unión Europea. 
+
+ 
+
+3. Aclaraciones, rectificaciones o respuestas a consultas 
+
+Son recurribles cuando: 
+
+Modifican sustancialmente condiciones. 
+
+Alteran solvencias. 
+
+Cambian ponderaciones. 
+
+Introducen nuevas exigencias. 
+
+No todas las aclaraciones son inocuas; si alteran el equilibrio competitivo, adquieren autonomía impugnable. 
+
+ 
+
+4. Exclusión o admisión de licitadores 
+
+La exclusión es recurrible cuando: 
+
+Se fundamenta en interpretación errónea de pliegos. 
+
+Aplica criterios no previstos. 
+
+Incurre en error material. 
+
+Vulnera principio de igualdad. 
+
+La admisión de terceros puede ser recurrible si afecta directamente a la posición competitiva del recurrente. 
+
+ 
+
+5. Acuerdo de adjudicación 
+
+Es recurrible cuando: 
+
+Se basa en criterios ilegales. 
+
+No está motivado. 
+
+Aplica fórmulas incorrectas. 
+
+Existe desviación de poder. 
+
+Se produce valoración arbitraria. 
+
+La adjudicación produce efectos definitivos y tiene impacto directo sobre derechos e intereses. 
+
+ 
+
+IV.2. ACTO DE TRÁMITE CUALIFICADO (CUANDO PROCEDA) 
+
+No todo acto intermedio es recurrible. 
+Debe demostrarse que se trata de un acto de trámite cualificado. 
+
+ 
+
+1. Concepto técnico 
+
+Es acto de trámite cualificado aquel que: 
+
+Decide directa o indirectamente el fondo. 
+
+Determina la imposibilidad de continuar en el procedimiento. 
+
+Produce indefensión. 
+
+Genera efectos jurídicos inmediatos. 
+
+ 
+
+2. Elementos que deben argumentarse 
+
+A) Efectos jurídicos directos 
+
+Debe demostrarse que el acto: 
+
+No es meramente preparatorio. 
+
+Incide en la esfera jurídica del recurrente. 
+
+Produce consecuencias inmediatas. 
+
+Ejemplo: 
+
+La exigencia de solvencia técnica X impide objetivamente la concurrencia del recurrente. 
+
+ 
+
+B) Imposibilidad de reparación posterior 
+
+Debe argumentarse que: 
+
+Esperar a la adjudicación no permitiría reparar el daño. 
+
+La lesión se consuma en la fase previa. 
+
+El efecto excluyente es inmediato. 
+
+Ejemplo típico: 
+
+Cláusula ilegal en pliego → impide presentar oferta → lesión consumada antes de adjudicación. 
+
+ 
+
+C) Incidencia inmediata en la competencia 
+
+Debe probarse que el acto: 
+
+Reduce número de operadores. 
+
+Distorsiona mercado. 
+
+Genera ventaja indebida. 
+
+Esto refuerza la naturaleza cualificada del acto. 
+
+ 
+
+IV.3. CONEXIÓN ENTRE ACTO Y LESIÓN 
+
+Aquí se consolida la recurribilidad. 
+
+No basta afirmar que el acto es ilegal. 
+Debe demostrarse que produce lesión concreta. 
+
+1. Efecto inmediato sobre igualdad 
+
+Debe argumentarse que: 
+
+La cláusula altera condiciones de igualdad. 
+
+Introduce trato desigual indirecto. 
+
+Establece umbrales injustificados. 
+
+Ejemplo estructural: 
+
+Cláusula X → Exige experiencia idéntica → Solo incumbente la posee → Ruptura igualdad. 
+
+2. Distorsión de competencia 
+
+Debe demostrarse: 
+
+Restricción artificial del mercado. 
+
+Eliminación de operadores potenciales. 
+
+Reducción de presión competitiva. 
+
+Puede incorporarse: 
+
+Estudio sectorial. 
+
+Número estimado de operadores afectados. 
+
+Comparativa con otras licitaciones similares. 
+
+3. Cadena argumental obligatoria 
+
+El Tribunal debe poder leer claramente: 
+
+Qué acto se impugna. 
+
+Por qué es recurrible. 
+
+Qué efectos jurídicos produce. 
+
+Cómo lesiona derechos/intereses del recurrente. 
+
+Por qué la lesión no es reparable en fase posterior. 
+
+Si uno de estos elementos falta, se debilita la admisión. 
+
+ERRORES FRECUENTES EN ESTA SECCIÓN 
+
+No identificar correctamente el acto. 
+
+Impugnar “la licitación” en abstracto. 
+
+No calificar jurídicamente el acto. 
+
+No justificar que es acto de trámite cualificado. 
+
+No vincular acto con lesión concreta. 
+
+ESTRUCTURA REDACCIONAL RECOMENDADA 
+
+Identificación precisa del acto. 
+
+Encaje en art. 44 LCSP. 
+
+Naturaleza jurídica (definitivo / trámite cualificado). 
+
+Efectos jurídicos directos. 
+
+Imposibilidad de reparación posterior. 
+
+Incidencia en competencia. 
+
+Conclusión de plena recurribilidad. 
+
+CONCLUSIÓN TÉCNICA 
+
+El análisis del acto recurrible: 
+
+Es presupuesto de admisión. 
+
+Debe ser autónomo y sólido. 
+
+Debe anticipar objeciones del órgano. 
+
+Debe integrar dimensión competitiva. 
+
+Debe cerrar cualquier debate sobre procedencia formal. 
+
+Un recurso técnicamente robusto nunca deja la recurribilidad implícita; la argumenta y la blinda. 
+
+V. PLAZO, CÓMPUTO, REGISTRO Y “COMPLIANCE” DE ADMISIBILIDAD 
+
+(CAPA CRÍTICA DE SUPERVIVENCIA PROCESAL) 
+
+En el recurso especial en materia de contratación, el plazo es preclusivo, improrrogable y de orden público. 
+Un error en su cómputo o en el registro puede determinar la inadmisión sin examen de fondo. 
+
+Este apartado debe construirse con precisión matemática y soporte documental. 
+
+V.1. CÓMPUTO DEL PLAZO (15 DÍAS HÁBILES) 
+
+El plazo general del recurso especial viene determinado por el artículo 50 de la Ley 9/2017 de Contratos del Sector Público. 
+
+Es imprescindible incluir cálculo expreso y razonado. 
+
+1. Determinación del dies a quo (inicio del cómputo) 
+
+El dies a quo depende del acto impugnado: 
+
+A) Pliegos o anuncio 
+
+Desde el día siguiente a la publicación válida. 
+
+B) Adjudicación 
+
+Desde la notificación. 
+
+C) Exclusión 
+
+Desde la notificación o publicación según proceda. 
+
+D) Aclaraciones sustanciales 
+
+Desde su publicación o comunicación efectiva. 
+
+Debe indicarse expresamente: 
+
+Fecha concreta. 
+
+Fuente de publicación. 
+
+Documento que acredita la fecha (anexo). 
+
+Ejemplo técnico: 
+
+El dies a quo se sitúa el día 12 de febrero de 2026, fecha de publicación del anuncio en el perfil del contratante. 
+
+2. Identificación de la publicación válida 
+
+Cuando exista doble publicación (perfil + DOUE): 
+
+Debe analizarse: 
+
+Si el contrato es SARA. 
+
+Qué publicación determina el inicio del plazo. 
+
+Si la publicación nacional es posterior. 
+
+Debe fijarse con claridad cuál activa el plazo. 
+
+Ejemplo: 
+
+Siendo contrato sujeto a regulación armonizada, el cómputo se inicia desde la publicación en el Diario Oficial de la Unión Europea de fecha… 
+
+🔎 Error frecuente: computar desde la fecha errónea cuando existen varias publicaciones. 
+
+3. Cómputo de días hábiles 
+
+El plazo es de 15 días hábiles. 
+
+Deben excluirse: 
+
+Sábados. 
+
+Domingos. 
+
+Festivos nacionales. 
+
+Festivos autonómicos. 
+
+Festivos locales del órgano competente (si aplican). 
+
+Es recomendable incorporar cuadro de calendario: 
+
+Día 
+
+Fecha 
+
+Hábil/Inhábil 
+
+1 
+
+13/02/2026 
+
+Hábil 
+
+2 
+
+14/02/2026 
+
+Hábil 
+
+… 
+
+… 
+
+… 
+
+Debe indicarse expresamente el dies ad quem. 
+
+4. Determinación del dies ad quem (último día) 
+
+Debe señalarse el día exacto en que vence el plazo. 
+
+Ejemplo: 
+
+El plazo de 15 días hábiles finaliza el día 4 de marzo de 2026. 
+
+Debe comprobarse: 
+
+Que no coincide con festivo. 
+
+Que el registro electrónico admite presentación hasta las 23:59. 
+
+5. Redacción técnica recomendada 
+
+Debe incluirse fórmula expresa: 
+
+El presente recurso se interpone dentro del plazo legal de 15 días hábiles previsto en el artículo 50 LCSP, computado desde el día siguiente a la publicación válida del acto impugnado, finalizando dicho plazo el día …………, siendo presentado en fecha …………, por tanto dentro del término legalmente establecido. 
+
+Esta fórmula blinda el cumplimiento del plazo. 
+
+V.2. CANAL Y FORMA DE PRESENTACIÓN 
+
+La forma es determinante. 
+
+1. Presentación electrónica obligatoria 
+
+El recurso especial debe presentarse electrónicamente. 
+
+Debe verificarse: 
+
+Plataforma habilitada. 
+
+Tribunal competente. 
+
+Identificación correcta del procedimiento. 
+
+Errores habituales: 
+
+Registro en órgano incorrecto. 
+
+Error en selección de procedimiento. 
+
+Falta de firma electrónica válida. 
+
+2. Registro correcto 
+
+Debe determinarse si la presentación debe realizarse: 
+
+Directamente ante el Tribunal. 
+
+Ante el órgano de contratación. 
+
+En registro electrónico común (cuando proceda). 
+
+Es imprescindible revisar: 
+
+Normativa del tribunal competente. 
+
+Instrucciones específicas. 
+
+3. Justificante de registro 
+
+Debe aportarse como anexo: 
+
+Resguardo de presentación. 
+
+Fecha y hora. 
+
+Número de registro. 
+
+Código CSV (si existe). 
+
+Este documento es la prueba de tempestividad. 
+
+4. Momento crítico de presentación 
+
+Se recomienda: 
+
+No presentar el último día en horario límite. 
+
+Evitar riesgo técnico de caída de plataforma. 
+
+Presentar con margen mínimo de 24–48 horas si es posible. 
+
+En recursos estratégicos con cautelar, es recomendable presentar lo antes posible. 
+
+V.3. SUBSANACIÓN Y GESTIÓN DEL RIESGO 
+
+La subsanación no suspende el procedimiento de contratación. 
+Un requerimiento puede comprometer la estrategia cautelar. 
+
+1. Posibles causas de requerimiento 
+
+Falta de acreditación de representación. 
+
+Falta de legitimación documental. 
+
+Omisión de documentos esenciales. 
+
+No identificación clara del acto. 
+
+Falta de firma electrónica válida. 
+
+2. Estrategia preventiva (“paquete completo”) 
+
+Se recomienda presentar desde el inicio: 
+
+Poder notarial o acreditación de cargo. 
+
+Escritura y registro mercantil. 
+
+Copia íntegra de pliegos. 
+
+Publicación DOUE/perfil. 
+
+Aclaraciones. 
+
+Anexo probatorio completo. 
+
+Justificante de registro. 
+
+El objetivo es evitar subsanaciones. 
+
+3. Gestión del riesgo cautelar 
+
+Si se solicita suspensión: 
+
+Un requerimiento de subsanación puede retrasar la tramitación. 
+
+El procedimiento de adjudicación puede continuar. 
+
+Por ello: 
+
+Debe evitarse cualquier defecto formal. 
+
+La documentación debe ser exhaustiva. 
+
+4. Checklist interno de compliance de admisibilidad 
+
+Antes de presentar, verificar: 
+
+Tribunal competente correcto. 
+
+Acto recurrible correctamente identificado. 
+
+Plazo correctamente computado. 
+
+Calendario revisado con festivos. 
+
+Firma electrónica válida. 
+
+Documentación completa. 
+
+Anexos numerados. 
+
+Justificante de registro generado. 
+
+RIESGOS CRÍTICOS EN ESTA FASE 
+
+Error en dies a quo. 
+
+Error en dies ad quem. 
+
+Confusión publicación DOUE/perfil. 
+
+Registro en órgano incorrecto. 
+
+Firma caducada o no válida. 
+
+Omisión de poder. 
+
+Cualquiera de estos errores puede provocar inadmisión inmediata. 
+
+CONCLUSIÓN TÉCNICA 
+
+El apartado V debe: 
+
+Demostrar cumplimiento exacto del plazo. 
+
+Blindar la tempestividad. 
+
+Acreditar registro correcto. 
+
+Anticipar cualquier requerimiento. 
+
+Integrar estrategia cautelar. 
+
+En recursos de alto impacto económico, esta sección debe desarrollarse con precisión documental equivalente a una auditoría procesal. 
+
+ 
+
+VI. ANTECEDENTES Y HECHOS 
+
+(CRONOLOGÍA PROBATORIA – CONSTRUCCIÓN DE CREDIBILIDAD) 
+
+Esta sección no es argumentativa. 
+No contiene valoraciones jurídicas. 
+No anticipa fundamentos de derecho. 
+
+Su función es construir una narrativa objetiva, verificable y documentalmente soportada, que permita al Tribunal: 
+
+Entender el contexto sin interpretación interesada. 
+
+Identificar con precisión la cláusula cuestionada. 
+
+Visualizar el impacto real en el mercado y en el recurrente. 
+
+La redacción debe ser: 
+
+Descriptiva. 
+
+Cronológica. 
+
+Literal cuando proceda. 
+
+Documentada mediante anexos. 
+
+VI.1. HECHO PRIMERO 
+
+PUBLICACIÓN Y DOCUMENTOS QUE INTEGRAN LA LICITACIÓN 
+
+Este hecho fija el punto de partida procesal. 
+
+Debe incluirse: 
+
+1. Fecha y lugar de publicación 
+
+Indicar con precisión: 
+
+Fecha de publicación. 
+
+Plataforma concreta (perfil del contratante, PLACSP u otra). 
+
+En su caso, fecha de publicación en el Diario Oficial de la Unión Europea. 
+
+Enlace o referencia documental. 
+
+Ejemplo estructural: 
+
+En fecha 12 de febrero de 2026 se publicó en el Perfil del Contratante del Ayuntamiento de X el anuncio de licitación correspondiente al expediente nº XXXXX. 
+En fecha 10 de febrero de 2026 se publicó igualmente en el DOUE. 
+
+Debe evitarse: 
+
+Expresiones como “recientemente”. 
+
+Referencias imprecisas. 
+
+2. Documentos que integran la licitación 
+
+Enumerar de forma objetiva: 
+
+Anuncio de licitación. 
+
+PCAP. 
+
+PPT. 
+
+Memoria justificativa. 
+
+Informe de insuficiencia de medios. 
+
+Estudio económico. 
+
+Cuadro de características. 
+
+Modelo de oferta. 
+
+Aclaraciones posteriores. 
+
+Debe indicarse: 
+
+Los documentos citados se adjuntan como Anexos III a VIII. 
+
+3. Referencias documentales 
+
+Es recomendable incluir: 
+
+Captura de pantalla con fecha. 
+
+CSV si lo incorpora. 
+
+Código identificativo del expediente. 
+
+🔎 Objetivo: blindar la prueba de publicación y contenido original. 
+
+VI.2. HECHO SEGUNDO 
+
+CONTENIDO IMPUGNADO (TRANSCRIPCIÓN LITERAL) 
+
+Este hecho debe reproducir literalmente las cláusulas cuestionadas. 
+
+No debe interpretarlas. 
+No debe calificarlas. 
+Solo transcribirlas. 
+
+1. Identificación precisa 
+
+Debe indicarse: 
+
+Documento (PCAP/PPT). 
+
+Número de cláusula. 
+
+Apartado. 
+
+Página del documento. 
+
+Ejemplo: 
+
+Cláusula 8.2 del PCAP, apartado B, página 12. 
+
+2. Transcripción literal 
+
+Debe reproducirse el texto exacto entrecomillado: 
+
+“La solvencia técnica exigirá haber ejecutado al menos tres contratos idénticos al objeto del presente en los últimos tres años, cada uno de ellos por importe mínimo de 1.000.000 €…” 
+
+No debe resumirse. 
+
+3. Si existen varias cláusulas 
+
+Deben separarse por bloques: 
+
+Cláusula de solvencia. 
+
+Cláusula de criterios. 
+
+Cláusula de penalidades. 
+
+Cláusula técnica restrictiva. 
+
+Cada una con referencia documental clara. 
+
+VI.3. HECHO TERCERO 
+
+CONTEXTO TÉCNICO Y DE MERCADO 
+
+Aquí se explica el entorno objetivo. 
+
+Sin adjetivos. 
+Sin juicios jurídicos. 
+
+1. Funcionamiento del sector 
+
+Debe describirse: 
+
+Número aproximado de operadores. 
+
+Tamaño medio de contratos. 
+
+Estándares habituales de solvencia. 
+
+Requisitos usuales en licitaciones comparables. 
+
+Ejemplo estructural: 
+
+En el sector de mantenimiento tecnológico municipal, las licitaciones comparables suelen exigir experiencia en contratos similares, no idénticos, y umbrales de solvencia equivalentes al 50–70% del valor anual estimado. 
+
+Debe evitarse: 
+
+“Es desproporcionado”. 
+
+“Es abusivo”. 
+
+Eso pertenece a fundamentos de derecho. 
+
+2. Estándares técnicos habituales 
+
+Puede acreditarse mediante: 
+
+Comparativa con otras licitaciones. 
+
+Documentación pública. 
+
+Informes sectoriales. 
+
+Debe citarse la fuente. 
+
+3. Estructura económica del mercado 
+
+Si procede: 
+
+Barreras de entrada habituales. 
+
+Distribución geográfica. 
+
+Concentración sectorial. 
+
+El objetivo es contextualizar objetivamente la cláusula. 
+
+VI.4. HECHO CUARTO 
+
+EFECTO PRÁCTICO DE LA CLÁUSULA 
+
+Aquí se describe el impacto operativo. 
+
+No se califica jurídicamente. 
+Se describen consecuencias reales. 
+
+1. Obligación que impone la cláusula 
+
+Debe explicarse: 
+
+Qué exige exactamente. 
+
+Qué documentación obliga a presentar. 
+
+Qué medios exige acreditar. 
+
+Qué certificaciones impone. 
+
+2. Consecuencia operativa 
+
+Ejemplos: 
+
+Necesidad de disponer de certificación específica. 
+
+Necesidad de haber ejecutado contratos con importe determinado. 
+
+Necesidad de disponer de software propietario. 
+
+3. Impacto económico 
+
+Puede indicarse: 
+
+Coste aproximado de cumplimiento. 
+
+Tiempo necesario para obtener certificación. 
+
+Inviabilidad material en plazo de presentación. 
+
+Sin calificativos. Solo datos. 
+
+VI.5. HECHO QUINTO 
+
+PERJUICIO INDIVIDUALIZADO 
+
+Este hecho conecta el contexto general con el recurrente. 
+
+Debe acreditarse: 
+
+Cómo afecta específicamente. 
+
+Qué limitación genera. 
+
+Si impide concurrir o solo dificulta. 
+
+1. Impacto sobre el recurrente 
+
+Ejemplo: 
+
+El recurrente ha ejecutado contratos similares por importe acumulado superior a XXXXX €, pero no dispone de tres contratos idénticos en los términos literales exigidos. 
+
+2. Coste concreto 
+
+Puede indicarse: 
+
+Inversión adicional necesaria. 
+
+Imposibilidad temporal de cumplimiento. 
+
+Coste desproporcionado frente al valor del contrato. 
+
+3. Exclusión material 
+
+Si la cláusula impide concurrir: 
+
+Debe afirmarse de forma clara: 
+
+En consecuencia, el recurrente no puede presentar oferta conforme a los pliegos publicados. 
+
+Si solo dificulta: 
+
+La cláusula genera una restricción significativa que reduce la viabilidad competitiva del recurrente. 
+
+ANEXOS CLAVE EN ESTA SECCIÓN 
+
+Para consolidar credibilidad deben incorporarse: 
+
+Copia íntegra del anuncio. 
+
+PCAP completo. 
+
+PPT completo. 
+
+Captura de publicación. 
+
+Aclaraciones emitidas. 
+
+Comparativas con licitaciones similares. 
+
+Documentación acreditativa de experiencia del recurrente. 
+
+REGLAS DE ORO DE LA CRONOLOGÍA FORENSE 
+
+No mezclar hechos y fundamentos jurídicos. 
+
+No utilizar adjetivos valorativos. 
+
+No anticipar la nulidad. 
+
+No introducir doctrina. 
+
+No argumentar proporcionalidad aquí. 
+
+La valoración jurídica comienza en el apartado VII. 
+
+ESTRUCTURA FINAL RECOMENDADA 
+
+HECHO PRIMERO – Publicación 
+HECHO SEGUNDO – Cláusulas impugnadas 
+HECHO TERCERO – Contexto sectorial 
+HECHO CUARTO – Efecto práctico 
+HECHO QUINTO – Perjuicio individualizado 
+
+CONCLUSIÓN TÉCNICA 
+
+Un buen apartado de hechos: 
+
+Permite al Tribunal comprender el problema sin esfuerzo. 
+
+Refuerza la legitimación. 
+
+Facilita la estimación cautelar. 
+
+Reduce margen de discrecionalidad en la valoración. 
+
+En recursos estratégicos, esta sección puede ocupar varias páginas y debe leerse como un informe técnico objetivo. 
+
+A continuación se desarrolla con arquitectura avanzada el apartado: 
+
+VII. FUNDAMENTOS DE DERECHO 
+
+(ARQUITECTURA EN “MÓDULOS DE IMPUGNACIÓN”) 
+
+Este bloque constituye el núcleo decisorio del recurso. 
+Debe estructurarse de forma modular, jerarquizada y acumulativa, permitiendo al Tribunal: 
+
+Resolver cuestiones formales sin cerrar el acceso al fondo. 
+
+Identificar claramente cada motivo autónomo. 
+
+Estimar total o parcialmente sin necesidad de reescritura argumental. 
+
+La clave no es la extensión, sino la estructura lógica. 
+
+VII.0. BLOQUE DE ENCUADRE JURÍDICO (BLINDAJE DE ADMISIÓN) 
+
+Antes de entrar en los módulos sustantivos, debe consolidarse: 
+
+1. Competencia del Tribunal 
+
+Fundamentación en los arts. 44 y ss. de la Ley 9/2017 de Contratos del Sector Público. 
+
+Naturaleza del contrato (SARA o no). 
+
+Ámbito del poder adjudicador. 
+
+2. Procedencia del recurso 
+
+Acto incluido en el catálogo legal. 
+
+Naturaleza de acto definitivo o de trámite cualificado. 
+
+Efectos jurídicos directos. 
+
+3. Legitimación activa 
+
+Interés legítimo afectado. 
+
+Potencial licitador. 
+
+Perjuicio concreto. 
+
+4. Plazo 
+
+Cómputo correcto. 
+
+Presentación tempestiva. 
+
+Registro válido. 
+
+🔎 Finalidad: impedir que el Tribunal resuelva por inadmisión sin examinar el fondo. 
+
+VII.1. MÓDULO 1 
+
+PRINCIPIOS RECTORES DE LA LCSP (ART. 1 Y CONCORDANTES) 
+
+Este módulo es transversal y puede fundamentar varios motivos simultáneamente. 
+
+Se recomienda aplicar la siguiente estructura por cada principio: 
+
+Norma aplicable. 
+
+Estándar exigible. 
+
+Hecho acreditado. 
+
+Lesión concreta. 
+
+Consecuencia jurídica. 
+
+A) Libre concurrencia 
+
+Norma 
+
+Art. 1 LCSP: garantía de libre acceso a las licitaciones. 
+
+Estándar 
+
+Prohibición de barreras injustificadas o artificiales. 
+
+Hecho 
+
+Cláusula que exige experiencia idéntica o umbral excesivo. 
+
+Lesión 
+
+Reducción objetiva de operadores. 
+
+Consecuencia 
+
+Anulación de la cláusula por restricción artificial. 
+
+B) Igualdad de trato 
+
+Estándar: 
+
+Prohibición de trato desigual directo o indirecto. 
+
+Prohibición de favorecer incumbentes. 
+
+Hecho típico: 
+
+Requisitos alineados con experiencia del contratista saliente. 
+
+Consecuencia: 
+
+Vulneración estructural del procedimiento. 
+
+C) No discriminación 
+
+Se produce cuando: 
+
+Requisitos geográficos encubiertos. 
+
+Certificaciones innecesarias. 
+
+Exigencias que solo ciertos operadores poseen. 
+
+D) Transparencia 
+
+Se vulnera cuando: 
+
+Criterios ambiguos. 
+
+Falta de subcriterios. 
+
+Ausencia de metodología de evaluación. 
+
+Fórmulas incompletas. 
+
+La transparencia es garantía de control jurisdiccional. 
+
+E) Proporcionalidad 
+
+Debe vincularse con el módulo siguiente (test completo). 
+
+F) Integridad 
+
+Se refiere a: 
+
+Configuración dirigida. 
+
+Diseño del pliego con apariencia neutra pero efecto selectivo. 
+
+Riesgo de desviación de poder. 
+
+VII.2. MÓDULO 2 
+
+PROPORCIONALIDAD (TEST COMPLETO – NÚCLEO DURO) 
+
+Este es el módulo central en la mayoría de impugnaciones. 
+
+Debe aplicarse siempre el triple juicio. 
+
+A) Idoneidad 
+
+Preguntas clave: 
+
+¿El requisito contribuye objetivamente al fin del contrato? 
+
+¿Existe relación racional entre exigencia y objeto? 
+
+Ejemplo: 
+
+Exigir experiencia idéntica no es necesariamente idóneo si la similar garantiza solvencia. 
+
+B) Necesidad 
+
+Preguntas: 
+
+¿Existe alternativa menos restrictiva? 
+
+¿Podría reducirse el umbral? 
+
+¿Admitir experiencia equivalente? 
+
+Si hay alternativa razonable menos restrictiva, la cláusula es innecesaria. 
+
+C) Proporcionalidad en sentido estricto 
+
+Debe realizarse balance: 
+
+Beneficio para el interés público. 
+
+Restricción sobre competencia. 
+
+Elementos a analizar: 
+
+Número estimado de operadores excluidos. 
+
+Impacto sobre PYMES. 
+
+Riesgo de sobreprecio. 
+
+🔎 Anexo recomendable: informe sectorial o estimación de elasticidad competitiva. 
+
+VII.3. MÓDULO 3 
+
+SOLVENCIA ECONÓMICA Y TÉCNICA (ARTS. 87–90 LCSP) 
+
+A) Solvencia económica 
+
+Debe analizarse: 
+
+Umbral exigido. 
+
+Proporción respecto al valor del contrato. 
+
+Periodo de referencia. 
+
+Justificación en expediente. 
+
+Ilegalidad frecuente: 
+
+Exigir volumen superior al permitido. 
+
+No justificar umbral elevado. 
+
+B) Solvencia técnica 
+
+Problemas típicos: 
+
+Definición de “contratos similares” excesivamente restrictiva. 
+
+Exigencia de contratos idénticos. 
+
+Periodo temporal irrazonable. 
+
+Certificaciones innecesarias. 
+
+La experiencia debe ser adecuada, no idéntica. 
+
+C) Solvencia encubierta en PPT 
+
+Se produce cuando: 
+
+Se exige software propietario. 
+
+Metodología concreta no estándar. 
+
+Marca específica sin equivalencia. 
+
+Esto convierte el PPT en barrera de entrada. 
+
+VII.4. MÓDULO 4 
+
+PRESCRIPCIONES TÉCNICAS – NEUTRALIDAD Y EQUIVALENCIAS 
+
+Principio: 
+
+Prohibición de referencias a marca salvo justificación y con mención “o equivalente”. 
+
+Debe demostrarse: 
+
+Identificación de la prescripción. 
+
+Cierre efectivo del mercado. 
+
+Inexistencia de alternativas reales. 
+
+Propuesta estratégica: 
+
+Ofrecer redacción alternativa neutral. 
+
+Esto facilita estimación parcial. 
+
+VII.5. MÓDULO 5 
+
+CRITERIOS DE ADJUDICACIÓN (ART. 145 LCSP) 
+
+A) Vinculación al objeto 
+
+Criterios ilegales cuando: 
+
+Premian tamaño empresarial. 
+
+Premian volumen de negocio. 
+
+Premian experiencia histórica sin conexión directa. 
+
+B) Claridad y verificabilidad 
+
+Problemas frecuentes: 
+
+Fórmulas sin desarrollo completo. 
+
+Umbrales indefinidos. 
+
+Puntuaciones abiertas. 
+
+C) Criterios subjetivos 
+
+Requieren: 
+
+Subcriterios definidos. 
+
+Metodología de evaluación. 
+
+Parámetros verificables. 
+
+Sin ello, hay riesgo de arbitrariedad. 
+
+D) Ponderación 
+
+Debe analizarse: 
+
+Peso desproporcionado. 
+
+Criterios secundarios sobredimensionados. 
+
+Configuración sesgada. 
+
+VII.6. MÓDULO 6 
+
+DIVISIÓN EN LOTES (ART. 99 LCSP) 
+
+Obligación: 
+
+Justificar la no división. 
+
+Si no existe motivación suficiente: 
+
+Se vulnera acceso de PYMES. 
+
+Se favorece concentración. 
+
+Estrategia procesal: 
+
+Solicitar nulidad o retroacción para división. 
+
+VII.7. MÓDULO 7 
+
+CONDICIONES ESPECIALES DE EJECUCIÓN (ART. 202 LCSP) 
+
+Revisar: 
+
+Conexión con objeto. 
+
+Proporcionalidad. 
+
+Posibilidad real de cumplimiento. 
+
+Penalidades excesivas pueden generar desequilibrio contractual. 
+
+VII.8. MÓDULO 8 
+
+MODIFICACIONES Y CLÁUSULAS-TRAMPA 
+
+Analizar: 
+
+Modificaciones previstas ambiguas. 
+
+Prórrogas sin límites claros. 
+
+Alteraciones del equilibrio económico. 
+
+Facultades discrecionales excesivas. 
+
+VII.9. MÓDULO 9 
+
+MOTIVACIÓN INSUFICIENTE DEL EXPEDIENTE 
+
+Examinar: 
+
+Memoria justificativa. 
+
+Informe de necesidad. 
+
+Estudio de mercado. 
+
+Justificación de solvencia. 
+
+Si no existe motivación suficiente: 
+
+La ilegalidad es estructural. 
+
+Procede nulidad o anulación. 
+
+VII.10. DOCTRINA ADMINISTRATIVA Y JURISPRUDENCIA 
+
+Debe utilizarse con técnica: 
+
+Identificar doctrina consolidada. 
+
+Extraer ratio decidendi. 
+
+Aplicarla al caso concreto. 
+
+Concluir coherentemente. 
+
+No citar en abstracto. 
+
+Ejemplo estructural: 
+
+Resolución X establece que exigir contratos idénticos vulnera proporcionalidad. 
+
+En el presente caso se exige contrato idéntico. 
+
+Conclusión: vulneración. 
+
+CONCLUSIÓN ESTRATÉGICA DEL BLOQUE VII 
+
+El apartado de fundamentos debe: 
+
+Ser modular. 
+
+Permitir estimación parcial. 
+
+Integrar test de proporcionalidad. 
+
+Vincular hechos con norma. 
+
+Evitar dispersión argumental. 
+
+Priorizar motivos estructurales. 
+
+En recursos estratégicos de alta cuantía, este bloque puede superar ampliamente la sección de hechos y debe construirse con lógica judicial. 
+
+ 
+
+VIII. MEDIDAS CAUTELARES 
+
+(MÓDULO DE “CONTROL DE DAÑOS” – PROTECCIÓN DE LA FINALIDAD DEL RECURSO) 
+
+La solicitud cautelar en el recurso especial no es un complemento accesorio: es un instrumento de preservación de la eficacia del procedimiento revisor. 
+
+Si no se articula correctamente, el contrato puede: 
+
+Adjudicarse. 
+
+Formalizarse. 
+
+Entrar en ejecución. 
+
+Y el recurso perdería su finalidad legítima. 
+
+Este módulo debe construirse con la misma rigurosidad que el fondo. 
+
+VIII.1. NATURALEZA DE LA SUSPENSIÓN 
+
+Debe analizarse previamente si la suspensión opera automáticamente o si requiere solicitud expresa. 
+
+1. Suspensión automática (cuando proceda) 
+
+En determinados supuestos previstos en la Ley 9/2017 de Contratos del Sector Público, la mera interposición del recurso especial puede producir la suspensión automática del procedimiento. 
+
+Debe verificarse: 
+
+Tipo de acto impugnado. 
+
+Fase procedimental. 
+
+Naturaleza del contrato. 
+
+Si el recurso se interpone dentro de plazo. 
+
+En estos casos, es recomendable: 
+
+Declarar expresamente que concurre el efecto suspensivo automático. 
+
+Solicitar al Tribunal que confirme dicha suspensión. 
+
+Requerir comunicación inmediata al órgano de contratación. 
+
+2. Suspensión no automática – Solicitud expresa 
+
+Si no opera automáticamente, debe formularse solicitud motivada. 
+
+No basta con pedir “la suspensión”. 
+Debe acreditarse el cumplimiento de los tres presupuestos clásicos: 
+
+Fumus boni iuris. 
+
+Periculum in mora. 
+
+Ponderación de intereses. 
+
+La carga argumental recae en el recurrente. 
+
+VIII.2. ESTRUCTURA PROBATORIA DE LA CAUTELAR 
+
+A) FUMUS BONI IURIS 
+
+(APARIENCIA DE BUEN DERECHO) 
+
+Debe centrarse exclusivamente en los motivos más sólidos del recurso. 
+
+No se reproducen todos los fundamentos. 
+Se seleccionan los “top 2” o “top 3”. 
+
+1. Identificación de los motivos con mayor probabilidad de estimación 
+
+Ejemplos habituales: 
+
+Solvencia técnica desproporcionada. 
+
+Criterios de adjudicación ilegales. 
+
+Falta de motivación del expediente. 
+
+Ausencia de división en lotes sin justificación. 
+
+La clave es demostrar que: 
+
+La infracción es evidente. 
+
+La doctrina administrativa es reiterada. 
+
+El estándar jurídico está consolidado. 
+
+2. Apariencia razonable de estimación 
+
+Debe argumentarse: 
+
+Que la cláusula impugnada contradice frontalmente la norma. 
+
+Que existen resoluciones previas en sentido coincidente. 
+
+Que el defecto es estructural, no interpretativo. 
+
+Ejemplo técnico: 
+
+La exigencia de contratos idénticos ha sido reiteradamente considerada contraria al principio de proporcionalidad por los tribunales administrativos de contratación, constituyendo por tanto una infracción con apariencia manifiesta. 
+
+No es necesario demostrar con certeza la ilegalidad; basta apariencia razonable. 
+
+B) PERICULUM IN MORA 
+
+(RIESGO DE PÉRDIDA DE FINALIDAD) 
+
+Este es el eje decisivo. 
+
+Debe acreditarse que, de no suspenderse el procedimiento: 
+
+Se producirá adjudicación. 
+
+Se formalizará el contrato. 
+
+Se iniciará ejecución. 
+
+Se consolidará situación de difícil reversión. 
+
+1. Riesgo concreto y actual 
+
+No basta alegar riesgo abstracto. 
+
+Debe indicarse: 
+
+Fecha prevista de apertura de ofertas. 
+
+Fecha estimada de adjudicación. 
+
+Plazos internos del procedimiento. 
+
+Estado actual de la licitación. 
+
+Ejemplo: 
+
+El procedimiento se encuentra en fase de valoración técnica, previéndose adjudicación en un plazo inferior a 20 días. 
+
+2. Pérdida de finalidad del recurso 
+
+Debe explicarse que: 
+
+Una vez adjudicado y formalizado el contrato, el recurso perdería eficacia real. 
+
+La retroacción posterior sería compleja. 
+
+La reparación económica no sustituye la participación en igualdad. 
+
+En contratos de servicios o suministros, la ejecución suele iniciarse inmediatamente tras la formalización. 
+
+3. Irreversibilidad práctica 
+
+Debe señalarse: 
+
+Dificultad de deshacer adjudicación. 
+
+Impacto sobre terceros. 
+
+Posible indemnización cruzada. 
+
+Complejidad administrativa de retroacción. 
+
+C) PONDERACIÓN DE INTERESES 
+
+(BALANCE ENTRE INTERÉS PÚBLICO Y DERECHO DEL RECURRENTE) 
+
+El Tribunal debe ponderar: 
+
+Interés público en continuar procedimiento. 
+
+Interés del recurrente en tutela efectiva. 
+
+Interés general en competencia y eficiencia. 
+
+1. Interés público real vs interés público aparente 
+
+Debe distinguirse: 
+
+Interés público estructural (ejecución del servicio). 
+
+Interés público en legalidad y competencia. 
+
+Se debe argumentar que: 
+
+El interés público no se identifica con la mera rapidez procedimental, sino con la correcta configuración competitiva del contrato. 
+
+2. Impacto en competencia y erario 
+
+Debe explicarse que: 
+
+Mantener cláusula ilegal reduce competencia. 
+
+Menor competencia puede implicar mayor precio. 
+
+Suspender evita consolidar distorsión del mercado. 
+
+El interés público incluye: 
+
+Eficiencia del gasto. 
+
+Igualdad de acceso. 
+
+Integridad del procedimiento. 
+
+3. Proporcionalidad de la medida cautelar 
+
+Debe indicarse que: 
+
+La suspensión es medida idónea. 
+
+Es temporal. 
+
+No causa perjuicio irreversible al órgano. 
+
+Es reversible si el recurso se desestima. 
+
+ANEXO ÚTIL: CRONOGRAMA DEL PROCEDIMIENTO 
+
+Se recomienda incorporar anexo gráfico: 
+
+Fase 
+
+Fecha estimada 
+
+Fin plazo ofertas 
+
+XX 
+
+Apertura técnica 
+
+XX 
+
+Propuesta adjudicación 
+
+XX 
+
+Adjudicación 
+
+XX 
+
+Formalización 
+
+XX 
+
+Debe señalarse claramente el “punto de no retorno”. 
+
+Este elemento visual facilita la ponderación. 
+
+ESTRUCTURA REDACCIONAL RECOMENDADA 
+
+Declaración sobre naturaleza de suspensión (automática o no). 
+
+Fundamento jurídico de la cautelar. 
+
+Fumus boni iuris (motivos principales). 
+
+Periculum in mora (riesgo concreto). 
+
+Ponderación de intereses. 
+
+Solicitud expresa de suspensión inmediata. 
+
+ERRORES FRECUENTES EN CAUTELARES 
+
+Reproducir íntegramente los fundamentos del fondo. 
+
+Alegar riesgo abstracto. 
+
+No aportar cronograma. 
+
+No diferenciar interés público real. 
+
+No solicitar expresamente comunicación inmediata al órgano de contratación. 
+
+CONCLUSIÓN ESTRATÉGICA 
+
+La medida cautelar: 
+
+Preserva la utilidad del recurso. 
+
+Refuerza posición negociadora. 
+
+Evita consolidación de perjuicio. 
+
+Es coherente con el principio de tutela efectiva. 
+
+En licitaciones de elevado importe o fuerte impacto competitivo, este módulo puede ser determinante. 
+
+ 
+
+IX. PETICIÓN (SUPLICO) EN CAPAS 
+
+(ESTRUCTURA PRINCIPAL + SUBSIDIARIA + ALTERNATIVAS) 
+
+El SUPLICO es la parte dispositiva del recurso. 
+Es donde el Tribunal encuentra qué debe resolver exactamente. 
+
+Un suplico mal construido: 
+
+Limita la capacidad de estimación. 
+
+Impide soluciones intermedias. 
+
+Puede provocar desestimación por incongruencia. 
+
+Reduce eficacia práctica del recurso. 
+
+Debe ser: 
+
+Claro. 
+
+Jerarquizado. 
+
+Ejecutable. 
+
+Operativo. 
+
+Jurídicamente coherente con los fundamentos. 
+
+Nunca debe ser retórico ni genérico. 
+
+IX.1. PETICIÓN PRINCIPAL 
+
+(ESTRUCTURA MAXIMALISTA CON FUNDAMENTO) 
+
+La petición principal debe recoger la solución más amplia jurídicamente sostenible. 
+
+Debe estructurarse en escalones lógicos. 
+
+1. Admisión del recurso 
+
+Siempre debe iniciarse solicitando: 
+
+Que se tenga por interpuesto. 
+
+Que se admita a trámite. 
+
+Que se tengan por aportados los documentos. 
+
+Ejemplo estructural: 
+
+Que se tenga por interpuesto en tiempo y forma recurso especial en materia de contratación contra el acto identificado y se admita a trámite. 
+
+2. Estimación íntegra 
+
+Debe solicitarse: 
+
+Estimación total del recurso. 
+
+Declaración de nulidad o anulación. 
+
+Debe diferenciarse: 
+
+Nulidad de pleno derecho (cuando proceda). 
+
+Anulación por infracción de legalidad. 
+
+Ejemplo: 
+
+Que se estime íntegramente el presente recurso y se declare la nulidad del Pliego de Cláusulas Administrativas Particulares en los extremos impugnados. 
+
+3. Nulidad o anulación del pliego/anuncio 
+
+Debe especificarse: 
+
+Documento concreto. 
+
+Parte afectada. 
+
+Cláusulas identificadas. 
+
+Evitar: 
+
+“Que se anule la licitación en su conjunto” (si no está técnicamente justificado). 
+
+4. Retroacción de actuaciones 
+
+Debe solicitarse expresamente: 
+
+Retroacción al momento anterior a la aprobación de los pliegos. 
+
+Retroacción para nueva redacción conforme a Derecho. 
+
+Retroacción para división en lotes, si procede. 
+
+Ejemplo: 
+
+Que se ordene la retroacción del procedimiento al momento inmediatamente anterior a la aprobación de los pliegos, a fin de que se dicten nuevos conforme a Derecho. 
+
+IX.2. PETICIÓN SUBSIDIARIA 
+
+(ARQUITECTURA QUIRÚRGICA) 
+
+El Tribunal puede no estimar la nulidad total pero sí parcial. 
+Debe ofrecérsele alternativa clara. 
+
+1. Anulación parcial de cláusula concreta 
+
+Debe identificarse con precisión: 
+
+Cláusula. 
+
+Apartado. 
+
+Documento. 
+
+Ejemplo: 
+
+Subsidiariamente, que se declare la nulidad de la Cláusula 8.2 del PCAP, apartado B, en lo relativo a la exigencia de contratos idénticos. 
+
+2. Sustitución por redacción conforme 
+
+Cuando sea viable, debe proponerse redacción alternativa neutral. 
+
+Ejemplo: 
+
+Sustituyéndose la exigencia de contratos idénticos por la acreditación de experiencia en contratos similares en naturaleza y complejidad. 
+
+Esto facilita estimación parcial sin paralizar completamente el procedimiento. 
+
+3. Ampliación del plazo de presentación de ofertas 
+
+Si la modificación afecta condiciones esenciales, debe solicitarse: 
+
+Ampliación suficiente del plazo. 
+
+Nueva publicación si procede. 
+
+Ejemplo: 
+
+Que se acuerde la ampliación del plazo de presentación de ofertas por un periodo no inferior a XX días hábiles desde la publicación de la modificación. 
+
+4. Alternativa estructural adicional 
+
+En algunos casos puede añadirse: 
+
+División en lotes. 
+
+Reconfiguración de criterios. 
+
+Nueva ponderación. 
+
+Siempre con precisión ejecutiva. 
+
+IX.3. PETICIÓN CAUTELAR (SI NO SE HA RESUELTO YA) 
+
+Debe integrarse en el suplico final. 
+
+1. Suspensión inmediata 
+
+Debe solicitarse expresamente: 
+
+Que se acuerde la suspensión inmediata del procedimiento de adjudicación hasta la resolución del presente recurso. 
+
+2. Comunicación al órgano de contratación 
+
+Debe solicitarse que el Tribunal: 
+
+Notifique la suspensión. 
+
+Ordene paralización formal. 
+
+Ejemplo: 
+
+Que se comunique de forma urgente la suspensión al órgano de contratación. 
+
+3. Confirmación de suspensión automática (si aplica) 
+
+Si opera por ley: 
+
+Que se declare expresamente la suspensión automática del procedimiento derivada de la interposición del presente recurso. 
+
+ESTRUCTURA FINAL RECOMENDADA DEL SUPLICO 
+
+Debe presentarse numerado y jerarquizado: 
+
+SUPLICO AL TRIBUNAL 
+
+Que tenga por interpuesto el presente recurso especial en materia de contratación. 
+
+Que lo admita a trámite. 
+
+Que acuerde la suspensión del procedimiento en los términos solicitados. 
+
+Que estime íntegramente el recurso y declare la nulidad/anulación del acto impugnado. 
+
+Que ordene la retroacción del procedimiento al momento oportuno. 
+
+Subsidiariamente: 
+
+Que declare la nulidad parcial de la cláusula X. 
+
+Que ordene su modificación conforme a Derecho. 
+
+Que acuerde la ampliación del plazo de presentación de ofertas. 
+
+Todo ello con los demás pronunciamientos que procedan en Derecho. 
+
+REGLAS ESTRATÉGICAS DEL SUPLICO 
+
+No incluir argumentos jurídicos en el suplico. 
+
+No formular peticiones ambiguas. 
+
+No mezclar principal y subsidiario sin jerarquía. 
+
+No dejar al Tribunal sin margen de estimación parcial. 
+
+Redactar en términos ejecutables. 
+
+ERRORES FRECUENTES 
+
+Solicitar nulidad total cuando solo hay defecto parcial. 
+
+No pedir retroacción expresamente. 
+
+No pedir ampliación de plazo. 
+
+No incluir petición cautelar clara. 
+
+Peticiones contradictorias. 
+
+CONCLUSIÓN TÉCNICA 
+
+El suplico: 
+
+Debe ser coherente con los fundamentos. 
+
+Debe permitir estimación total o parcial. 
+
+Debe prever escenarios alternativos. 
+
+Debe ser claro y ejecutable. 
+
+Es la parte más leída por el Tribunal. 
+
+En recursos estratégicos, el suplico debe construirse con precisión quirúrgica, como si se tratara de un fallo judicial anticipado. 
+
+X.1. ÍNDICE DE DOCUMENTOS NUMERADO 
+
+(ARQUITECTURA DOCUMENTAL) 
+
+Debe incorporarse un índice sistemático antes de los anexos. 
+
+Numeración correlativa, clara y coherente con las citas del cuerpo del recurso. 
+
+📁 ESTRUCTURA RECOMENDADA 
+
+Doc. 1 – Poder de representación 
+
+Escritura de poder o apoderamiento apud acta. 
+
+Facultades para recurrir y solicitar cautelares. 
+
+Vigencia acreditada. 
+
+Función: Blindaje formal de representación. 
+
+Doc. 2 – Escrituras sociales y registro mercantil 
+
+Escritura de constitución. 
+
+Nombramiento del administrador. 
+
+Certificación registral actualizada. 
+
+Función: Acreditar personalidad jurídica y objeto social. 
+
+Doc. 3 – Pliego de Cláusulas Administrativas Particulares (PCAP) 
+
+Versión íntegra publicada. 
+
+Identificación del expediente. 
+
+CSV si consta. 
+
+Función: Base normativa del recurso. 
+
+Doc. 4 – Pliego de Prescripciones Técnicas (PPT) 
+
+Versión íntegra. 
+
+Sin alteraciones. 
+
+Identificación oficial. 
+
+Función: Soporte de impugnaciones técnicas. 
+
+Doc. 5 – Anuncio de licitación / DOUE 
+
+Publicación perfil del contratante. 
+
+Publicación en Diario Oficial de la Unión Europea (si SARA). 
+
+Captura con fecha visible. 
+
+Función: Determinación del dies a quo y del contenido sustantivo. 
+
+Doc. 6 – Aclaraciones, rectificaciones y respuestas 
+
+Respuestas oficiales. 
+
+Correcciones publicadas. 
+
+Modificaciones de pliegos. 
+
+Función: Detectar alteraciones sustanciales posteriores. 
+
+Doc. 7 – Comparativa de licitaciones similares 
+
+Pliegos de otros órganos. 
+
+Exigencias habituales del sector. 
+
+Umbrales de solvencia comparables. 
+
+Función: Acreditar desviación del estándar sectorial. 
+
+Doc. 8 – Informe técnico 
+
+Dictamen interno o externo. 
+
+Análisis de requisitos técnicos. 
+
+Evaluación de alternativas menos restrictivas. 
+
+Función: Sustento del test de proporcionalidad e idoneidad técnica. 
+
+Doc. 9 – Informe económico 
+
+Estudio de mercado. 
+
+Impacto sobre competencia. 
+
+Estimación de operadores excluidos. 
+
+Análisis de elasticidad competitiva (si procede). 
+
+Función: Apoyar periculum y proporcionalidad estricta. 
+
+Doc. 10 – Justificante de registro del recurso 
+
+Resguardo electrónico. 
+
+Fecha y hora. 
+
+Número de registro. 
+
+Función: Acreditar tempestividad. 
+
+Documentación adicional recomendada (según caso) 
+
+Doc. 11 – Cuentas anuales. 
+
+Doc. 12 – Certificados de buena ejecución. 
+
+Doc. 13 – Organigrama técnico. 
+
+Doc. 14 – Certificaciones sectoriales. 
+
+Doc. 15 – Cronograma del procedimiento. 
+
+X.2. CRITERIOS DE CALIDAD DE LOS ANEXOS 
+
+(ESTÁNDAR DE AUDITORÍA DOCUMENTAL) 
+
+La calidad documental impacta directamente en la percepción del Tribunal. 
+
+1. Portada individual por documento 
+
+Cada anexo debe incluir: 
+
+Título (“Doc. 3 – PCAP”). 
+
+Expediente. 
+
+Fecha. 
+
+Número total de páginas. 
+
+Breve descripción de su finalidad probatoria. 
+
+Ejemplo: 
+
+Doc. 3 – PCAP 
+Finalidad: Acreditar el contenido literal de la Cláusula 8.2 impugnada. 
+
+2. Señalización de párrafos relevantes 
+
+Se recomienda: 
+
+Resaltar en color las cláusulas impugnadas. 
+
+Incluir notas al margen. 
+
+Marcar páginas relevantes. 
+
+El Tribunal debe localizar en segundos el contenido citado. 
+
+3. Trazabilidad interna 
+
+Cada documento debe estar vinculado al cuerpo del recurso. 
+
+Ejemplo en el texto: 
+
+Tal como consta en el Doc. 3 (PCAP), Cláusula 8.2, página 12… 
+
+Debe existir coherencia absoluta entre: 
+
+Hechos. 
+
+Fundamentos. 
+
+Documento citado. 
+
+4. Referencia cruzada (“Doc X acredita Hecho Y”) 
+
+Se recomienda incorporar en el índice una columna adicional: 
+
+Documento 
+
+Acredita 
+
+Doc. 3 
+
+Hecho Segundo 
+
+Doc. 5 
+
+Hecho Primero 
+
+Doc. 9 
+
+Fundamento VII.2 
+
+Esto mejora la comprensión estructural. 
+
+5. Integridad documental 
+
+Debe verificarse: 
+
+Que el documento es íntegro. 
+
+Que no faltan páginas. 
+
+Que no hay errores de escaneo. 
+
+Que la versión coincide con la publicada oficialmente. 
+
+6. Formato técnico 
+
+PDF único con índice y marcadores. 
+
+Numeración correlativa. 
+
+Tamaño razonable. 
+
+Sin duplicidades. 
+
+En recursos complejos, puede estructurarse en: 
+
+Tomo I: Recurso. 
+
+Tomo II: Anexos. 
+
+Tomo III: Informes técnicos. 
+
+TRAZABILIDAD ESTRATÉGICA 
+
+Un buen sistema documental permite: 
+
+Defensa en vía contenciosa sin reconstrucción. 
+
+Facilitar revisión judicial posterior. 
+
+Evitar alegaciones de falta de prueba. 
+
+Acelerar análisis del Tribunal. 
+
+Debe poder reconstruirse el caso solo leyendo: 
+
+Hechos. 
+
+Documento citado. 
+
+Fundamento jurídico. 
+
+ERRORES FRECUENTES EN LA PRUEBA DOCUMENTAL 
+
+No aportar pliego completo. 
+
+No aportar aclaraciones. 
+
+No resaltar cláusula concreta. 
+
+Adjuntar documentos irrelevantes. 
+
+No vincular documento con hecho. 
+
+CONCLUSIÓN TÉCNICA 
+
+El “paquete proof” debe: 
+
+Ser coherente. 
+
+Ser estructurado. 
+
+Ser trazable. 
+
+Ser estratégico. 
+
+Facilitar la estimación sin requerimientos adicionales. 
+
+Un recurso sólido jurídicamente pero débil documentalmente pierde fuerza decisoria. 
+
+ 
+
+X. DOCUMENTACIÓN, ANEXOS Y TRAZABILIDAD 
+
+(PAQUETE “PROOF” – SISTEMA DE EVIDENCIA Y CONTROL PROBATORIO) 
+
+En el recurso especial, la prueba es esencialmente documental. 
+El Tribunal no practica prueba compleja ni fase probatoria extensa. 
+
+Por tanto: 
+
+Lo que no se aporta documentalmente, prácticamente no existe. 
+
+El “paquete proof” debe cumplir tres funciones: 
+
+Acreditar hechos sin margen de duda. 
+
+Blindar legitimación y admisibilidad. 
+
+Facilitar al Tribunal la localización inmediata de cada evidencia. 
+
+Debe estructurarse como un sistema probatorio organizado, no como un simple conjunto de PDFs. 
+
+X.1. ÍNDICE DE DOCUMENTOS NUMERADO 
+
+(ARQUITECTURA DOCUMENTAL) 
+
+Debe incorporarse un índice sistemático antes de los anexos. 
+
+Numeración correlativa, clara y coherente con las citas del cuerpo del recurso. 
+
+📁 ESTRUCTURA RECOMENDADA 
+
+Doc. 1 – Poder de representación 
+
+Escritura de poder o apoderamiento apud acta. 
+
+Facultades para recurrir y solicitar cautelares. 
+
+Vigencia acreditada. 
+
+Función: Blindaje formal de representación. 
+
+Doc. 2 – Escrituras sociales y registro mercantil 
+
+Escritura de constitución. 
+
+Nombramiento del administrador. 
+
+Certificación registral actualizada. 
+
+Función: Acreditar personalidad jurídica y objeto social. 
+
+Doc. 3 – Pliego de Cláusulas Administrativas Particulares (PCAP) 
+
+Versión íntegra publicada. 
+
+Identificación del expediente. 
+
+CSV si consta. 
+
+Función: Base normativa del recurso. 
+
+Doc. 4 – Pliego de Prescripciones Técnicas (PPT) 
+
+Versión íntegra. 
+
+Sin alteraciones. 
+
+Identificación oficial. 
+
+Función: Soporte de impugnaciones técnicas. 
+
+Doc. 5 – Anuncio de licitación / DOUE 
+
+Publicación perfil del contratante. 
+
+Publicación en Diario Oficial de la Unión Europea (si SARA). 
+
+Captura con fecha visible. 
+
+Función: Determinación del dies a quo y del contenido sustantivo. 
+
+Doc. 6 – Aclaraciones, rectificaciones y respuestas 
+
+Respuestas oficiales. 
+
+Correcciones publicadas. 
+
+Modificaciones de pliegos. 
+
+Función: Detectar alteraciones sustanciales posteriores. 
+
+Doc. 7 – Comparativa de licitaciones similares 
+
+Pliegos de otros órganos. 
+
+Exigencias habituales del sector. 
+
+Umbrales de solvencia comparables. 
+
+Función: Acreditar desviación del estándar sectorial. 
+
+Doc. 8 – Informe técnico 
+
+Dictamen interno o externo. 
+
+Análisis de requisitos técnicos. 
+
+Evaluación de alternativas menos restrictivas. 
+
+Función: Sustento del test de proporcionalidad e idoneidad técnica. 
+
+Doc. 9 – Informe económico 
+
+Estudio de mercado. 
+
+Impacto sobre competencia. 
+
+Estimación de operadores excluidos. 
+
+Análisis de elasticidad competitiva (si procede). 
+
+Función: Apoyar periculum y proporcionalidad estricta. 
+
+Doc. 10 – Justificante de registro del recurso 
+
+Resguardo electrónico. 
+
+Fecha y hora. 
+
+Número de registro. 
+
+Función: Acreditar tempestividad. 
+
+Documentación adicional recomendada (según caso) 
+
+Doc. 11 – Cuentas anuales. 
+
+Doc. 12 – Certificados de buena ejecución. 
+
+Doc. 13 – Organigrama técnico. 
+
+Doc. 14 – Certificaciones sectoriales. 
+
+Doc. 15 – Cronograma del procedimiento. 
+
+X.2. CRITERIOS DE CALIDAD DE LOS ANEXOS 
+
+(ESTÁNDAR DE AUDITORÍA DOCUMENTAL) 
+
+La calidad documental impacta directamente en la percepción del Tribunal. 
+
+1. Portada individual por documento 
+
+Cada anexo debe incluir: 
+
+Título (“Doc. 3 – PCAP”). 
+
+Expediente. 
+
+Fecha. 
+
+Número total de páginas. 
+
+Breve descripción de su finalidad probatoria. 
+
+Ejemplo: 
+
+Doc. 3 – PCAP 
+Finalidad: Acreditar el contenido literal de la Cláusula 8.2 impugnada. 
+
+2. Señalización de párrafos relevantes 
+
+Se recomienda: 
+
+Resaltar en color las cláusulas impugnadas. 
+
+Incluir notas al margen. 
+
+Marcar páginas relevantes. 
+
+El Tribunal debe localizar en segundos el contenido citado. 
+
+3. Trazabilidad interna 
+
+Cada documento debe estar vinculado al cuerpo del recurso. 
+
+Ejemplo en el texto: 
+
+Tal como consta en el Doc. 3 (PCAP), Cláusula 8.2, página 12… 
+
+Debe existir coherencia absoluta entre: 
+
+Hechos. 
+
+Fundamentos. 
+
+Documento citado. 
+
+4. Referencia cruzada (“Doc X acredita Hecho Y”) 
+
+Se recomienda incorporar en el índice una columna adicional: 
+
+Documento 
+
+Acredita 
+
+Doc. 3 
+
+Hecho Segundo 
+
+Doc. 5 
+
+Hecho Primero 
+
+Doc. 9 
+
+Fundamento VII.2 
+
+Esto mejora la comprensión estructural. 
+
+5. Integridad documental 
+
+Debe verificarse: 
+
+Que el documento es íntegro. 
+
+Que no faltan páginas. 
+
+Que no hay errores de escaneo. 
+
+Que la versión coincide con la publicada oficialmente. 
+
+6. Formato técnico 
+
+PDF único con índice y marcadores. 
+
+Numeración correlativa. 
+
+Tamaño razonable. 
+
+Sin duplicidades. 
+
+En recursos complejos, puede estructurarse en: 
+
+Tomo I: Recurso. 
+
+Tomo II: Anexos. 
+
+Tomo III: Informes técnicos. 
+
+TRAZABILIDAD ESTRATÉGICA 
+
+Un buen sistema documental permite: 
+
+Defensa en vía contenciosa sin reconstrucción. 
+
+Facilitar revisión judicial posterior. 
+
+Evitar alegaciones de falta de prueba. 
+
+Acelerar análisis del Tribunal. 
+
+Debe poder reconstruirse el caso solo leyendo: 
+
+Hechos. 
+
+Documento citado. 
+
+Fundamento jurídico. 
+
+ERRORES FRECUENTES EN LA PRUEBA DOCUMENTAL 
+
+No aportar pliego completo. 
+
+No aportar aclaraciones. 
+
+No resaltar cláusula concreta. 
+
+Adjuntar documentos irrelevantes. 
+
+No vincular documento con hecho. 
+
+CONCLUSIÓN TÉCNICA 
+
+El “paquete proof” debe: 
+
+Ser coherente. 
+
+Ser estructurado. 
+
+Ser trazable. 
+
+Ser estratégico. 
+
+Facilitar la estimación sin requerimientos adicionales. 
+
+Un recurso sólido jurídicamente pero débil documentalmente pierde fuerza decisoria. 
+
+Si lo deseas, puedo desarrollar ahora: 
+
+XI. Efectos de la resolución y estrategia post-recurso. 
+
+O XII. Matriz estratégica avanzada (riesgos, escenarios y contencioso posterior). 
+
+XI. EFECTOS, EJECUCIÓN Y ESCENARIO POSTERIOR XI.1. Efectos del pronunciamiento • Nulidad/anulación. • Retroacción. • Modificación de pliegos. • Reapertura de plazo. • Multa por temeridad (raro; evitar riesgos). XI.2. “Plan contencioso” • Preparar desde ya la vía judicial: o estructura de demanda, o expediente, o prueba pericial.  
+
+A continuación se desarrolla con enfoque estratégico-procesal el apartado: 
+
+XI. EFECTOS, EJECUCIÓN Y ESCENARIO POSTERIOR 
+
+(FASE POST-RESOLUCIÓN Y PREPARACIÓN CONTENCIOSA) 
+
+El recurso especial no termina con la resolución del Tribunal. 
+La verdadera estrategia comienza tras el pronunciamiento. 
+
+Debe analizarse: 
+
+Qué efectos produce la resolución. 
+
+Cómo se ejecuta. 
+
+Qué escenarios se abren. 
+
+Cómo preparar la vía contencioso-administrativa. 
+
+Este módulo convierte el recurso en una pieza integrada dentro de una estrategia procesal completa. 
+
+XI.1. EFECTOS DEL PRONUNCIAMIENTO 
+
+La resolución del Tribunal Administrativo de Recursos Contractuales: 
+
+Es ejecutiva. 
+
+Agota la vía administrativa. 
+
+Vincula al órgano de contratación. 
+
+Puede ser recurrida ante la jurisdicción contencioso-administrativa. 
+
+1. Nulidad o anulación del acto 
+
+Debe diferenciarse: 
+
+A) Nulidad de pleno derecho 
+
+Infracción grave. 
+
+Vulneración de principios esenciales. 
+
+Falta absoluta de procedimiento. 
+
+Defectos estructurales. 
+
+B) Anulación 
+
+Infracción de legalidad ordinaria. 
+
+Vicios subsanables. 
+
+Consecuencia práctica: 
+
+El acto queda sin efecto. 
+
+No puede desplegar eficacia jurídica. 
+
+El órgano debe actuar conforme a la resolución. 
+
+2. Retroacción de actuaciones 
+
+Es el efecto más frecuente. 
+
+Supone: 
+
+Volver al momento anterior al vicio. 
+
+Redactar nuevos pliegos. 
+
+Reformular criterios. 
+
+Recalcular puntuaciones. 
+
+Debe analizarse: 
+
+Si la retroacción es parcial o total. 
+
+Si afecta a todo el procedimiento. 
+
+Si exige nueva publicación. 
+
+3. Modificación de pliegos 
+
+Cuando la estimación es parcial: 
+
+Se anula cláusula concreta. 
+
+Se ordena su reformulación. 
+
+Se exige nueva publicación del texto corregido. 
+
+Debe evaluarse: 
+
+Si la modificación afecta condiciones esenciales. 
+
+Si procede ampliar plazo. 
+
+4. Reapertura o ampliación del plazo 
+
+Si la modificación altera: 
+
+Solvencias. 
+
+Criterios. 
+
+Prescripciones técnicas. 
+
+Debe abrirse nuevo plazo suficiente. 
+
+La falta de ampliación podría generar nuevo recurso. 
+
+5. Multa por temeridad 
+
+La LCSP prevé la posibilidad de imponer multa en casos de: 
+
+Recurso manifiestamente infundado. 
+
+Actuación abusiva. 
+
+Mala fe procesal. 
+
+Es excepcional. 
+
+Para evitar riesgos: 
+
+Fundamentación sólida. 
+
+No alegaciones temerarias. 
+
+Argumentación técnica estructurada. 
+
+ESCENARIOS POST-RESOLUCIÓN 
+
+Se abren tres posibles escenarios: 
+
+Escenario 1: Estimación íntegra 
+
+Consecuencias: 
+
+Pliego anulado. 
+
+Procedimiento reiniciado. 
+
+Ventaja estratégica del recurrente. 
+
+Acción recomendada: 
+
+Supervisar nueva redacción. 
+
+Analizar nuevos pliegos. 
+
+Preparar oferta competitiva. 
+
+Escenario 2: Estimación parcial 
+
+Consecuencias: 
+
+Corrección puntual. 
+
+Procedimiento continúa. 
+
+Acción recomendada: 
+
+Evaluar si subsiste lesión. 
+
+Valorar impugnación judicial parcial. 
+
+Preparar oferta. 
+
+Escenario 3: Desestimación 
+
+Consecuencias: 
+
+Procedimiento continúa. 
+
+Posible adjudicación inmediata. 
+
+Acción recomendada: 
+
+Activar plan contencioso. 
+
+Solicitar medida cautelar judicial. 
+
+Valorar daño reputacional y económico. 
+
+XI.2. “PLAN CONTENCIOSO” 
+
+(PREPARACIÓN ESTRATÉGICA ANTICIPADA) 
+
+La resolución del Tribunal puede ser impugnada ante la jurisdicción contencioso-administrativa. 
+
+Debe prepararse esta vía desde la fase administrativa. 
+
+1. Estructura anticipada de la demanda 
+
+La futura demanda debe contener: 
+
+Identificación de la resolución recurrida. 
+
+Competencia del órgano judicial. 
+
+Hechos. 
+
+Fundamentos jurídicos. 
+
+Prueba. 
+
+Petición. 
+
+Por ello, el recurso especial debe redactarse con mentalidad judicial. 
+
+2. Preparación del expediente administrativo 
+
+Debe asegurarse: 
+
+Obtención íntegra del expediente. 
+
+Conservación de pliegos originales. 
+
+Copia de informes técnicos internos. 
+
+Constancia de comunicaciones. 
+
+Es recomendable: 
+
+Solicitar acceso al expediente completo. 
+
+Descargar documentación antes de modificaciones posteriores. 
+
+3. Estrategia probatoria judicial 
+
+En vía contenciosa pueden practicarse: 
+
+Informes periciales técnicos. 
+
+Informes económicos. 
+
+Ratificación de expertos. 
+
+Prueba documental ampliada. 
+
+Por ello: 
+
+El informe técnico del recurso debe poder convertirse en pericial. 
+
+El análisis económico debe poder ampliarse judicialmente. 
+
+4. Medidas cautelares judiciales 
+
+Si el recurso especial se desestima: 
+
+Puede solicitarse suspensión judicial. 
+
+Debe acreditarse urgencia. 
+
+Debe demostrarse perjuicio irreparable. 
+
+La fundamentación cautelar administrativa sirve como base para la judicial. 
+
+5. Análisis coste-beneficio 
+
+Antes de acudir a la vía contenciosa debe evaluarse: 
+
+Valor estimado del contrato. 
+
+Probabilidad de éxito. 
+
+Impacto reputacional. 
+
+Coste procesal. 
+
+Tiempo estimado del litigio. 
+
+6. Riesgo de consolidación contractual 
+
+Si el contrato ya está en ejecución: 
+
+Puede existir dificultad práctica de reversión. 
+
+Puede plantearse acción indemnizatoria. 
+
+Puede solicitarse nulidad radical en supuestos graves. 
+
+MATRIZ DE DECISIÓN POST-RECURSO 
+
+Resultado 
+
+Acción recomendada 
+
+Estimación total 
+
+Supervisar nueva licitación 
+
+Estimación parcial 
+
+Analizar impacto residual 
+
+Desestimación 
+
+Evaluar recurso contencioso 
+
+Adjudicación firme 
+
+Estudiar acción indemnizatoria 
+
+ 
+
+CONCLUSIÓN ESTRATÉGICA 
+
+El recurso especial no es un fin, sino una fase dentro de un itinerario procesal. 
+
+Una estrategia avanzada debe: 
+
+Anticipar el escenario judicial. 
+
+Documentar exhaustivamente. 
+
+Preparar prueba técnica. 
+
+Valorar impacto económico. 
+
+Mantener coherencia argumental. 
+
+El éxito en vía contenciosa depende en gran medida de cómo se haya construido el recurso administrativo. 
+
+XII. ARQUITECTURA ESTRATÉGICA AVANZADA 
+
+(METODOLOGÍA CONSULTORA – DISEÑO DEL RECURSO COMO INSTRUMENTO DE POSICIONAMIENTO) 
+
+Este bloque no es jurídico en sentido estricto. 
+Es estratégico. 
+
+Su finalidad es transformar el recurso especial en: 
+
+Herramienta de corrección del pliego. 
+
+Instrumento de presión legítima. 
+
+Mecanismo de protección competitiva. 
+
+Plataforma para eventual litigio judicial. 
+
+Aquí no se trata solo de “tener razón”, sino de ganar con eficacia procesal. 
+
+XII.1. SELECCIÓN DE MOTIVOS: PIRÁMIDE DE FUERZA 
+
+Uno de los errores más frecuentes es incluir demasiados motivos débiles, diluyendo los sólidos. 
+
+El recurso debe estructurarse como una pirámide jerárquica. 
+
+🔺 Nivel 1 – Motivo “Killer” (Núcleo duro) 
+
+Debe ser: 
+
+Jurídicamente claro. 
+
+Fácilmente entendible por el Tribunal. 
+
+Apoyado por doctrina reiterada. 
+
+Directamente conectado con principios estructurales. 
+
+Habitualmente: 
+
+Vulneración del principio de proporcionalidad. 
+
+Solvencia técnica desproporcionada. 
+
+Exigencia de contratos idénticos. 
+
+Umbral económico injustificado. 
+
+Restricción artificial del mercado. 
+
+Este motivo debe: 
+
+Estar desarrollado con máxima profundidad. 
+
+Incluir test completo de proporcionalidad. 
+
+Incorporar evidencia documental. 
+
+Ser la base de la solicitud cautelar. 
+
+Si este motivo prospera, el recurso se estima. 
+
+🔹 Nivel 2 – Motivo estructural 
+
+Refuerza el principal. 
+
+Ejemplos: 
+
+Criterios de adjudicación ilegales. 
+
+Criterios subjetivos sin subcriterios. 
+
+Falta de transparencia. 
+
+Fórmulas matemáticas defectuosas. 
+
+Estos motivos: 
+
+No siempre anulan el procedimiento completo. 
+
+Pero pueden provocar estimación parcial. 
+
+Refuerzan la percepción de irregularidad sistémica. 
+
+▫ Nivel 3 – Motivo complementario 
+
+No siempre decisivo, pero estratégico: 
+
+Falta de división en lotes. 
+
+Insuficiente motivación. 
+
+Condiciones especiales excesivas. 
+
+Cláusulas de modificación amplias. 
+
+Sirven para: 
+
+Mostrar patrón restrictivo. 
+
+Incrementar presión argumental. 
+
+Justificar cautelar. 
+
+⚠ Motivos débiles (gestión estratégica) 
+
+Deben utilizarse solo cuando: 
+
+Aportan contexto. 
+
+Refuerzan coherencia narrativa. 
+
+No generan contradicciones. 
+
+Nunca deben: 
+
+Debilitar el núcleo duro. 
+
+Distraer al Tribunal. 
+
+Convertir el recurso en alegación dispersa. 
+
+Principio rector 
+
+Mejor tres motivos sólidos que diez dispersos. 
+
+El Tribunal valora claridad, no acumulación. 
+
+XII.2. MATRIZ DE RIESGOS (OPERATIVA) 
+
+Todo recurso debe ir acompañado de un análisis interno de riesgos. 
+
+1. Riesgo de inadmisión 
+
+Factores críticos: 
+
+Error en competencia. 
+
+Error en cómputo del plazo. 
+
+Representación defectuosa. 
+
+Acto no recurrible. 
+
+Falta de legitimación. 
+
+Medidas preventivas: 
+
+Revisión triple del plazo. 
+
+Verificación documental de poder. 
+
+Justificación expresa de competencia. 
+
+Desarrollo exhaustivo de legitimación. 
+
+2. Riesgo de desestimación 
+
+Causas habituales: 
+
+Falta de prueba documental. 
+
+Alegaciones genéricas. 
+
+No demostrar perjuicio concreto. 
+
+No aplicar test de proporcionalidad completo. 
+
+Exceso de argumentación retórica. 
+
+Medidas correctoras: 
+
+Incorporar comparativas sectoriales. 
+
+Aportar informes técnicos. 
+
+Conectar cada infracción con lesión concreta. 
+
+Utilizar doctrina aplicable al caso específico. 
+
+3. Riesgo de no concesión de cautelar 
+
+Causas frecuentes: 
+
+Periculum in mora insuficientemente acreditado. 
+
+No justificar punto de no retorno. 
+
+Falta de cronograma. 
+
+No demostrar irreversibilidad práctica. 
+
+Estrategia: 
+
+Aportar calendario del procedimiento. 
+
+Identificar fecha prevista de adjudicación. 
+
+Argumentar pérdida de finalidad del recurso. 
+
+4. Matriz simplificada de evaluación interna 
+
+Riesgo 
+
+Probabilidad 
+
+Impacto 
+
+Acción 
+
+Inadmisión 
+
+Bajo/Medio/Alto 
+
+Crítico 
+
+Revisión formal exhaustiva 
+
+Desestimación 
+
+Medio 
+
+Alto 
+
+Refuerzo probatorio 
+
+No cautelar 
+
+Medio 
+
+Alto 
+
+Intensificar periculum 
+
+ 
+
+XII.3. ARGUMENTACIÓN ECONÓMICA (CUANDO CONVIENE) 
+
+El recurso especial no es solo jurídico. 
+La dimensión económica refuerza la proporcionalidad y la ponderación de intereses. 
+
+1. Menor competencia → mayor precio 
+
+Principio económico básico: 
+
+A menor número de licitadores, 
+
+Mayor riesgo de ofertas menos competitivas. 
+
+Debe argumentarse que: 
+
+Restricción de operadores reduce presión competitiva. 
+
+Ello puede afectar eficiencia del gasto público. 
+
+2. Requisito excesivo → reducción de licitadores 
+
+Debe analizarse: 
+
+Número estimado de empresas en el sector. 
+
+Número aproximado que cumplen el requisito. 
+
+Impacto porcentual de exclusión. 
+
+Ejemplo estructural: 
+
+En un mercado compuesto por aproximadamente 20 operadores nacionales, el requisito impugnado limita la concurrencia efectiva a 2–3 empresas. 
+
+Este tipo de dato tiene fuerte impacto decisorio. 
+
+3. Impacto en eficiencia del gasto público 
+
+Debe vincularse con: 
+
+Principio de buena administración. 
+
+Principio de eficiencia en el gasto. 
+
+Principio de sostenibilidad presupuestaria. 
+
+El interés público no es solo ejecutar el contrato, sino hacerlo: 
+
+Con competencia. 
+
+Con igualdad. 
+
+Con racionalidad económica. 
+
+4. Integración en test de proporcionalidad 
+
+La argumentación económica fortalece: 
+
+Proporcionalidad estricta. 
+
+Ponderación de intereses en cautelar. 
+
+Análisis estructural del mercado. 
+
+VISIÓN CONSULTORA INTEGRAL 
+
+Un recurso estratégico debe: 
+
+Defender legalidad. 
+
+Proteger posición competitiva. 
+
+Minimizar riesgos. 
+
+Maximizar probabilidad de estimación. 
+
+Preparar escenario contencioso. 
+
+No se trata de impugnar por impugnar, sino de: 
+
+Corregir diseño restrictivo. 
+
+Forzar redacción conforme. 
+
+Posicionar a la empresa para competir en igualdad. 
+
+CONCLUSIÓN ESTRATÉGICA FINAL 
+
+La arquitectura avanzada implica: 
+
+Priorizar motivos fuertes. 
+
+Evaluar riesgos antes de presentar. 
+
+Incorporar dimensión económica. 
+
+Diseñar el recurso como si fuera ya una demanda judicial. 
+
+Pensar en el escenario posterior. 
+
+Un recurso bien estructurado no solo busca ganar el expediente; 
+busca consolidar posicionamiento competitivo en el mercado público. 
+
+ 
+
+XIII. CHECKLIST FINAL 
+
+(AUDITORÍA INTERNA DEL RECURSO – SISTEMA DE CONTROL DE CALIDAD) 
+
+Este bloque constituye la última fase de revisión estratégica antes de presentación. 
+No es formalismo; es control de riesgo procesal. 
+
+Debe aplicarse como una auditoría interna con verificación cruzada jurídica, técnica y estratégica. 
+
+El objetivo es evitar: 
+
+Inadmisiones. 
+
+Debilitamientos argumentales. 
+
+Deficiencias probatorias. 
+
+Pérdida de oportunidad cautelar. 
+
+Incongruencias en el suplico. 
+
+BLOQUE A: ADMISIBILIDAD 
+
+(CONTROL FORMAL Y COMPETENCIAL) 
+
+Este bloque responde a una pregunta esencial: 
+
+¿Puede el Tribunal entrar al fondo sin obstáculos formales? 
+
+1. Tribunal correcto 
+
+✔ Verificación de competencia objetiva y territorial. 
+✔ Naturaleza del poder adjudicador correctamente analizada. 
+✔ Contrato encuadrado en ámbito del recurso especial. 
+✔ Identificación expresa de fundamento competencial. 
+
+Control interno: 
+
+¿Se ha revisado normativa autonómica si procede? 
+
+¿Se ha descartado conflicto competencial? 
+
+¿Se ha identificado correctamente si es contrato SARA? 
+
+2. Acto recurrible correctamente identificado 
+
+✔ Documento concreto impugnado. 
+✔ Fecha exacta. 
+✔ Naturaleza jurídica calificada (definitivo o trámite cualificado). 
+✔ Encaje en catálogo legal. 
+
+Control interno: 
+
+¿Se ha evitado impugnación genérica? 
+
+¿Se ha argumentado su recurribilidad? 
+
+¿Se ha justificado efecto jurídico directo? 
+
+3. Plazo calculado y justificado 
+
+✔ Dies a quo identificado. 
+✔ Calendario de días hábiles verificado. 
+✔ Dies ad quem determinado. 
+✔ Publicación válida correctamente identificada (perfil/DOUE). 
+✔ Justificante de registro incorporado. 
+
+Control interno: 
+
+¿Se han revisado festivos locales/autonómicos? 
+
+¿Existe riesgo de error en publicación relevante? 
+
+¿Se presentó antes del último día límite horario? 
+
+4. Representación bastante 
+
+✔ Poder notarial con facultades suficientes. 
+✔ Cargo orgánico acreditado y vigente. 
+✔ Documento completo y legible. 
+✔ No existe limitación de facultades. 
+
+Control interno: 
+
+¿Incluye facultad para interponer recursos? 
+
+¿Incluye facultad para solicitar cautelares? 
+
+¿Está vigente el nombramiento? 
+
+5. Legitimación probada con evidencia 
+
+✔ Interés real acreditado. 
+✔ Potencial licitador demostrado. 
+✔ Experiencia documentada. 
+✔ Perjuicio concreto identificado. 
+✔ Cadena causal desarrollada. 
+
+Control interno: 
+
+¿Existe prueba documental suficiente? 
+
+¿Se ha evitado alegación abstracta? 
+
+¿Se ha cuantificado impacto cuando es posible? 
+
+BLOQUE B: FONDO 
+
+(CONSISTENCIA ARGUMENTAL Y SÓLIDEZ JURÍDICA) 
+
+Este bloque responde a la pregunta: 
+
+¿Está el recurso técnicamente preparado para ser estimado? 
+
+1. Hechos sin valoraciones 
+
+✔ Redacción objetiva. 
+✔ Cronología clara. 
+✔ Sin adjetivos jurídicos. 
+✔ Separación estricta entre hechos y fundamentos. 
+
+Control interno: 
+
+¿Se han eliminado expresiones valorativas? 
+
+¿Se ha mantenido coherencia narrativa? 
+
+2. Citas literales de cláusulas 
+
+✔ Transcripción exacta. 
+✔ Identificación de cláusula y apartado. 
+✔ Página indicada. 
+✔ Documento anexo referenciado. 
+
+Control interno: 
+
+¿Se han verificado citas textuales? 
+
+¿Coinciden con el documento oficial? 
+
+3. Test de proporcionalidad completo 
+
+✔ Idoneidad analizada. 
+✔ Necesidad examinada. 
+✔ Proporcionalidad estricta argumentada. 
+✔ Alternativas menos restrictivas propuestas. 
+✔ Impacto competitivo considerado. 
+
+Control interno: 
+
+¿Se ha aplicado el triple juicio? 
+
+¿Se ha incorporado dimensión económica? 
+
+¿Se ha conectado con el caso concreto? 
+
+4. Nexo causal infracción → perjuicio 
+
+✔ Identificación de cláusula. 
+✔ Requisito concreto. 
+✔ Efecto práctico. 
+✔ Impacto individualizado. 
+
+Control interno: 
+
+¿Se demuestra exclusión o restricción real? 
+
+¿Se ha evitado afirmación genérica? 
+
+¿El perjuicio es verificable? 
+
+5. Petición congruente y ejecutable 
+
+✔ Coherencia entre fundamentos y suplico. 
+✔ Petición principal clara. 
+✔ Petición subsidiaria operativa. 
+✔ Retroacción solicitada expresamente. 
+✔ Ampliación de plazo prevista si procede. 
+
+Control interno: 
+
+¿El Tribunal puede estimar parcial o totalmente? 
+
+¿El suplico es ejecutable sin interpretación adicional? 
+
+¿Existen contradicciones internas? 
+
+BLOQUE C: CAUTELAR 
+
+(CONTROL DE EFICACIA INMEDIATA) 
+
+Este bloque responde a la pregunta: 
+
+¿Se protege realmente la finalidad del recurso? 
+
+1. Fumus boni iuris con motivos “top” 
+
+✔ Selección de 2–3 motivos más sólidos. 
+✔ Doctrina aplicable citada. 
+✔ Infracción clara y estructural. 
+✔ Argumentación sintética y contundente. 
+
+Control interno: 
+
+¿Se ha evitado reproducir todo el fondo? 
+
+¿Se han priorizado los motivos más fuertes? 
+
+¿La infracción es fácilmente comprensible? 
+
+2. Periculum in mora con cronograma 
+
+✔ Estado actual del procedimiento descrito. 
+✔ Fecha estimada de adjudicación. 
+✔ Riesgo de formalización. 
+✔ Pérdida de finalidad del recurso explicada. 
+✔ Anexo con calendario. 
+
+Control interno: 
+
+¿Existe riesgo real y actual? 
+
+¿Se ha identificado el punto de no retorno? 
+
+¿Se ha acreditado irreversibilidad práctica? 
+
+3. Ponderación de intereses 
+
+✔ Interés público analizado. 
+✔ Competencia y eficiencia consideradas. 
+✔ Impacto en gasto público valorado. 
+✔ Proporcionalidad de la suspensión argumentada. 
+
+Control interno: 
+
+¿Se distingue interés público real vs aparente? 
+
+¿Se demuestra que la suspensión no perjudica gravemente el interés general? 
+
+¿Se ha reforzado la dimensión económica? 
+
+MATRIZ FINAL DE VALIDACIÓN INTERNA 
+
+Área 
+
+Nivel de Riesgo 
+
+Estado 
+
+Admisibilidad 
+
+Bajo / Medio / Alto 
+
+✔ / ✖ 
+
+Fondo jurídico 
+
+Bajo / Medio / Alto 
+
+✔ / ✖ 
+
+Cautelar 
+
+Bajo / Medio / Alto 
+
+✔ / ✖ 
+
+Coherencia global 
+
+Bajo / Medio / Alto 
+
+✔ / ✖ 
+
+ 
+
+REGLA DE ORO FINAL 
+
+El recurso está listo para presentar cuando: 
+
+No existe riesgo relevante de inadmisión. 
+
+Los motivos principales son sólidos y priorizados. 
+
+La prueba documental es trazable. 
+
+La cautelar está técnicamente blindada. 
+
+El suplico es ejecutable sin ambigüedad. 
+
+Puede convertirse en demanda contenciosa sin reestructuración. 
+
+CONCLUSIÓN ESTRATÉGICA 
+
+El checklist final no es un trámite. 
+Es un mecanismo de aseguramiento de calidad jurídica. 
+
+En recursos estratégicos de alto impacto económico, esta auditoría interna debe realizarse: 
+
+Por redactor. 
+
+Por revisor independiente. 
+
+Antes de la firma electrónica. 
+
+Un recurso técnicamente impecable es el resultado de esta última verificación estructural. 
+
+Si lo deseas, puedo ahora: 
+
+Integrar todos los módulos en un esquema único consolidado de recurso completo. 
+
+ 
+
+ 
+
+XIV. ESQUELETO “LISTO PARA RELLENAR” 
+
+(PLANTILLA PROFESIONAL ESTRUCTURADA – RECURSO ESPECIAL EN MATERIA DE CONTRATACIÓN) 
+
+La siguiente estructura está diseñada como modelo operativo directamente utilizable, con titulares sistematizados y espacios preparados para completar. 
+
+Puede emplearse como plantilla base corporativa para recursos especiales conforme a la Ley 9/2017 de Contratos del Sector Público. 
+
+1. ENCABEZAMIENTO Y COMPETENCIA 
+
+AL [TRIBUNAL COMPETENTE] 
+
+D./Dª […], en representación de […], ante ese Tribunal comparece y como mejor proceda en Derecho, EXPONE: 
+
+1.1. Competencia del Tribunal 
+
+Naturaleza del contrato: […] 
+
+Poder adjudicador: […] 
+
+Encaje en arts. 44 y ss. LCSP. 
+
+Tribunal competente: […] 
+
+1.2. Procedencia del recurso 
+
+Acto recurrible conforme al art. 44 LCSP. 
+
+Naturaleza del acto: definitivo / trámite cualificado. 
+
+Efectos jurídicos directos. 
+
+2. COMPARECENCIA 
+
+2.1. Identificación del recurrente 
+
+Denominación social: 
+
+CIF: 
+
+Domicilio: 
+
+Registro Mercantil: 
+
+Objeto social relevante: 
+
+2.2. Representación 
+
+Nombre del representante: 
+
+Título de representación: 
+
+Facultades acreditadas: 
+
+2.3. Capacidad y habilitación 
+
+Capacidad de obrar. 
+
+Ausencia de prohibiciones de contratar. 
+
+Habilitación sectorial (si aplica). 
+
+3. IDENTIFICACIÓN DEL EXPEDIENTE 
+
+Número de expediente: 
+
+Denominación del contrato: 
+
+Tipo contractual: 
+
+Procedimiento: 
+
+Valor estimado: 
+
+Presupuesto base: 
+
+Duración: 
+
+Publicación en perfil: 
+
+Publicación en DOUE (si procede): 
+
+4. ACTO IMPUGNADO Y RECURRIBILIDAD 
+
+4.1. Acto impugnado 
+
+Documento: 
+
+Fecha: 
+
+Cláusula concreta: 
+
+4.2. Naturaleza jurídica 
+
+Acto definitivo / trámite cualificado. 
+
+Efectos jurídicos directos. 
+
+Incidencia inmediata en competencia. 
+
+4.3. Encaje en el catálogo legal 
+
+5. LEGITIMACIÓN ACTIVA 
+
+5.1. Base normativa 
+
+Art. 48 LCSP. 
+
+5.2. Interés real y efectivo 
+
+Intención de concurrir. 
+
+Impacto económico. 
+
+5.3. Potencial licitador 
+
+Experiencia acreditada. 
+
+Medios técnicos. 
+
+Capacidad financiera. 
+
+5.4. Perjuicio concreto 
+
+Cadena causal: 
+
+Cláusula → 
+
+Requisito → 
+
+Efecto → 
+
+Perjuicio. 
+
+6. PLAZO Y FORMA 
+
+6.1. Cómputo del plazo 
+
+Dies a quo: 
+
+Dies ad quem: 
+
+Cómputo de días hábiles. 
+
+6.2. Presentación 
+
+Registro electrónico: 
+
+Justificante adjunto. 
+
+7. HECHOS (I–V) 
+
+HECHO PRIMERO – Publicación 
+
+Fecha y medio de publicación. 
+
+Documentos integrantes. 
+
+HECHO SEGUNDO – Cláusulas impugnadas 
+
+Transcripción literal. 
+
+HECHO TERCERO – Contexto sectorial 
+
+Estándares habituales. 
+
+Datos de mercado. 
+
+HECHO CUARTO – Efecto práctico 
+
+Exigencia concreta. 
+
+Impacto operativo. 
+
+HECHO QUINTO – Perjuicio individualizado 
+
+Impacto sobre el recurrente. 
+
+Costes. 
+
+Exclusión material (si procede). 
+
+8. FUNDAMENTOS DE DERECHO 
+
+8.1. Competencia y procedencia 
+
+Base legal. 
+
+Acto recurrible. 
+
+Legitimación. 
+
+Plazo. 
+
+8.2. Principios LCSP 
+
+Libre concurrencia. 
+
+Igualdad. 
+
+No discriminación. 
+
+Transparencia. 
+
+Proporcionalidad. 
+
+Integridad. 
+
+Estructura por principio: 
+
+Norma. 
+
+Estándar. 
+
+Hecho. 
+
+Lesión. 
+
+Consecuencia. 
+
+8.3. Proporcionalidad (test completo) 
+
+A) Idoneidad 
+
+B) Necesidad 
+
+C) Proporcionalidad estricta 
+
+Alternativas menos restrictivas. 
+
+Impacto competitivo. 
+
+8.4. Solvencia 
+
+A) Económica 
+
+B) Técnica 
+
+C) Solvencia encubierta 
+
+8.5. Prescripciones técnicas 
+
+Neutralidad. 
+
+Equivalencias. 
+
+Cierre del mercado. 
+
+Propuesta alternativa (si procede). 
+
+8.6. Criterios de adjudicación 
+
+Vinculación al objeto. 
+
+Claridad. 
+
+Criterios subjetivos. 
+
+Ponderación. 
+
+8.7. Lotes 
+
+Obligación de motivar. 
+
+Impacto en PYMES. 
+
+Solicitud de retroacción (si procede). 
+
+8.8. Motivación del expediente 
+
+Memoria justificativa. 
+
+Estudio de mercado. 
+
+Justificación de solvencia. 
+
+8.9. Doctrina y jurisprudencia 
+
+Resoluciones aplicables. 
+
+Jurisprudencia relevante. 
+
+Aplicación al caso concreto. 
+
+9. MEDIDAS CAUTELARES 
+
+9.1. Naturaleza de la suspensión 
+
+Automática / Solicitud expresa. 
+
+9.2. Fumus boni iuris 
+
+Motivos principales. 
+
+9.3. Periculum in mora 
+
+Cronograma. 
+
+Punto de no retorno. 
+
+9.4. Ponderación de intereses 
+
+10. SÚPLICA (PRINCIPAL Y SUBSIDIARIA) 
+
+SUPLICO AL TRIBUNAL: 
+
+Admisión del recurso. 
+
+Suspensión del procedimiento. 
+
+Estimación íntegra y nulidad/anulación. 
+
+Retroacción. 
+
+Subsidiariamente: 
+
+Anulación parcial de cláusula X. 
+
+Modificación conforme a Derecho. 
+
+Ampliación de plazo. 
+
+11. DOCUMENTOS 
+
+Doc. 1 – Poder. 
+
+Doc. 2 – Escrituras. 
+
+Doc. 3 – PCAP. 
+
+Doc. 4 – PPT. 
+
+Doc. 5 – Anuncio/DOUE. 
+
+Doc. 6 – Aclaraciones. 
+
+Doc. 7 – Comparativas. 
+
+Doc. 8 – Informe técnico. 
+
+Doc. 9 – Informe económico. 
+
+Doc. 10 – Justificante registro. 
+
+12. FIRMA ELECTRÓNICA 
+
+Firma del representante. 
+
+Certificado digital válido. 
+
+Fecha. 
+
+Código interno del documento. 
+
+NOTA FINAL DE USO PROFESIONAL 
+
+Este esqueleto: 
+
+Permite convertir rápidamente análisis interno en recurso formal. 
+
+Es modular y adaptable. 
+
+Está preparado para transformación en demanda contenciosa. 
+
+Facilita auditoría interna y revisión cruzada. 
+
+ 
