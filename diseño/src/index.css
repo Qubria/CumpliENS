@@ -1,0 +1,282 @@
+/* --- Google Fonts (must precede all other rules) --- */
+@import url("https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap");
+
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* ===================================================================
+   CumpliENS Design System
+   Inspired by Monday.com: white, clean, airy, no black, modern
+   Primary: Indigo #4F46E5 (Tailwind indigo-600)
+   Font: Figtree (body) + JetBrains Mono (code/IDs)
+   =================================================================== */
+
+@custom-variant dark (&:is(.dark *));
+
+/* ===================================================================
+   @theme — Maps CSS variables to Tailwind utility classes
+   =================================================================== */
+@theme inline {
+  /* --- Border Radius --- */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+
+  /* --- Fonts --- */
+  --font-sans: "Figtree", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* --- shadcn/ui standard tokens --- */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* --- Chart colors (5 ENS dimensions) --- */
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  /* --- Sidebar --- */
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* --- Surface variants (backgrounds) --- */
+  --color-surface: var(--surface);
+  --color-surface-subtle: var(--surface-subtle);
+  --color-surface-muted: var(--surface-muted);
+  --color-surface-wash: var(--surface-wash);
+
+  /* --- Compliance status badges --- */
+  --color-cumple-bg: var(--cumple-bg);
+  --color-cumple-text: var(--cumple-text);
+  --color-cumple-icon: var(--cumple-icon);
+  --color-parcial-bg: var(--parcial-bg);
+  --color-parcial-text: var(--parcial-text);
+  --color-parcial-icon: var(--parcial-icon);
+  --color-nocumple-bg: var(--nocumple-bg);
+  --color-nocumple-text: var(--nocumple-text);
+  --color-nocumple-icon: var(--nocumple-icon);
+  --color-noaplica-bg: var(--noaplica-bg);
+  --color-noaplica-text: var(--noaplica-text);
+  --color-noaplica-icon: var(--noaplica-icon);
+
+  /* --- ENS categories --- */
+  --color-ens-basica-bg: var(--ens-basica-bg);
+  --color-ens-basica: var(--ens-basica);
+  --color-ens-media-bg: var(--ens-media-bg);
+  --color-ens-media: var(--ens-media);
+  --color-ens-alta-bg: var(--ens-alta-bg);
+  --color-ens-alta: var(--ens-alta);
+
+  /* --- Risk levels --- */
+  --color-risk-critico-bg: var(--risk-critico-bg);
+  --color-risk-critico: var(--risk-critico);
+  --color-risk-alto-bg: var(--risk-alto-bg);
+  --color-risk-alto: var(--risk-alto);
+  --color-risk-medio-bg: var(--risk-medio-bg);
+  --color-risk-medio: var(--risk-medio);
+  --color-risk-bajo-bg: var(--risk-bajo-bg);
+  --color-risk-bajo: var(--risk-bajo);
+
+  /* --- Borders --- */
+  --color-border-subtle: var(--border-subtle);
+  --color-border-strong: var(--border-strong);
+  --color-border-focus: var(--border-focus);
+
+  /* --- Text variants --- */
+  --color-text-heading: var(--text-heading);
+  --color-text-body: var(--text-body);
+  --color-text-muted: var(--text-muted);
+  --color-text-placeholder: var(--text-placeholder);
+
+  /* --- Accent (Violet - AI/Premium features) --- */
+  --color-accent-violet-bg: var(--accent-violet-bg);
+  --color-accent-violet: var(--accent-violet);
+  --color-accent-violet-strong: var(--accent-violet-strong);
+
+  /* --- Shadows (Stripe-style refined elevation) --- */
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-card-hover: 0 4px 8px -2px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+  --shadow-elevated: 0 12px 24px -4px rgba(0, 0, 0, 0.06), 0 4px 8px -2px rgba(0, 0, 0, 0.03);
+}
+
+/* ===================================================================
+   :root — CSS Custom Property values (source of truth)
+   Light-only: NO dark mode per design decision
+   =================================================================== */
+:root {
+  --radius: 0.625rem; /* 10px */
+
+  /* --- Core shadcn/ui tokens (Indigo-based) --- */
+  --background: #FAFBFF;          /* bg-page: white with subtle lavender tint */
+  --foreground: #1E1B4B;          /* indigo-950: heading color, NO pure black */
+  --card: #FFFFFF;
+  --card-foreground: #1E1B4B;
+  --popover: #FFFFFF;
+  --popover-foreground: #1E1B4B;
+  --primary: #4F46E5;             /* indigo-600: THE primary color */
+  --primary-foreground: #FFFFFF;
+  --secondary: #F0F1FE;           /* subtle indigo bg */
+  --secondary-foreground: #1E1B4B;
+  --muted: #F5F5F9;
+  --muted-foreground: #6B7280;    /* gray-500 */
+  --accent: #7C3AED;              /* violet-600: AI/Premium accent */
+  --accent-foreground: #FFFFFF;
+  --destructive: #EF4444;         /* red-500 */
+  --border: #E5E7EB;              /* gray-200 */
+  --input: #E5E7EB;
+  --ring: #818CF8;                /* indigo-400: focus ring */
+
+  /* --- Chart colors: 5 ENS dimensions (72deg separation) --- */
+  --chart-1: #6366F1;             /* Confidencialidad — Indigo */
+  --chart-2: #14B8A6;             /* Integridad — Teal */
+  --chart-3: #F59E0B;             /* Disponibilidad — Amber */
+  --chart-4: #EC4899;             /* Trazabilidad — Pink */
+  --chart-5: #8B5CF6;             /* Autenticidad — Violet */
+
+  /* --- Sidebar --- */
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #1E1B4B;
+  --sidebar-primary: #4F46E5;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #F0F1FE;
+  --sidebar-accent-foreground: #1E1B4B;
+  --sidebar-border: #E5E7EB;
+  --sidebar-ring: #818CF8;
+
+  /* --- Surface variants (all white/light, zero dark) --- */
+  --surface: #FFFFFF;             /* Cards, panels */
+  --surface-subtle: #F0F1FE;     /* Zebra stripes, hover highlights */
+  --surface-muted: #F5F5F9;      /* Disabled areas, empty states */
+  --surface-wash: #EEF0FF;       /* Hero sections, onboarding */
+
+  /* --- Compliance Status Badges --- */
+  --cumple-bg: #D1FAE5;
+  --cumple-text: #15803D;
+  --cumple-icon: #22C55E;
+  --parcial-bg: #FEF3C7;
+  --parcial-text: #B45309;
+  --parcial-icon: #F59E0B;
+  --nocumple-bg: #FEE2E2;
+  --nocumple-text: #B91C1C;
+  --nocumple-icon: #EF4444;
+  --noaplica-bg: #F3F4F6;
+  --noaplica-text: #6B7280;
+  --noaplica-icon: #9CA3AF;
+
+  /* --- ENS Categories (blue → indigo → violet progression) --- */
+  --ens-basica-bg: #DBEAFE;
+  --ens-basica: #3B82F6;          /* Blue: entry level */
+  --ens-media-bg: #E0E7FF;
+  --ens-media: #4F46E5;           /* Indigo: core level */
+  --ens-alta-bg: #EDE9FE;
+  --ens-alta: #7C3AED;            /* Violet: highest level */
+
+  /* --- Risk Levels --- */
+  --risk-critico-bg: #FEE2E2;
+  --risk-critico: #DC2626;
+  --risk-alto-bg: #FFEDD5;
+  --risk-alto: #EA580C;
+  --risk-medio-bg: #FEF3C7;
+  --risk-medio: #F59E0B;
+  --risk-bajo-bg: #DCFCE7;
+  --risk-bajo: #22C55E;
+
+  /* --- Border variants --- */
+  --border-subtle: #F3F4F6;      /* Table row separators */
+  --border-strong: #D1D5DB;      /* Section dividers */
+  --border-focus: #818CF8;       /* Focus rings */
+
+  /* --- Text variants (NO pure black #000) --- */
+  --text-heading: #1E1B4B;       /* indigo-950, 14.5:1 AAA */
+  --text-body: #4B5563;          /* gray-600, 7.5:1 AAA */
+  --text-muted: #6B7280;         /* gray-500, 4.6:1 AA */
+  --text-placeholder: #9CA3AF;   /* gray-400, 2.7:1 (placeholders only) */
+
+  /* --- Accent Violet (AI/Premium features) --- */
+  --accent-violet-bg: #F5F3FF;
+  --accent-violet: #8B5CF6;
+  --accent-violet-strong: #7C3AED;
+}
+
+/* ===================================================================
+   Base layer — Global resets and defaults
+   =================================================================== */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
+
+/* ===================================================================
+   Stripe-style elevation system
+   =================================================================== */
+
+:root {
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 8px -2px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 12px 24px -4px rgba(0, 0, 0, 0.06), 0 4px 8px -2px rgba(0, 0, 0, 0.03);
+}
+
+/* ===================================================================
+   Solid Brand Color Utility
+   =================================================================== */
+
+.bg-brand {
+  background: var(--primary);
+}
+
+/* ===================================================================
+   Upload zone
+   =================================================================== */
+
+.upload-zone {
+  background: #FFFFFF;
+  border: 1.5px dashed var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-xs);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.upload-zone:hover {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.upload-zone.has-file {
+  border-style: solid;
+  border-color: var(--cumple-icon);
+}
