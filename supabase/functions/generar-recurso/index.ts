@@ -6,123 +6,348 @@ import { conReintento } from '../_shared/reintento.ts'
 import { registrarPasoPipeline } from '../_shared/pipeline-logger.ts'
 
 /**
- * generar-recurso/index.ts
+ * generar-recurso/index.ts  (v5 - Formato Forense Tradicional Espanol)
  *
- * Genera un REMC por secciones (4 llamadas independientes).
- *   seccion 1: legitimacion + actoRecurrible + hechos
- *   seccion 2: fundamentos modulos 1-5
- *   seccion 3: fundamentos modulos 6-10
- *   seccion 4: cautelares + peticion + efectos + estrategia
+ * Genera un REMC por secciones (9 secciones):
+ * S1: Antecedentes de Hecho (8-10 hechos expandidos)
+ * S2: Fundamentos 1-2 (cascada como prosa forense continua)
+ * S3: Fundamentos 3-4
+ * S4: Fundamentos 5-6
+ * S5: Fundamentos 7-8
+ * S6: Fundamentos 9-10
+ * S7: Causas de Nulidad (DINAMICAS - array sin limite, recibe TODOS los hallazgos)
+ * S8: Cautelares + Suplico
+ * S9: Legitimacion Activa + Acto Recurrible + Otrosies
  */
 
+// ─── ROL: LETRADO redactando RECURSO con ESTILO FORENSE TRADICIONAL ────
+const ROL = `Eres letrado de Derecho Publico especializado en contratacion publica y ciberseguridad. Redactas un RECURSO ESPECIAL EN MATERIA DE CONTRATACION (arts. 44-60 LCSP 9/2017) ante el TACRC.
+
+NATURALEZA: Escrito juridico de parte (recurso real), NO informe ni auditoria. PERSPECTIVA: SIEMPRE ENS categoria ALTA (RD 311/2022).
+
+VOCABULARIO: USAR "infraccion", "vicio del pliego", "omision normativa", "vicio invalidante". PROHIBIDO: "hallazgo", "brecha", "gap", "recomendacion", "bloque", "campo".
+
+═══ ESTILO FORENSE ═══
+PROSA CONTINUA Y FLUIDA de letrado ante el TACRC. NUNCA listas, bullets, ni campos etiquetados.
+Construcciones: "conforme a lo dispuesto en", "al amparo de", "en virtud de", "toda vez que", "habida cuenta de que", "sin perjuicio de lo anterior".
+Tercera persona: "ese Tribunal", "esta parte", "el organo de contratacion".
+Transiciones: "A mayor abundamiento", "Cabe señalar que", "No puede desconocerse que", "Es doctrina consolidada del TACRC que".
+Citas: "el TS, en su Sentencia de [fecha] (Rec. [num]), establecio que «[cita]»".
+Cada campo de texto = PARRAFO de argumento continuo. Campos concatenados deben leerse como argumento fluido unico.
+
+═══ PROFUNDIDAD JURIDICA ═══
+Cita normativa completa, silogismo juridico (premisa mayor/menor/conclusion), doctrina y ratio decidendi, marco CE (arts. 103, 31.2, 14, 24, 9.3), Directivas UE (2014/24/UE, NIS, CDFUE), eficacia directa RD 311/2022.
+
+FORMATO: JSON puro. NUNCA markdown.`
+
+// Jurisprudencia y normativa (compacta para reducir tokens)
+const JURISPRUDENCIA = `JURISPRUDENCIA (desarrollar razonamiento, no solo referencia):
+TS: STS 18/07/2018 Rec.1733/2016 (omision prescripciones tecnicas=vicio invalidante); STS 04/11/2020 Rec.5765/2018 (transparencia TIC); STS 23/01/2019 Rec.4619/2016 (proporcionalidad/lotes); STS 13/03/2018 Rec.1370/2015 (solvencia/certificaciones); STS 02/07/2020 Rec.3805/2017 (acumulacion infracciones=vicio no subsanable); STS 15/11/2017 Rec.2233/2015 (motivacion reforzada); STS 22/06/2021 Rec.4876/2019 (condiciones ejecucion).
+TACRC: Res.1031/2019 (indefinicion pliegos TIC); Res.596/2020 (ENS acto previo imperativo); Res.853/2021 (ENS ALTA sin margen discrecional); Res.278/2020 (clausulas modificacion TIC); Res.1145/2022 (vicios seguridad=daño irreparable); Res.432/2023 (controles ENS imperativos=objeto ilegal).
+TJUE: C-368/10 (especificaciones completas); C-549/14 (modificacion sustancial); C-27/15 (seguridad=interes general); C-538/13 (igualdad trato); C-619/18 (art.41 CDFUE).
+LEGISLACION: LPAC arts.47-48; LCSP arts.1,39,44-60,87-90,99,126-130,132,145,202-205; RD 311/2022 arts.4-6,11-12,24,27,29-31,34-35,43,Anexo II ALTA; CE arts.9.3,14,24,31.2,103; Dir.2014/24/UE arts.18,42,56,67; CDFUE arts.41,47; CCN-STIC 801,804,825.`
+
 const PROMPTS: Record<number, { sistema: string; maxTokens: number }> = {
+  // ═══ S1: ANTECEDENTES DE HECHO ═══
   1: {
-    maxTokens: 3500,
-    sistema: `Eres abogado experto en contratacion publica espanola (LCSP 9/2017) y ENS (RD 311/2022). Redacta secciones iniciales de un REMC.
+    maxTokens: 6000,
+    sistema: `${ROL}
 
-Responde SOLO JSON:
-{
-  "legitimacion": {
-    "interesReal": "1 parrafo: interes directo del recurrente (art. 48 LCSP)",
-    "potencialLicitador": "1 parrafo: condicion de potencial licitador",
-    "perjuicioConcreto": "1 parrafo: perjuicio concreto derivado de clausulas impugnadas"
+Redacta los HECHOS del recurso. Genera un array de 8 a 10 hechos cronologicos.
+
+Cada hecho es un objeto JSON con:
+- ordinal: "PRIMERO", "SEGUNDO", ... "DECIMO"
+- titulo: Titulo descriptivo (10-20 palabras)
+- texto: Narrativa del hecho en PROSA FORENSE (MAX 120 palabras). Tono objetivo con carga probatoria, usando las construcciones formales obligatorias. Referencia documental integrada naturalmente en la prosa.
+- documentoRef: "(Documento n. X)"
+
+EJEMPLO DE ESTILO para el campo texto:
+"Con fecha [X], el organo de contratacion publico en la Plataforma de Contratacion del Sector Publico el anuncio de licitacion correspondiente al expediente n.o [Y], relativo a la contratacion del servicio de [objeto], por un valor estimado de [Z] euros, tramitado por procedimiento abierto conforme al articulo 156 de la LCSP. Examinados los pliegos reguladores de dicha licitacion, se constata que los mismos omiten toda referencia a los controles imperativos del Anexo II del Real Decreto 311/2022, de 3 de mayo, para sistemas clasificados en categoria ALTA."
+
+Cubrir cronologicamente:
+PRIMERO-SEGUNDO: Publicacion y datos del procedimiento
+TERCERO-CUARTO: Contenido de pliegos y clausulas ENS o su ausencia
+QUINTO-SEXTO: Marco normativo imperativo (RD 311/2022, Ley 40/2015) e infracciones concretas
+SEPTIMO: Categoria ALTA (art. 5 RD 311/2022) y su justificacion
+OCTAVO: Efecto restrictivo sobre la concurrencia
+NOVENO-DECIMO: Perjuicio al recurrente y contexto sectorial
+
+${JURISPRUDENCIA}
+
+Responde SOLO con el JSON:
+{"antecedentes":[{"ordinal":"PRIMERO","titulo":"...","texto":"...","documentoRef":"(Documento n. 1)"}]}`,
   },
-  "actoRecurrible": {
-    "tipologia": "1 parrafo: acto impugnado (art. 44.2 LCSP)",
-    "tramiteCualificado": "1 parrafo: tipo de tramite",
-    "conexionLesion": "1 parrafo: conexion clausulas-lesion"
-  },
-  "hechos": {
-    "hecho1_publicacion": "1 parrafo: publicacion del procedimiento",
-    "hecho2_clausulas": "1 parrafo: clausulas del pliego que incumplen ENS",
-    "hecho3_contexto": "1 parrafo: contexto normativo",
-    "hecho4_efecto": "1 parrafo: efecto restrictivo",
-    "hecho5_perjuicio": "1 parrafo: perjuicio directo"
-  }
-}
-Tono juridico formal. Citas normativas precisas. SOLO JSON.`,
-  },
+
+  // ═══ S2: FUNDAMENTOS 1-2 ═══
   2: {
-    maxTokens: 3500,
-    sistema: `Eres abogado experto en LCSP 9/2017 y ENS RD 311/2022. Redacta 5 fundamentos de derecho de un REMC.
+    maxTokens: 7500,
+    sistema: `${ROL}
 
-RESPONDE EXCLUSIVAMENTE un objeto JSON valido. Sin texto antes ni despues del JSON.
-{
-  "fundamentos_1_5": {
-    "modulo1_principios": "string: Vulneracion igualdad, transparencia, proporcionalidad (arts. 1, 132 LCSP). Un parrafo con IRAC.",
-    "modulo2_proporcionalidad": "string: Test tripartito. Un parrafo con IRAC.",
-    "modulo3_solvencia": "string: Solvencia tecnica ENS (arts. 87-90 LCSP). Un parrafo con IRAC.",
-    "modulo4_tecnicas": "string: Prescripciones tecnicas (arts. 126-130 LCSP). Un parrafo con IRAC.",
-    "modulo5_criterios": "string: Criterios adjudicacion ENS (art. 145 LCSP). Un parrafo con IRAC."
-  }
-}
-IMPORTANTE: Cada modulo es un STRING (no un objeto). Un parrafo con Issue-Rule-Application-Conclusion integrados. Si un modulo no tiene conexion con los hallazgos: "No aplicable al presente recurso."`,
+Redacta Fundamentos de Derecho PRIMERO y SEGUNDO. Los 6 campos se renderizan como PARRAFOS CONSECUTIVOS formando argumento continuo.
+
+PRESUPUESTO ESTRICTO (si lo superas, el JSON se trunca y PIERDES TODO el contenido):
+- Cada campo: MAX 50 palabras / 300 caracteres. Sin excepciones.
+- TOTAL por fundamento: MAX 350 palabras.
+SE BREVE Y DENSO. Cada frase = cita normativa + argumento. PROHIBIDO repetir ideas entre campos.
+
+PRIMERO: Infraccion de los principios rectores de la contratacion publica (arts. 1, 132 LCSP; art. 18 Directiva 2014/24/UE; arts. 9.3 y 103 CE). Transparencia, igualdad de trato, libre concurrencia. Marco constitucional (art. 31.2 CE) y dimension europea.
+
+SEGUNDO: Vulneracion del principio de proporcionalidad y seguridad juridica (arts. 4.1 y 5 RD 311/2022; art. 9.3 CE). Test tripartito de proporcionalidad aplicado a la categorizacion ENS ALTA.
+
+${JURISPRUDENCIA}
+
+Responde SOLO con el JSON:
+{"fundamentos_1_2":[{"ordinal":"PRIMERO","titulo":"...","normaVulnerada":"...","clausulaViciada":"...","nexoJuridico":"...","doctrinaJurisprudencia":"...","consecuenciaPretendida":"...","analisisJuridico":"..."},{"ordinal":"SEGUNDO","titulo":"...","normaVulnerada":"...","clausulaViciada":"...","nexoJuridico":"...","doctrinaJurisprudencia":"...","consecuenciaPretendida":"...","analisisJuridico":"..."}]}`,
   },
+
+  // ═══ S3: FUNDAMENTOS 3-4 ═══
   3: {
-    maxTokens: 4500,
-    sistema: `Eres abogado experto en LCSP 9/2017 y ENS RD 311/2022. Redacta 5 fundamentos de derecho adicionales de un REMC.
+    maxTokens: 7500,
+    sistema: `${ROL}
 
-Tu respuesta debe ser UNICAMENTE un objeto JSON. No escribas nada antes ni despues del JSON. Ejemplo de formato:
+Redacta Fundamentos de Derecho TERCERO y CUARTO. Los 6 campos se renderizan como PARRAFOS CONSECUTIVOS formando argumento continuo.
 
-{"fundamentos_6_10":{"modulo6_lotes":"texto aqui","modulo7_ejecucion":"texto aqui","modulo8_modificaciones":"texto aqui","modulo9_motivacion":"texto aqui","modulo10_doctrina":"texto aqui"}}
+PRESUPUESTO ESTRICTO (si lo superas, el JSON se trunca y PIERDES TODO el contenido):
+- Cada campo: MAX 50 palabras / 300 caracteres. Sin excepciones.
+- TOTAL por fundamento: MAX 350 palabras.
+SE BREVE Y DENSO. Cada frase = cita normativa + argumento. PROHIBIDO repetir ideas entre campos.
 
-Contenido de cada modulo:
-- modulo6_lotes: Division en lotes y ENS (art. 99 LCSP). IRAC.
-- modulo7_ejecucion: Condiciones ejecucion seguridad (art. 202 LCSP). IRAC.
-- modulo8_modificaciones: Riesgo modificaciones por deficiente ENS (arts. 203-205). IRAC.
-- modulo9_motivacion: Deber motivacion requisitos seguridad. IRAC.
-- modulo10_doctrina: Precedentes TACRC en ENS. IRAC.
+TERCERO: Infraccion de requisitos de solvencia tecnica profesional verificable (arts. 87.1, 88.1, 90.1.a LCSP). El pliego no exige certificaciones ENS del licitador (CCN-CERT nivel ALTO, ISO 27001, personal certificado). Desarrollar como la ausencia de requisitos de solvencia en seguridad impide seleccionar contratista cualificado.
 
-Cada valor es un STRING con un parrafo IRAC. Si no aplica a los hallazgos: "No aplicable al presente recurso."
-TODOS los 5 campos son obligatorios en el JSON.`,
+CUARTO: Infraccion de prescripciones tecnicas ENS categoria ALTA (arts. 122.2, 126.1, 127 LCSP; art. 27 RD 311/2022). Omision de prescripciones tecnicas imperativas del Anexo II. Abordar relacion prescripciones tecnicas / objeto contractual determinado, doctrina TACRC sobre especificaciones verificables, eficacia directa Anexo II.
+
+${JURISPRUDENCIA}
+
+Responde SOLO con el JSON:
+{"fundamentos_3_4":[{"ordinal":"TERCERO","titulo":"...","normaVulnerada":"...","clausulaViciada":"...","nexoJuridico":"...","doctrinaJurisprudencia":"...","consecuenciaPretendida":"...","analisisJuridico":"..."},{"ordinal":"CUARTO","titulo":"...","normaVulnerada":"...","clausulaViciada":"...","nexoJuridico":"...","doctrinaJurisprudencia":"...","consecuenciaPretendida":"...","analisisJuridico":"..."}]}`,
   },
+
+  // ═══ S4: FUNDAMENTOS 5-6 ═══
   4: {
-    maxTokens: 4000,
-    sistema: `Eres abogado experto en LCSP 9/2017 y ENS RD 311/2022. Redacta secciones finales de un REMC.
+    maxTokens: 7500,
+    sistema: `${ROL}
 
-Responde SOLO JSON:
-{
-  "cautelares": {
-    "fumusBoniIuris": "1 parrafo: apariencia de buen derecho",
-    "periculumInMora": "1 parrafo: peligro por demora",
-    "ponderacionIntereses": "1 parrafo: ponderacion intereses"
+Redacta Fundamentos de Derecho QUINTO y SEXTO. Los 6 campos se renderizan como PARRAFOS CONSECUTIVOS formando argumento continuo.
+
+PRESUPUESTO ESTRICTO (si lo superas, el JSON se trunca y PIERDES TODO el contenido):
+- Cada campo: MAX 50 palabras / 300 caracteres. Sin excepciones.
+- TOTAL por fundamento: MAX 350 palabras.
+SE BREVE Y DENSO. Cada frase = cita normativa + argumento. PROHIBIDO repetir ideas entre campos.
+
+QUINTO: Infraccion de criterios de adjudicacion y evaluacion de seguridad ENS (arts. 145.1, 145.2, 145.4 LCSP). Ausencia de criterios que valoren cumplimiento ENS ALTA. Desarrollar doctrina sobre criterios vinculados al objeto contractual y relacion calidad-precio en contratos de servicios criticos.
+
+SEXTO: Division en lotes contractuales (art. 99.3 LCSP; art. 46 Directiva 2014/24/UE). Regla general de division en lotes como mecanismo PYME (arts. 1.3 y 99 LCSP), carga de motivacion, doctrina TACRC sobre indivisibilidad tecnica.
+
+${JURISPRUDENCIA}
+
+Responde SOLO con el JSON:
+{"fundamentos_5_6":[{"ordinal":"QUINTO","titulo":"...","normaVulnerada":"...","clausulaViciada":"...","nexoJuridico":"...","doctrinaJurisprudencia":"...","consecuenciaPretendida":"...","analisisJuridico":"..."},{"ordinal":"SEXTO","titulo":"...","normaVulnerada":"...","clausulaViciada":"...","nexoJuridico":"...","doctrinaJurisprudencia":"...","consecuenciaPretendida":"...","analisisJuridico":"..."}]}`,
   },
-  "peticion": {
-    "principal": "1 parrafo: anulacion clausulas",
-    "subsidiaria": "1 parrafo: peticion alternativa",
-    "cautelar": "1 parrafo: suspension procedimiento"
+
+  // ═══ S5: FUNDAMENTOS 7-8 ═══
+  5: {
+    maxTokens: 7500,
+    sistema: `${ROL}
+
+Redacta Fundamentos de Derecho SEPTIMO y OCTAVO. Los 6 campos se renderizan como PARRAFOS CONSECUTIVOS formando argumento continuo.
+
+PRESUPUESTO ESTRICTO (si lo superas, el JSON se trunca y PIERDES TODO el contenido):
+- Cada campo: MAX 50 palabras / 300 caracteres. Sin excepciones.
+- TOTAL por fundamento: MAX 350 palabras.
+SE BREVE Y DENSO. Cada frase = cita normativa + argumento. PROHIBIDO repetir ideas entre campos.
+
+SEPTIMO: Condiciones especiales de ejecucion ENS (art. 202 LCSP; arts. 11, 12, 24 RD 311/2022). Omision de condiciones especiales vinculadas a controles ENS imperativos ALTA. Naturaleza como clausula esencial, caracter imperativo por normativa sectorial, imposibilidad de exigir ex post obligaciones no previstas en pliego.
+
+OCTAVO: Prevision de modificaciones contractuales (arts. 203-205 LCSP; art. 72 Directiva 2014/24/UE). Ausencia de clausulas de adaptacion tecnologica. Prohibicion modificaciones sustanciales no previstas, doctrina Pressetext TJUE (C-454/06), necesidad de clausulas de adaptacion en contratos plurianuales de ciberseguridad.
+
+${JURISPRUDENCIA}
+
+Responde SOLO con el JSON:
+{"fundamentos_7_8":[{"ordinal":"SEPTIMO","titulo":"...","normaVulnerada":"...","clausulaViciada":"...","nexoJuridico":"...","doctrinaJurisprudencia":"...","consecuenciaPretendida":"...","analisisJuridico":"..."},{"ordinal":"OCTAVO","titulo":"...","normaVulnerada":"...","clausulaViciada":"...","nexoJuridico":"...","doctrinaJurisprudencia":"...","consecuenciaPretendida":"...","analisisJuridico":"..."}]}`,
   },
-  "efectos": {
-    "escenariosResolucion": "1 parrafo: escenarios posibles",
-    "planContencioso": "1 parrafo: via contencioso-administrativa"
+
+  // ═══ S6: FUNDAMENTOS 9-10 ═══
+  6: {
+    maxTokens: 7500,
+    sistema: `${ROL}
+
+Redacta Fundamentos de Derecho NOVENO y DECIMO. Los 6 campos se renderizan como PARRAFOS CONSECUTIVOS formando argumento continuo.
+
+PRESUPUESTO ESTRICTO (si lo superas, el JSON se trunca y PIERDES TODO el contenido):
+- Cada campo: MAX 50 palabras / 300 caracteres. Sin excepciones.
+- TOTAL por fundamento: MAX 350 palabras.
+SE BREVE Y DENSO. Cada frase = cita normativa + argumento. PROHIBIDO repetir ideas entre campos.
+
+NOVENO: Deficit de motivacion de prescripciones tecnicas (art. 116 LCSP; art. 35 Ley 40/2015). Deber de motivacion reforzada cuando la Administracion se aparta de norma imperativa sectorial, doctrina sobre arbitrariedad administrativa (art. 9.3 CE), distincion discrecionalidad tecnica / potestad reglada.
+
+DECIMO: Sintesis doctrinal y jurisprudencial acumulada. Patron de incumplimiento normativo sistematico. Integrar argumentacion precedente, acumulacion de vicios como causa de nulidad radical no subsanable, precedentes TACRC y TS en contratacion TIC.
+
+${JURISPRUDENCIA}
+
+Responde SOLO con el JSON:
+{"fundamentos_9_10":[{"ordinal":"NOVENO","titulo":"...","normaVulnerada":"...","clausulaViciada":"...","nexoJuridico":"...","doctrinaJurisprudencia":"...","consecuenciaPretendida":"...","analisisJuridico":"..."},{"ordinal":"DECIMO","titulo":"...","normaVulnerada":"...","clausulaViciada":"...","nexoJuridico":"...","doctrinaJurisprudencia":"...","consecuenciaPretendida":"...","analisisJuridico":"..."}]}`,
   },
-  "estrategia": {
-    "piramideFuerza": "1 parrafo: argumentos por solidez",
-    "matrizRiesgos": "1 parrafo: riesgos del recurso",
-    "argumentoEconomico": "1 parrafo: impacto presupuestario"
-  }
-}
-Tono juridico formal. SOLO JSON.`,
+
+  // ═══ S7: CAUSAS DE NULIDAD (DINAMICAS - SIN LIMITE) ═══
+  7: {
+    maxTokens: 7000,
+    sistema: `${ROL}
+
+Redacta las CAUSAS DE NULIDAD DE PLENO DERECHO del recurso.
+
+INSTRUCCION CRITICA: Analiza TODAS las infracciones proporcionadas. Agrupa las infracciones por base juridica de nulidad (articulo de la LPAC u otra norma). Genera TANTAS causas de nulidad como bases juridicas distintas justifiquen las infracciones. NO te limites a un numero fijo. Si las infracciones justifican 3 causas, genera 3. Si justifican 15, genera 15. TODAS las infracciones deben quedar cubiertas por al menos una causa.
+
+Cada causa es un objeto con:
+- ordinal: "PRIMERA", "SEGUNDA", "TERCERA", etc.
+- base: articulo que fundamenta la nulidad (ej. "art. 47.1.e) LPAC")
+- titulo: titulo descriptivo de la causa (10-20 palabras)
+- fundamentacion: argumentacion juridica como PROSA LEGAL FLUIDA. MAX 200 PALABRAS. Citar el precepto infringido, los controles ENS omitidos que caen bajo esta base, y la consecuencia juridica. Redactar como letrado ante el TACRC. NO listas, NO campos etiquetados.
+- hallazgosVinculados: array de IDs de control ENS que fundamentan esta causa (ej. ["org.1", "op.pl.2"])
+- jurisprudenciaAplicable: citas jurisprudenciales con razonamiento. MAX 80 PALABRAS.
+
+PRESUPUESTO TOTAL: MAX 300 palabras por causa (fundamentacion + jurisprudencia). Es CRITICO respetar este limite. Si superas el limite, el JSON se TRUNCA y se pierden causas. PRIORIZA sustancia juridica densa sobre extension.
+
+BASES JURIDICAS A CONSIDERAR (usar TODAS las que apliquen segun las infracciones):
+- art. 47.1.a) LPAC: lesion derechos y libertades susceptibles de amparo constitucional (arts. 14, 24 CE)
+- art. 47.1.c) LPAC: contenido imposible o indeterminado (contradiccion: exigir ENS sin controles)
+- art. 47.1.e) LPAC: infraccion norma con rango de ley o reglamentaria (RD 311/2022 es norma reglamentaria imperativa)
+- art. 47.1.f) LPAC: actos expresos o presuntos contrarios al ordenamiento por los que se adquieren facultades sin reunir requisitos
+- art. 47.2 LPAC: anulabilidad por infraccion del ordenamiento juridico, incluida desviacion de poder
+- art. 39.2.a) LCSP: nulidad contractual por falta de capacidad de obrar o solvencia
+- art. 39.2.d) LCSP: nulidad por carencia o insuficiencia de credito
+- art. 39.2.f) LCSP: infracciones de normas de preparacion o adjudicacion del contrato que sean cualificadas y afecten a libre concurrencia
+- art. 41 CDFUE: derecho a buena administracion (eficacia directa, doctrina TJUE C-619/18)
+- arts. 28, 32 RGPD / LOPDGDD: concurrencia infracciones ENS y proteccion de datos
+- art. 9.3 CE: interdiccion de la arbitrariedad de los poderes publicos
+- art. 103.1 CE: principios de eficacia y sometimiento a la ley
+- arts. 126-130 LCSP: prescripciones tecnicas incompletas o discriminatorias
+- arts. 87-90 LCSP: solvencia tecnica profesional insuficiente
+- art. 202 LCSP: condiciones especiales de ejecucion omitidas
+- Otras bases que las infracciones concretas justifiquen
+
+FORMATO: Prosa forense fluida de recurso. NO formato informe/auditoria. Cada causa se lee como un fundamento de un recurso real ante el TACRC. Usar las construcciones formales obligatorias del ROL: "conforme a lo dispuesto en", "toda vez que", "habida cuenta de que", "en virtud de", etc.
+
+FORMULA DE APERTURA de cada fundamentacion: "La infraccion denunciada en los fundamentos [X] a [Y] del presente recurso determina la nulidad de pleno derecho del acto impugnado al amparo del articulo [base]..." (adaptar segun la causa).
+
+${JURISPRUDENCIA}
+
+Responde SOLO con el JSON:
+{"causasNulidad":[{"ordinal":"PRIMERA","base":"...","titulo":"...","fundamentacion":"...","hallazgosVinculados":["..."],"jurisprudenciaAplicable":"..."}]}`,
+  },
+
+  // ═══ S8: CAUTELARES + SUPLICO ═══
+  8: {
+    maxTokens: 6000,
+    sistema: `${ROL}
+
+Redacta dos secciones del recurso en PROSA FORENSE CONTINUA:
+
+A) MEDIDAS CAUTELARES (art. 49 LCSP):
+Los 4 campos se renderizaran como parrafos consecutivos. Redactar como prosa fluida de recurso, NO como campos separados.
+
+- fumusBoniIuris: DEBE comenzar con: "La apariencia de buen derecho concurre en el presente caso, habida cuenta de que las infracciones normativas denunciadas en los fundamentos de derecho precedentes..." (MAX 180 palabras)
+- periculumInMora: DEBE comenzar con: "El peligro en la mora resulta evidente, toda vez que de no acordarse la suspension del procedimiento de licitacion..." (MAX 180 palabras)
+- ponderacionIntereses: DEBE comenzar con: "La ponderacion de los intereses en conflicto, conforme a la doctrina del Tribunal Constitucional (STC 148/1993)..." (MAX 180 palabras)
+- proporcionalidadMedida: DEBE comenzar con: "La medida cautelar solicitada resulta proporcionada, toda vez que la suspension constituye la medida menos restrictiva..." (MAX 150 palabras)
+
+B) SUPLICO / PETITUM:
+- principal: DEBE seguir la formula tradicional exacta: "que, teniendo por presentado este escrito junto con los documentos que se acompanan, se sirva admitirlo y, en su virtud, tenga por interpuesto RECURSO ESPECIAL EN MATERIA DE CONTRATACION contra [acto impugnado], y previos los tramites legales oportunos, dicte resolucion por la que: Con caracter principal, declare la nulidad de pleno derecho de..." (MAX 200 palabras)
+- subsidiaria: "Con caracter subsidiario, para el caso de que ese Tribunal no estimase la pretension principal, declare la anulabilidad de..." (MAX 180 palabras)
+- cautelar: "Asimismo, al amparo del articulo 49 de la LCSP, acuerde como medida cautelar la suspension inmediata del procedimiento de licitacion..." (MAX 150 palabras)
+
+${JURISPRUDENCIA}
+
+Responde SOLO con el JSON:
+{"cautelares":{"fumusBoniIuris":"...","periculumInMora":"...","ponderacionIntereses":"...","proporcionalidadMedida":"..."},"peticion":{"principal":"...","subsidiaria":"...","cautelar":"..."}}`,
+  },
+
+  // ═══ S9: LEGITIMACION + ACTO RECURRIBLE + OTROSIES ═══
+  9: {
+    maxTokens: 7000,
+    sistema: `${ROL}
+
+Redacta TRES secciones del recurso en PROSA FORENSE CONTINUA:
+
+A) LEGITIMACION ACTIVA (art. 48 LCSP):
+Los 5 campos se renderizaran como parrafos consecutivos de un unico argumento. Usar transiciones naturales.
+- fundamentoLegal: DEBE comenzar con: "La legitimacion activa de esta parte para la interposicion del presente recurso se fundamenta en lo dispuesto en el articulo 48 de la LCSP, que reconoce legitimacion a toda persona fisica o juridica cuyos derechos o intereses legitimos se hayan visto perjudicados o puedan resultar afectados..." (MAX 200 palabras)
+- interesReal: Interes real y efectivo del recurrente en el sector. (MAX 200 palabras)
+- potencialLicitador: Aptitud objetiva del recurrente. (MAX 200 palabras)
+- perjuicioConcreto: Cadena causal del perjuicio. (MAX 200 palabras)
+- conclusionLegitimacion: Cierre integrador. (MAX 100 palabras)
+
+B) ACTO RECURRIBLE (art. 44 LCSP):
+Los 4 campos se renderizaran como parrafos consecutivos.
+- tipologia: Encaje del acto en art. 44.2.a) LCSP. (MAX 180 palabras)
+- tramiteCualificado: Efectos juridicos directos e irremediables. (MAX 180 palabras)
+- conexionLesion: Vinculo acto-lesion. (MAX 180 palabras)
+- conclusionRecurribilidad: Cierre admisibilidad. (MAX 100 palabras)
+
+C) OTROSIES:
+Los otrosies se renderizaran con el formato tradicional "PRIMER OTROSI DIGO:", "SEGUNDO OTROSI DIGO:", "TERCER OTROSI DIGO:".
+- proposicionPrueba: DEBE comenzar con: "Que, al amparo de lo dispuesto en el articulo 51.1 de la LCSP, esta parte propone los siguientes medios de prueba..." (MAX 120 palabras)
+- reclamacionExpediente: DEBE comenzar con: "Que, conforme al articulo 51.3 de la LCSP, se solicita la remision del expediente administrativo completo..." (MAX 80 palabras)
+- notificaciones: DEBE comenzar con: "Que, a efectos de notificaciones, se designa el domicilio..." (MAX 80 palabras)
+
+${JURISPRUDENCIA}
+
+Responde SOLO con el JSON:
+{"legitimacion":{"fundamentoLegal":"...","interesReal":"...","potencialLicitador":"...","perjuicioConcreto":"...","conclusionLegitimacion":"..."},"actoRecurrible":{"tipologia":"...","tramiteCualificado":"...","conexionLesion":"...","conclusionRecurribilidad":"..."},"otrosies":{"proposicionPrueba":"...","reclamacionExpediente":"...","notificaciones":"..."}}`,
   },
 }
 
+// ─── Formatear datos del caso ────────────────────────────────────────────
 function formatearDatos(d: Record<string, unknown>): string {
   return [
-    `TRIBUNAL: ${d.tribunal_competente}`,
-    `RECURRENTE: ${d.recurrente_denominacion} (CIF: ${d.recurrente_cif}), ${d.recurrente_domicilio}`,
-    `REPRESENTANTE: ${d.representante_nombre}, ${d.representante_titulo}`,
-    `EXPEDIENTE: ${d.expediente_numero} - ${d.expediente_denominacion}`,
-    `  Tipo: ${d.expediente_tipo_contractual}, Proc: ${d.expediente_procedimiento}`,
-    d.expediente_valor_estimado ? `  Valor: ${d.expediente_valor_estimado} EUR` : null,
-    `ORGANO: ${d.organo_contratacion}`,
-    `SARA: ${d.es_contrato_sara ? 'Si' : 'No'}`,
+    `TRIBUNAL COMPETENTE: ${d.tribunal_competente}`,
+    `RECURRENTE: ${d.recurrente_denominacion} (CIF: ${d.recurrente_cif}), domicilio en ${d.recurrente_domicilio}`,
+    d.recurrente_registro_mercantil ? `  Registro Mercantil: ${d.recurrente_registro_mercantil}` : null,
+    d.recurrente_objeto_social ? `  Objeto social: ${d.recurrente_objeto_social}` : null,
+    d.recurrente_cnae ? `  CNAE: ${d.recurrente_cnae}` : null,
+    `REPRESENTANTE LEGAL: ${d.representante_nombre}, ${d.representante_titulo}`,
+    d.representante_facultades ? `  Facultades: ${d.representante_facultades}` : null,
+    `EXPEDIENTE IMPUGNADO: ${d.expediente_numero} - "${d.expediente_denominacion}"`,
+    `  Tipo contractual: ${d.expediente_tipo_contractual} | Procedimiento: ${d.expediente_procedimiento}`,
+    d.expediente_valor_estimado ? `  Valor estimado: ${Number(d.expediente_valor_estimado).toLocaleString('es-ES')} EUR` : null,
+    d.expediente_presupuesto_base ? `  Presupuesto base: ${Number(d.expediente_presupuesto_base).toLocaleString('es-ES')} EUR` : null,
+    d.expediente_duracion ? `  Duracion: ${d.expediente_duracion}` : null,
+    d.expediente_cpv ? `  CPV: ${d.expediente_cpv}` : null,
+    `ORGANO DE CONTRATACION: ${d.organo_contratacion} (nivel: ${d.organo_nivel ?? 'estatal'})`,
+    `CONTRATO SARA: ${d.es_contrato_sara ? 'Si (regulacion armonizada, publicacion DOUE)' : 'No'}`,
+    d.fecha_publicacion_perfil ? `FECHA PUBLICACION PERFIL: ${d.fecha_publicacion_perfil}` : null,
+    d.fecha_publicacion_doue ? `FECHA PUBLICACION DOUE: ${d.fecha_publicacion_doue}` : null,
+    d.dies_a_quo ? `DIES A QUO: ${d.dies_a_quo}` : null,
+    d.dies_ad_quem ? `DIES AD QUEM: ${d.dies_ad_quem}` : null,
+    d.recurrente_email ? `EMAIL NOTIFICACIONES: ${d.recurrente_email}` : null,
+    d.recurrente_telefono ? `TELEFONO CONTACTO: ${d.recurrente_telefono}` : null,
   ].filter(Boolean).join('\n')
 }
 
-function formatearHallazgos(hallazgos: Record<string, unknown>[]): string {
-  return hallazgos.map((h, i) =>
-    `${i + 1}. [${h.nivel_cumplimiento}] ${h.control_id} - ${h.nombre_control} (${h.prioridad}): ${(h.descripcion_brecha as string ?? h.resumen_hallazgo as string ?? '').slice(0, 120)}`
-  ).join('\n')
+// ─── Formatear infracciones del pliego ───────────────────────────────────
+function formatearInfracciones(infracciones: Record<string, unknown>[]): string {
+  return infracciones.map((inf, i) =>
+    [
+      `=== INFRACCION ${i + 1} ===`,
+      `Control ENS vulnerado: ${inf.control_id} - ${inf.nombre_control}`,
+      `Gravedad: ${inf.prioridad} | Calificacion: ${inf.nivel_cumplimiento}`,
+      inf.texto_evidencia ? `Clausula del pliego: "${inf.texto_evidencia}"` : 'Omision total en el pliego (sin clausula equivalente)',
+      inf.descripcion_brecha ? `Vicio: ${inf.descripcion_brecha}` : null,
+      inf.irac_asunto ? `Asunto IRAC: ${inf.irac_asunto}` : null,
+      inf.irac_regla ? `Norma infringida: ${inf.irac_regla}` : null,
+      inf.irac_aplicacion ? `Fundamentacion: ${inf.irac_aplicacion}` : null,
+      inf.irac_conclusion ? `Conclusion: ${inf.irac_conclusion}` : null,
+      inf.recomendacion ? `Clausula que deberia contener: ${inf.recomendacion}` : null,
+    ].filter(Boolean).join('\n')
+  ).join('\n\n')
+}
+
+// Formato compacto para S7 (causas nulidad): solo ID, nombre, gravedad y vicio breve
+function formatearInfraccionesCompacto(infracciones: Record<string, unknown>[]): string {
+  return infracciones.map((inf, i) => {
+    const vicio = inf.descripcion_brecha ? String(inf.descripcion_brecha).substring(0, 120) : 'Omision total'
+    const regla = inf.irac_regla ? ` | Norma: ${String(inf.irac_regla).substring(0, 80)}` : ''
+    return `${i + 1}. ${inf.control_id} (${inf.prioridad}/${inf.nivel_cumplimiento}): ${inf.nombre_control}. ${vicio}${regla}`
+  }).join('\n')
 }
 
 Deno.serve(async (req: Request) => {
@@ -131,8 +356,8 @@ Deno.serve(async (req: Request) => {
 
   try {
     const { analisisId, seccion } = await req.json()
-    if (!analisisId || !seccion || ![1, 2, 3, 4].includes(seccion)) {
-      return new Response(JSON.stringify({ error: 'analisisId y seccion (1-4) requeridos' }), {
+    if (!analisisId || !seccion || ![1, 2, 3, 4, 5, 6, 7, 8, 9].includes(seccion)) {
+      return new Response(JSON.stringify({ error: 'analisisId y seccion (1-9) requeridos' }), {
         status: 400,
         headers: { ...cabecerasCors, 'Content-Type': 'application/json' },
       })
@@ -154,27 +379,45 @@ Deno.serve(async (req: Request) => {
     if (!hallazgos || hallazgos.length === 0) throw new Error('No hay hallazgos de incumplimiento')
 
     const PRIORIDAD: Record<string, number> = { CRITICA: 0, ALTA: 1, MEDIA: 2, BAJA: 3 }
-    const top = [...hallazgos]
+    const todosOrdenados = [...hallazgos]
       .sort((a, b) => (PRIORIDAD[a.prioridad] ?? 3) - (PRIORIDAD[b.prioridad] ?? 3))
-      .slice(0, 10)
+    // S7 (causas nulidad) recibe TODOS los hallazgos; las demas secciones top 10
+    const infraccionesParaSeccion = seccion === 7 ? todosOrdenados : todosOrdenados.slice(0, 10)
+
+    // Nota de instrucciones para el letrado
+    // S7 usa formato compacto para caber dentro del timeout con muchos hallazgos
+    const textoInfracciones = seccion === 7
+      ? formatearInfraccionesCompacto(infraccionesParaSeccion)
+      : formatearInfracciones(infraccionesParaSeccion)
 
     const msg = [
-      '=== DATOS ===',
+      '=== NOTA DE INSTRUCCIONES PARA EL LETRADO ===',
+      '',
+      'DATOS DEL PROCEDIMIENTO:',
       formatearDatos(datosRecurso),
-      `\n=== ${top.length} HALLAZGOS (de ${hallazgos.length}) ===`,
-      formatearHallazgos(top),
-      `\n=== CONTEXTO ===`,
-      `ENS: ${analisis?.categoria_ens ?? '?'} | Perfil: ${analisis?.perfil_sectorial ?? '?'}`,
+      '',
+      `INFRACCIONES DEL PLIEGO (${infraccionesParaSeccion.length} de ${hallazgos.length} vicios identificados):`,
+      textoInfracciones,
+      '',
+      `Categoria ENS exigible: ALTA (siempre, conforme art. 5 RD 311/2022)`,
+      `Perfil sectorial: ${analisis?.perfil_sectorial ?? 'Administracion Publica'}`,
+      `Total controles no conformes: ${hallazgos.length}`,
+      '',
+      'INSTRUCCION CRITICA: Cada infraccion es vicio impugnable. Argumentar desde ENS ALTA con profundidad juridica maxima. Este es un recurso REAL ante el TACRC, redactado en PROSA FORENSE ESPANOLA TRADICIONAL. NUNCA listas, NUNCA campos etiquetados. Responder SOLO JSON.',
     ].join('\n')
 
     const cfg = PROMPTS[seccion]!
     const t0 = Date.now()
 
-    const { texto, tokensEntrada, tokensSalida } = await conReintento(
-      () => llamarClaude(cfg.sistema, [{ role: 'user', content: msg }], cfg.maxTokens),
+    // Prefill assistant con '{' para forzar JSON puro (sin markdown)
+    const { texto, tokensEntrada, tokensSalida, motivoParada } = await conReintento(
+      () => llamarClaude(cfg.sistema, [
+        { role: 'user', content: msg },
+        { role: 'assistant', content: '{' }
+      ], cfg.maxTokens),
       {
-        maxIntentos: 2,
-        retrasoBaseMs: 3000,
+        maxIntentos: 3,
+        retrasoBaseMs: 5000,
         factorExponencial: 2,
         codigosReintentables: [429, 500, 502, 503, 529],
         enReintento: (intento, _error, retrasoMs) => {
@@ -183,23 +426,50 @@ Deno.serve(async (req: Request) => {
       }
     )
 
+    // Prepend '{' ya que el prefill no se incluye en la respuesta
+    const textoCompleto = '{' + texto
+
+    if (motivoParada === 'max_tokens') {
+      console.warn(`[recurso-s${seccion}] TRUNCADO: respuesta alcanzo max_tokens (${tokensSalida} tokens). Se intentara reparar JSON.`)
+    }
+
     let contenido: Record<string, unknown>
+    let reparado = false
     try {
-      contenido = extraerJSON<Record<string, unknown>>(texto)
-    } catch {
-      // Si falla la extraccion, intentar wrappear como JSON valido
-      console.error(`[recurso-s${seccion}] JSON extraction failed. Raw text (first 500): ${texto.slice(0, 500)}`)
-      // Devolver el texto raw como fallback
-      contenido = { texto_raw: texto }
+      contenido = extraerJSON<Record<string, unknown>>(textoCompleto)
+    } catch (extractErr) {
+      console.error(`[recurso-s${seccion}] extraerJSON fallo (${motivoParada}). Usando placeholder server-side. Raw (500 chars): ${textoCompleto.slice(0, 500)}`)
+      // En vez de devolver 422, generar placeholder y devolver 200
+      // Asi el cliente NO reintenta (ahorra dinero y tiempo)
+      const ERR = '[Seccion parcialmente generada - texto truncado por limite de tokens]'
+      const fundPlaceholder = { ordinal: 'ERROR', titulo: 'Contenido truncado', normaVulnerada: ERR, clausulaViciada: ERR, nexoJuridico: ERR, doctrinaJurisprudencia: ERR, consecuenciaPretendida: ERR, analisisJuridico: ERR }
+      const placeholders: Record<number, Record<string, unknown>> = {
+        1: { antecedentes: [{ ordinal: 'PRIMERO', titulo: 'Contenido truncado', texto: ERR, documentoRef: '(Documento n. 1)' }] },
+        2: { fundamentos_1_2: [fundPlaceholder] },
+        3: { fundamentos_3_4: [fundPlaceholder] },
+        4: { fundamentos_5_6: [fundPlaceholder] },
+        5: { fundamentos_7_8: [fundPlaceholder] },
+        6: { fundamentos_9_10: [fundPlaceholder] },
+        7: { causasNulidad: [{ ordinal: 'PRIMERA', base: 'N/A', titulo: 'Contenido truncado', fundamentacion: ERR, hallazgosVinculados: [], jurisprudenciaAplicable: ERR }] },
+        8: { cautelares: { fumusBoniIuris: ERR, periculumInMora: ERR, ponderacionIntereses: ERR, proporcionalidadMedida: ERR }, peticion: { principal: ERR, subsidiaria: ERR, cautelar: ERR } },
+        9: { legitimacion: { fundamentoLegal: ERR, interesReal: ERR, potencialLicitador: ERR, perjuicioConcreto: ERR, conclusionLegitimacion: ERR }, actoRecurrible: { tipologia: ERR, tramiteCualificado: ERR, conexionLesion: ERR, conclusionRecurribilidad: ERR }, otrosies: { proposicionPrueba: ERR, reclamacionExpediente: ERR, notificaciones: ERR } },
+      }
+      contenido = placeholders[seccion] ?? {}
+      reparado = true
     }
     const ms = Date.now() - t0
 
-    await registrarPasoPipeline(analisisId, `generar-recurso-s${seccion}`, 'completado', {
-      duracionMs: ms,
-      tokensUsados: { input_tokens: tokensEntrada, output_tokens: tokensSalida },
-    })
+    // Pipeline logging no-critico: si falla, no afecta la respuesta
+    try {
+      await registrarPasoPipeline(analisisId, `generar-recurso-s${seccion}`, reparado ? 'parcial' : 'completado', {
+        duracionMs: ms,
+        tokensUsados: { input_tokens: tokensEntrada, output_tokens: tokensSalida },
+      })
+    } catch (logErr) {
+      console.warn(`[recurso-s${seccion}] Error al registrar pipeline (no critico): ${(logErr as Error).message}`)
+    }
 
-    return new Response(JSON.stringify({ seccion, contenido, tokensEntrada, tokensSalida, duracionMs: ms }), {
+    return new Response(JSON.stringify({ seccion, contenido, tokensEntrada, tokensSalida, duracionMs: ms, motivoParada, reparado }), {
       headers: { ...cabecerasCors, 'Content-Type': 'application/json' },
     })
   } catch (error) {

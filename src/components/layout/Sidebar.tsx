@@ -1,30 +1,29 @@
 import { NavLink } from 'react-router-dom'
 import {
-  LayoutDashboard,
-  FileText,
   ScanSearch,
   History,
-  Shield,
-  BookOpen,
+  Home,
 } from 'lucide-react'
+import { LogoMark } from '@/components/shared/Logo'
 
 const ELEMENTOS_NAV = [
-  { to: '/', icono: LayoutDashboard, etiqueta: 'Dashboard' },
-  { to: '/documents', icono: FileText, etiqueta: 'Documentos' },
-  { to: '/analysis', icono: ScanSearch, etiqueta: 'Nuevo Analisis' },
+  { to: '/', icono: Home, etiqueta: 'Inicio' },
+  { to: '/new', icono: ScanSearch, etiqueta: 'Nuevo Analisis' },
   { to: '/history', icono: History, etiqueta: 'Historial' },
-  { to: '/admin/normas', icono: BookOpen, etiqueta: 'Normas CCN-STIC' },
 ]
 
 export function Sidebar() {
   return (
-    <aside className="w-64 bg-white border-r border-gray-200 flex flex-col">
+    <aside className="w-64 bg-sidebar border-r border-sidebar-border flex flex-col">
       {/* Logo */}
-      <div className="h-16 flex items-center px-6 border-b border-gray-200">
-        <Shield className="h-8 w-8 text-primary-600" />
+      <div className="h-16 flex items-center px-5 border-b border-sidebar-border">
+        <LogoMark size={28} />
         <div className="ml-3">
-          <h1 className="text-sm font-bold text-gray-900">ENS Compliance</h1>
-          <p className="text-xs text-gray-500">Auditor</p>
+          <h1 className="text-sm font-bold text-text-heading">
+            <span>Cumpli</span>
+            <span className="text-primary">ENS</span>
+          </h1>
+          <p className="text-xs text-text-muted">Auditor ENS</p>
         </div>
       </div>
 
@@ -38,8 +37,8 @@ export function Sidebar() {
             className={({ isActive }) =>
               `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                 isActive
-                  ? 'bg-primary-50 text-primary-700'
-                  : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                  ? 'bg-sidebar-accent text-sidebar-primary'
+                  : 'text-text-body hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
               }`
             }
           >
@@ -50,8 +49,8 @@ export function Sidebar() {
       </nav>
 
       {/* Version del sistema */}
-      <div className="p-4 border-t border-gray-200">
-        <p className="text-xs text-gray-400 text-center">v0.1.0 - Beta</p>
+      <div className="p-4 border-t border-sidebar-border">
+        <p className="text-xs text-text-placeholder text-center">v0.1.0 - Beta</p>
       </div>
     </aside>
   )

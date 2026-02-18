@@ -1,28 +1,51 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
-  CheckCircle, AlertTriangle, XCircle, MinusCircle,
-  Download, ChevronDown, ChevronUp, Scale,
+  CheckCircle, XCircle, Scale, Download, BarChart3,
+  CheckCircle2, Loader2, Circle,
 } from 'lucide-react'
 import { obtenerAnalisis, obtenerHallazgosAnalisis, obtenerDatosRecurso } from '@/services/analysis-service'
 import { useAnalysisProgress } from '@/hooks/useAnalysisProgress'
 import { useAnalysisStore } from '@/stores/analysis-store'
-import { generarInformeHTML, abrirInformeImprimible } from '@/services/report-service'
-import { generarRecursoHTML, abrirRecursoImprimible } from '@/services/recurso-service'
-import type { DatosRecursoCompleto, ContenidoRecurso, ClausulaImpugnada } from '@/types/recurso'
-import { PASOS_PIPELINE, DIMENSIONES_ENS, CATEGORIAS_ENS } from '@/config/constants'
-import type { NivelCumplimiento, PrioridadHallazgo } from '@/types/database'
+import { generarRecursoHTML } from '@/services/recurso-service'
+import { generarInformeGraficoHTML } from '@/services/informe-grafico-service'
 import {
-  RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
-  Radar, ResponsiveContainer, PieChart, Pie, Cell, Legend, Tooltip,
-} from 'recharts'
+  descargarRecursoPDF, descargarRecursoWord,
+  descargarInformeGraficoPDF, descargarInformeGraficoWord,
+} from '@/services/download-service'
+import type { ContenidoRecurso, ClausulaImpugnada } from '@/types/recurso'
+import { PASOS_PIPELINE, DIMENSIONES_ENS, CATEGORIAS_ENS } from '@/config/constants'
+import type { PrioridadHallazgo } from '@/types/database'
+import type { DimensionDataItem } from '@/components/charts/RadarDimensions'
+import type { CategoryBarItem } from '@/components/charts/CategoryBars'
+import type { RiskBarData } from '@/components/charts/RiskBars'
+import AnimatedCounter from '@/components/shared/AnimatedCounter'
+import CategoryBadge from '@/components/shared/CategoryBadge'
+import { LogoMark } from '@/components/shared/Logo'
+import type { EnsCategoryKey } from '@/config/designTokens'
+import { ENS_DIMENSIONS } from '@/config/designTokens'
+import ResumenTab from '@/pages/results/ResumenTab'
+import MedidasTab from '@/pages/results/MedidasTab'
+import DimensionesTab from '@/pages/results/DimensionesTab'
+import RiesgosTab from '@/pages/results/RiesgosTab'
 
+// ─── Tab definitions ─────────────────────────────────────────────
+const TABS = [
+  { id: "resumen", label: "Resumen" },
+  { id: "medidas", label: "Medidas" },
+  { id: "dimensiones", label: "Dimensiones" },
+  { id: "riesgos", label: "Riesgos" },
+] as const;
+
+type TabId = (typeof TABS)[number]["id"];
+
+// ─── Main page component ─────────────────────────────────────────
 export function AnalysisDetailPage() {
   const { id } = useParams<{ id: string }>()
   const almacenAnalisis = useAnalysisStore()
 
-  // Rastrear progreso si es el analisis activo
   const estaRastreando = almacenAnalisis.analisisActivoId === id
   const progreso = useAnalysisProgress(estaRastreando ? id! : null)
 
@@ -55,35 +78,36 @@ export function AnalysisDetailPage() {
   if (estaCargando) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600" />
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
       </div>
     )
   }
 
   if (!analisis) {
-    return <div className="text-center py-12 text-gray-500">Analisis no encontrado</div>
+    return <div className="text-center py-12 text-text-muted">Analisis no encontrado</div>
   }
 
-  // Mostrar vista de progreso mientras se ejecuta
+  // Progress view while running
   if (analisis.estado !== 'COMPLETADO' && analisis.estado !== 'FALLIDO') {
     return <VistaProgreso analisis={analisis} progreso={progreso} />
   }
 
-  // Mostrar vista de error
+  // Error view
   if (analisis.estado === 'FALLIDO') {
     return (
-      <div className="max-w-2xl mx-auto card p-8 text-center space-y-4">
-        <XCircle className="h-12 w-12 text-red-500 mx-auto" />
-        <h2 className="text-xl font-bold text-gray-900">Error en el Analisis</h2>
-        <p className="text-sm text-red-600">{analisis.mensaje_error ?? 'Error desconocido'}</p>
+      <div className="max-w-2xl mx-auto bg-card border border-border rounded-xl shadow-card p-8 text-center space-y-4">
+        <XCircle className="h-12 w-12 text-nocumple-icon mx-auto" />
+        <h2 className="text-xl font-bold text-text-heading">Error en el Analisis</h2>
+        <p className="text-sm text-nocumple-text">{analisis.mensaje_error ?? 'Error desconocido'}</p>
       </div>
     )
   }
 
-  // Mostrar resultados
+  // Results view
   return <VistaResultados analisis={analisis} hallazgos={hallazgos ?? []} datosRecurso={datosRecurso ?? null} />
 }
 
+// ─── Progress view (diseño-style) ────────────────────────────────
 function VistaProgreso({ analisis, progreso }: {
   analisis: { estado: string; porcentaje_progreso: number; descripcion_paso_actual: string | null }
   progreso: ReturnType<typeof useAnalysisProgress>
@@ -94,151 +118,256 @@ function VistaProgreso({ analisis, progreso }: {
 
   const pasos = Object.entries(PASOS_PIPELINE).filter(([clave]) => clave !== 'FALLIDO')
 
-  return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto" />
-        <h2 className="mt-4 text-xl font-bold text-gray-900">Analizando Documento</h2>
-        <p className="text-sm text-gray-500 mt-1">{descripcionActual ?? 'Procesando...'}</p>
-      </div>
+  type StepStatus = 'done' | 'active' | 'pending'
 
-      {/* Barra de progreso */}
-      <div className="card p-6">
-        <div className="flex justify-between text-sm mb-2">
-          <span className="font-medium text-gray-700">Progreso General</span>
-          <span className="text-gray-500">{porcentajeActual}%</span>
+  const getStepStatus = (clave: string): StepStatus => {
+    const keys = Object.keys(PASOS_PIPELINE)
+    const currentIdx = keys.indexOf(estadoActual)
+    const stepIdx = keys.indexOf(clave)
+    if (stepIdx < currentIdx) return 'done'
+    if (stepIdx === currentIdx) return 'active'
+    return 'pending'
+  }
+
+  const estaCompleto = estadoActual === 'COMPLETADO'
+
+  return (
+    <div className="min-h-[60vh] flex items-center justify-center px-4">
+      <div className="w-full max-w-sm">
+        {/* Shield icon with breathing animation */}
+        <div className="flex justify-center mb-8">
+          <motion.div
+            animate={
+              estaCompleto
+                ? { scale: [1, 1.1, 1] }
+                : { scale: [1, 1.04, 1] }
+            }
+            transition={
+              estaCompleto
+                ? { duration: 0.4 }
+                : { duration: 2.5, repeat: Infinity, ease: "easeInOut" }
+            }
+          >
+            <LogoMark size={64} />
+          </motion.div>
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-3">
-          <div
-            className="bg-primary-600 h-3 rounded-full transition-all duration-500"
-            style={{ width: `${porcentajeActual}%` }}
+
+        {/* Title */}
+        <div className="text-center mb-8">
+          <h2 className="text-lg font-semibold tracking-tight text-text-heading mb-1">
+            {estaCompleto ? 'Analisis completado' : 'Analizando documentos'}
+          </h2>
+          <p className="text-sm text-text-muted">
+            {descripcionActual ?? 'Procesando...'}
+          </p>
+        </div>
+
+        {/* Thin progress bar */}
+        <div className="w-full h-1 bg-muted rounded-full mb-8 overflow-hidden">
+          <motion.div
+            className="h-full bg-primary rounded-full"
+            initial={{ width: "0%" }}
+            animate={{ width: `${porcentajeActual}%` }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
           />
         </div>
-      </div>
 
-      {/* Pasos */}
-      <div className="card p-6 space-y-3">
-        {pasos.map(([clave, paso]) => {
-          const estaActivo = clave === estadoActual
-          const esPasado = Object.keys(PASOS_PIPELINE).indexOf(clave) < Object.keys(PASOS_PIPELINE).indexOf(estadoActual)
-
-          return (
-            <div key={clave} className="flex items-center gap-3">
-              {esPasado ? (
-                <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
-              ) : estaActivo ? (
-                <div className="h-5 w-5 border-2 border-primary-600 rounded-full flex items-center justify-center flex-shrink-0">
-                  <div className="h-2 w-2 bg-primary-600 rounded-full animate-pulse" />
-                </div>
-              ) : (
-                <div className="h-5 w-5 border-2 border-gray-300 rounded-full flex-shrink-0" />
-              )}
-              <span className={`text-sm ${
-                esPasado ? 'text-green-700' :
-                estaActivo ? 'font-medium text-primary-700' :
-                'text-gray-400'
-              }`}>
-                {paso.etiqueta}
-              </span>
-            </div>
-          )
-        })}
+        {/* Steps checklist */}
+        <div className="space-y-2.5">
+          {pasos.map(([clave, paso], i) => {
+            const status = getStepStatus(clave)
+            return (
+              <motion.div
+                key={clave}
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.08 }}
+                className="flex items-center gap-2.5"
+              >
+                {status === 'done' ? (
+                  <CheckCircle2 className="h-4 w-4 text-cumple-icon flex-shrink-0" />
+                ) : status === 'active' ? (
+                  <Loader2 className="h-4 w-4 text-primary animate-spin flex-shrink-0" />
+                ) : (
+                  <Circle className="h-4 w-4 text-border flex-shrink-0" />
+                )}
+                <span
+                  className={`text-[13px] leading-tight ${
+                    status === 'done'
+                      ? 'text-text-muted'
+                      : status === 'active'
+                      ? 'text-text-heading font-medium'
+                      : 'text-text-placeholder'
+                  }`}
+                >
+                  {paso.etiqueta}
+                </span>
+              </motion.div>
+            )
+          })}
+        </div>
       </div>
     </div>
   )
 }
 
+// ─── Download button with dropdown ────────────────────────────────
+function BotonDescarga({
+  label, icono, tipo, menuAbierto, setMenuAbierto, descargando, onDescargar, className = '',
+}: {
+  label: string
+  icono: React.ReactNode
+  tipo: 'recurso' | 'grafico'
+  menuAbierto: string | null
+  setMenuAbierto: (v: string | null) => void
+  descargando: string | null
+  onDescargar: (tipo: 'recurso' | 'grafico', formato: 'pdf' | 'word') => void
+  className?: string
+}) {
+  const abierto = menuAbierto === tipo
+  const estaCargandoPDF = descargando === `${tipo}-pdf`
+  const estaCargandoWord = descargando === `${tipo}-word`
+  const estaCargando = estaCargandoPDF || estaCargandoWord
+
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setMenuAbierto(abierto ? null : tipo)}
+        disabled={estaCargando}
+        className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors text-sm font-medium ${className} ${estaCargando ? 'opacity-60 cursor-wait' : ''}`}
+      >
+        {estaCargando ? <Loader2 className="h-4 w-4 animate-spin" /> : icono}
+        {estaCargando ? 'Descargando...' : label}
+      </button>
+      {abierto && !estaCargando && (
+        <>
+          <div className="fixed inset-0 z-40" onClick={() => setMenuAbierto(null)} />
+          <div className="absolute top-full left-0 mt-1 z-50 bg-card border border-border rounded-lg shadow-lg overflow-hidden min-w-[140px]">
+            <button
+              onClick={() => onDescargar(tipo, 'pdf')}
+              className="w-full text-left px-4 py-2.5 text-sm text-text-heading hover:bg-muted transition-colors flex items-center gap-2"
+            >
+              <Download className="h-3.5 w-3.5 text-red-500" />
+              PDF
+            </button>
+            <button
+              onClick={() => onDescargar(tipo, 'word')}
+              className="w-full text-left px-4 py-2.5 text-sm text-text-heading hover:bg-muted transition-colors flex items-center gap-2"
+            >
+              <Download className="h-3.5 w-3.5 text-blue-500" />
+              Word (.docx)
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
+// ─── Results view ─────────────────────────────────────────────────
 function VistaResultados({ analisis, hallazgos, datosRecurso }: {
   analisis: NonNullable<Awaited<ReturnType<typeof obtenerAnalisis>>>
   hallazgos: Awaited<ReturnType<typeof obtenerHallazgosAnalisis>>
   datosRecurso: Awaited<ReturnType<typeof obtenerDatosRecurso>>
 }) {
-  const [hallazgoExpandido, setHallazgoExpandido] = useState<string | null>(null)
+  const [activeTab, setActiveTab] = useState<TabId>("resumen")
+  const [menuAbierto, setMenuAbierto] = useState<string | null>(null)
+  const [descargando, setDescargando] = useState<string | null>(null)
 
+  // ── Derived data ───────────────────────────────────────────────
   const tasaCumplimiento = analisis.total_hallazgos && analisis.total_hallazgos > 0
     ? Math.round(((analisis.cantidad_conforme + analisis.cantidad_parcial * 0.5) / analisis.total_hallazgos) * 100)
     : 0
 
-  // Preparar datos de graficos
-  const datosDimensiones = analisis.dimensiones_afectadas
-    ? DIMENSIONES_ENS.map((dim) => {
-        const val = (analisis.dimensiones_afectadas as Record<string, { nivel: string }>)?.[dim.id]
-        const nivel = val?.nivel ?? 'BAJO'
-        return {
-          dimension: dim.abreviatura,
-          nombreCompleto: dim.etiqueta,
-          valor: nivel === 'ALTO' ? 3 : nivel === 'MEDIO' ? 2 : 1,
-        }
-      })
-    : []
+  const aplicables = analisis.total_hallazgos - analisis.cantidad_no_aplica
 
-  const datosTartaCumplimiento = [
-    { nombre: 'Cumple', valor: analisis.cantidad_conforme, color: '#22c55e' },
-    { nombre: 'Parcial', valor: analisis.cantidad_parcial, color: '#eab308' },
-    { nombre: 'No Cumple', valor: analisis.cantidad_no_conforme, color: '#ef4444' },
-    { nombre: 'No Aplica', valor: analisis.cantidad_no_aplica, color: '#94a3b8' },
-  ].filter((d) => d.valor > 0)
+  // Dimension data for radar chart
+  const datosDimensiones: DimensionDataItem[] = useMemo(() => {
+    if (!analisis.dimensiones_afectadas) return []
+    return DIMENSIONES_ENS.map((dim) => {
+      const val = (analisis.dimensiones_afectadas as Record<string, { nivel: string }>)?.[dim.id]
+      const nivel = val?.nivel ?? 'BAJO'
+      return {
+        label: dim.abreviatura,
+        cumplimiento: nivel === 'ALTO' ? 100 : nivel === 'MEDIO' ? 67 : 33,
+      }
+    })
+  }, [analisis.dimensiones_afectadas])
 
-  function handleImprimirInforme() {
-    const datosInforme = {
-      organizacion: 'Organizacion',
-      nombreDocumento: 'Documento Analizado',
-      fechaAnalisis: new Date(analisis.creado_en).toLocaleDateString('es-ES'),
-      categoriaENS: analisis.categoria_ens!,
-      dimensiones: (analisis.dimensiones_afectadas ?? {}) as import('@/types/analysis').ResultadoFase1['dimensiones'],
-      justificacionCategoria: analisis.justificacion_categoria ?? '',
-      totalControles: analisis.total_hallazgos,
-      cantidadConforme: analisis.cantidad_conforme,
-      cantidadParcial: analisis.cantidad_parcial,
-      cantidadNoConforme: analisis.cantidad_no_conforme,
-      cantidadNoAplica: analisis.cantidad_no_aplica,
-      hallazgos: hallazgos.map((h) => ({
-        control_id: h.control_id,
-        nivel_cumplimiento: h.nivel_cumplimiento,
-        resumen_hallazgo: h.resumen_hallazgo,
-        irac: {
-          asunto: h.irac_asunto ?? '',
-          regla: h.irac_regla ?? '',
-          aplicacion: h.irac_aplicacion ?? '',
-          conclusion: h.irac_conclusion ?? '',
-        },
-        texto_evidencia: h.texto_evidencia,
-        descripcion_brecha: h.descripcion_brecha,
-        recomendacion: h.recomendacion,
-        prioridad: (h.prioridad ?? 'MEDIA') as PrioridadHallazgo,
-        confianza: 0.8,
-      })),
-      justificacionAplicabilidad: analisis.justificacion_categoria ?? '',
-      totalRequisitosVerificados: analisis.total_requisitos_verificados ?? 0,
-      totalNormasReferenciadas: analisis.total_normas_referenciadas ?? 0,
-      perfilSectorial: analisis.perfil_sectorial,
-      proveedoresNube: analisis.proveedores_nube ?? [],
+  // Dimension detail cards
+  const dimensionDetails = useMemo(() => {
+    if (!analisis.dimensiones_afectadas) return []
+    const dims = analisis.dimensiones_afectadas as Record<string, { nivel: string }>
+    return Object.entries(dims).map(([key, val]) => {
+      const cumplimiento = val.nivel === 'ALTO' ? 100 : val.nivel === 'MEDIO' ? 67 : 33
+      // Count hallazgos for this dimension (rough: hallazgos where control maps to dimension)
+      const total = hallazgos.length > 0 ? Math.ceil(hallazgos.length / DIMENSIONES_ENS.length) : 0
+      const cumplidas = Math.round(total * cumplimiento / 100)
+      return {
+        key,
+        label: ENS_DIMENSIONS[key]?.label ?? key.charAt(0).toUpperCase() + key.slice(1),
+        cumplimiento,
+        description: `Nivel ${val.nivel}`,
+        medidasCumplidas: cumplidas,
+        totalMedidas: total || 1,
+      }
+    })
+  }, [analisis.dimensiones_afectadas, hallazgos.length])
+
+  // Category bars data
+  const datosCategoria: CategoryBarItem[] = useMemo(() => {
+    if (!analisis.categoria_ens) return []
+    // Derive per-category compliance from hallazgos
+    const categorias: Record<string, { cumple: number; total: number }> = {}
+    hallazgos.forEach((h) => {
+      const cat = (h.categoria_control ?? '').toLowerCase()
+      if (!cat) return
+      if (!categorias[cat]) categorias[cat] = { cumple: 0, total: 0 }
+      categorias[cat].total++
+      if (h.nivel_cumplimiento === 'CONFORME') categorias[cat].cumple++
+      if (h.nivel_cumplimiento === 'PARCIALMENTE_CONFORME') categorias[cat].cumple += 0.5
+    })
+    const keys: EnsCategoryKey[] = ['basica', 'media', 'alta']
+    return keys
+      .filter((k) => categorias[k])
+      .map((k) => ({
+        key: k,
+        label: CATEGORIAS_ENS[k.toUpperCase() as keyof typeof CATEGORIAS_ENS]?.etiqueta ?? k,
+        cumplimiento: categorias[k]!.total > 0
+          ? Math.round((categorias[k]!.cumple / categorias[k]!.total) * 100)
+          : 0,
+      }))
+  }, [hallazgos, analisis.categoria_ens])
+
+  // Risk data
+  const datosRiesgo: RiskBarData = useMemo(() => {
+    const counts: RiskBarData = { critico: 0, alto: 0, medio: 0, bajo: 0 }
+    const map: Record<string, keyof RiskBarData> = {
+      CRITICA: 'critico', ALTA: 'alto', MEDIA: 'medio', BAJA: 'bajo',
     }
+    hallazgos.forEach((h) => {
+      const key = map[h.prioridad ?? 'MEDIA']
+      if (key) counts[key]++
+    })
+    return counts
+  }, [hallazgos])
 
-    const html = generarInformeHTML(datosInforme)
-    abrirInformeImprimible(html)
-  }
-
-  function handleDescargarRecurso() {
-    if (!datosRecurso?.contenido_recurso) return
-
+  // ── Generadores de HTML (reutilizados por PDF/Word) ──────────────────
+  function generarHTMLRecurso(): string {
+    if (!datosRecurso?.contenido_recurso) throw new Error('No hay datos del recurso')
     const contenido = datosRecurso.contenido_recurso as unknown as ContenidoRecurso
-
     const clausulasImpugnadas: ClausulaImpugnada[] = hallazgos
       .filter((h) => h.nivel_cumplimiento === 'NO_CONFORME' || h.nivel_cumplimiento === 'PARCIALMENTE_CONFORME')
       .map((h) => ({
-        id: h.id,
-        controlId: h.control_id,
-        requisitoId: h.control_id,
-        normaFuente: h.irac_regla ?? '',
+        id: h.id, controlId: h.control_id, requisitoId: `${h.control_id}-REQ`,
+        normaFuente: `ENS ${h.categoria_control ?? ''} - ${h.control_id}`,
         nivelCumplimiento: h.nivel_cumplimiento,
-        textoClausula: h.resumen_hallazgo,
+        textoClausula: h.texto_evidencia ?? h.resumen_hallazgo,
         evidenciaPliego: h.texto_evidencia,
-        explicacionIRAC: h.irac_aplicacion ?? h.descripcion_brecha ?? '',
+        explicacionIRAC: [h.irac_aplicacion, h.descripcion_brecha].filter(Boolean).join(' '),
         prioridad: h.prioridad ?? 'MEDIA',
       }))
-
-    const datos: DatosRecursoCompleto = {
+    const htmlResult = generarRecursoHTML({
       datosFormulario: {
         tribunal_competente: datosRecurso.tribunal_competente,
         tribunal_direccion: datosRecurso.tribunal_direccion ?? undefined,
@@ -269,65 +398,156 @@ function VistaResultados({ analisis, hallazgos, datosRecurso }: {
         dies_a_quo: datosRecurso.dies_a_quo ?? undefined,
         dies_ad_quem: datosRecurso.dies_ad_quem ?? undefined,
       },
-      contenidoRecurso: contenido,
-      clausulasImpugnadas,
+      contenidoRecurso: contenido, clausulasImpugnadas,
       fechaGeneracion: datosRecurso.recurso_generado_en
         ? new Date(datosRecurso.recurso_generado_en).toLocaleDateString('es-ES')
         : new Date().toLocaleDateString('es-ES'),
       codigoRecurso: `REMC-${datosRecurso.expediente_numero.replace(/\//g, '-')}`,
-    }
+    })
+    return htmlResult
+  }
 
-    const html = generarRecursoHTML(datos)
-    abrirRecursoImprimible(html)
+  function generarHTMLInformeGrafico(): string {
+    const resultado = generarInformeGraficoHTML({
+      organizacion: datosRecurso?.organo_contratacion ?? datosRecurso?.recurrente_denominacion ?? 'Organizacion',
+      nombreDocumento: datosRecurso?.expediente_denominacion ?? datosRecurso?.expediente_numero ?? 'Documento Analizado',
+      fechaAnalisis: new Date(analisis.creado_en).toLocaleDateString('es-ES'),
+      categoriaENS: analisis.categoria_ens!,
+      dimensiones: (analisis.dimensiones_afectadas ?? {}) as import('@/types/analysis').ResultadoFase1['dimensiones'],
+      justificacionCategoria: analisis.justificacion_categoria ?? '',
+      totalControles: analisis.total_hallazgos,
+      cantidadConforme: analisis.cantidad_conforme,
+      cantidadParcial: analisis.cantidad_parcial,
+      cantidadNoConforme: analisis.cantidad_no_conforme,
+      cantidadNoAplica: analisis.cantidad_no_aplica,
+      hallazgos: hallazgos.map((h) => ({
+        control_id: h.control_id, nivel_cumplimiento: h.nivel_cumplimiento,
+        resumen_hallazgo: h.resumen_hallazgo,
+        irac: { asunto: h.irac_asunto ?? '', regla: h.irac_regla ?? '', aplicacion: h.irac_aplicacion ?? '', conclusion: h.irac_conclusion ?? '' },
+        texto_evidencia: h.texto_evidencia, descripcion_brecha: h.descripcion_brecha,
+        recomendacion: h.recomendacion, prioridad: (h.prioridad ?? 'MEDIA') as PrioridadHallazgo, confianza: 0.8,
+      })),
+      justificacionAplicabilidad: analisis.justificacion_categoria ?? '',
+      totalRequisitosVerificados: analisis.total_requisitos_verificados ?? 0,
+      totalNormasReferenciadas: analisis.total_normas_referenciadas ?? 0,
+      perfilSectorial: analisis.perfil_sectorial,
+      proveedoresNube: analisis.proveedores_nube ?? [],
+    })
+    return resultado
+  }
+
+  // ── Handlers de descarga (PDF / Word) ──────────────────────────────
+  async function handleDescargar(tipo: 'recurso' | 'grafico', formato: 'pdf' | 'word') {
+    const id = `${tipo}-${formato}`
+    setDescargando(id)
+    setMenuAbierto(null)
+    try {
+      if (tipo === 'recurso') {
+        const html = generarHTMLRecurso()
+        if (formato === 'pdf') await descargarRecursoPDF(html, datosRecurso!.expediente_numero)
+        else await descargarRecursoWord(html, datosRecurso!.expediente_numero)
+      } else {
+        const html = generarHTMLInformeGrafico()
+        if (formato === 'pdf') await descargarInformeGraficoPDF(html)
+        else await descargarInformeGraficoWord(html)
+      }
+    } catch (err) {
+      console.error(`Error descargando ${tipo} como ${formato}:`, err)
+      alert(`Error al descargar: ${err instanceof Error ? err.message : 'Error desconocido'}`)
+    } finally {
+      setDescargando(null)
+    }
   }
 
   const tieneRecurso = datosRecurso?.contenido_recurso != null
 
+  // ── Render ─────────────────────────────────────────────────────
   return (
-    <div className="space-y-6">
-      {/* Cabecera */}
-      <div className="flex items-start justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">Resultados del Analisis</h2>
-          <p className="text-sm text-gray-500 mt-1">
-            {new Date(analisis.creado_en).toLocaleDateString('es-ES', {
-              year: 'numeric', month: 'long', day: 'numeric',
-            })}
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          {analisis.categoria_ens && (
-            <span className={`text-sm font-bold px-4 py-2 rounded-lg ${
-              analisis.categoria_ens === 'BASICA' ? 'bg-green-100 text-green-800' :
-              analisis.categoria_ens === 'MEDIA' ? 'bg-yellow-100 text-yellow-800' :
-              'bg-red-100 text-red-800'
-            }`}>
-              ENS {CATEGORIAS_ENS[analisis.categoria_ens].etiqueta}
-            </span>
-          )}
-          <button onClick={handleImprimirInforme} className="btn-primary flex items-center gap-2">
-            <Download className="h-4 w-4" />
-            Descargar Informe
-          </button>
-          {tieneRecurso && (
-            <button onClick={handleDescargarRecurso} className="flex items-center gap-2 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 text-sm font-medium">
-              <Scale className="h-4 w-4" />
-              Descargar Recurso REMC
-            </button>
-          )}
+    <div className="space-y-0">
+      {/* ── Hero section ─────────────────────────────────────────── */}
+      <div className="border-b border-border -mx-6 px-6">
+        <div className="py-8 sm:py-10">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                {analisis.categoria_ens && (
+                  <CategoryBadge category={analisis.categoria_ens.toLowerCase() as EnsCategoryKey} />
+                )}
+                <span className="text-xs text-text-muted">
+                  {new Date(analisis.creado_en).toLocaleDateString('es-ES', {
+                    year: 'numeric', month: 'long', day: 'numeric',
+                  })}
+                </span>
+              </div>
+              <p className="text-sm font-medium text-text-muted mb-1">
+                Nivel de cumplimiento ENS
+              </p>
+              <div className="flex items-baseline gap-2">
+                <AnimatedCounter
+                  target={tasaCumplimiento}
+                  className="text-5xl sm:text-6xl font-bold tracking-[-0.03em] text-text-heading"
+                />
+              </div>
+              <p className="mt-1 text-sm text-text-muted">
+                {analisis.cantidad_conforme} de {aplicables} medidas aplicables
+              </p>
+            </div>
+            <div className="flex gap-6 text-sm">
+              <div>
+                <span className="text-2xl font-semibold text-cumple-icon">{analisis.cantidad_conforme}</span>
+                <p className="text-text-muted">Cumple</p>
+              </div>
+              <div>
+                <span className="text-2xl font-semibold text-parcial-icon">{analisis.cantidad_parcial}</span>
+                <p className="text-text-muted">Parcial</p>
+              </div>
+              <div>
+                <span className="text-2xl font-semibold text-nocumple-icon">{analisis.cantidad_no_conforme}</span>
+                <p className="text-text-muted">No cumple</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Action buttons with PDF/Word dropdowns */}
+          <div className="mt-6 flex flex-wrap gap-3">
+            {/* Informe de Analisis (con graficos) */}
+            <BotonDescarga
+              label="Descargar Informe de Analisis"
+              icono={<BarChart3 className="h-4 w-4" />}
+              tipo="grafico"
+              menuAbierto={menuAbierto}
+              setMenuAbierto={setMenuAbierto}
+              descargando={descargando}
+              onDescargar={handleDescargar}
+              className="btn-primary"
+            />
+            {/* Recurso REMC */}
+            {tieneRecurso && (
+              <BotonDescarga
+                label="Descargar Recurso REMC"
+                icono={<Scale className="h-4 w-4" />}
+                tipo="recurso"
+                menuAbierto={menuAbierto}
+                setMenuAbierto={setMenuAbierto}
+                descargando={descargando}
+                onDescargar={handleDescargar}
+                className="bg-accent text-accent-foreground hover:opacity-90"
+              />
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Tarjeta Recurso REMC */}
+      {/* ── REMC Card ────────────────────────────────────────────── */}
       {tieneRecurso && (
-        <div className="card p-6 border-l-4 border-amber-500">
+        <div className="mt-6 bg-card border border-border rounded-xl shadow-card p-6 border-l-4 border-l-accent">
           <div className="flex items-start justify-between">
             <div>
-              <h3 className="font-semibold text-gray-900 flex items-center gap-2">
-                <Scale className="h-5 w-5 text-amber-600" />
+              <h3 className="font-semibold text-text-heading flex items-center gap-2">
+                <Scale className="h-5 w-5 text-accent" />
                 Recurso REMC Generado
               </h3>
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="text-sm text-text-body mt-1">
                 Se ha generado automaticamente un Recurso Especial en Materia de Contratacion
                 con {analisis.cantidad_no_conforme + analisis.cantidad_parcial} clausulas impugnadas
                 en {datosRecurso?.recurso_generado_en
@@ -335,267 +555,103 @@ function VistaResultados({ analisis, hallazgos, datosRecurso }: {
                   : 'fecha desconocida'}.
               </p>
             </div>
-            <button onClick={handleDescargarRecurso}
-              className="flex-shrink-0 flex items-center gap-2 px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 text-sm font-medium">
-              <Download className="h-4 w-4" />
-              Descargar REMC
-            </button>
+            <BotonDescarga
+              label="Descargar REMC"
+              icono={<Download className="h-4 w-4" />}
+              tipo="recurso"
+              menuAbierto={menuAbierto}
+              setMenuAbierto={setMenuAbierto}
+              descargando={descargando}
+              onDescargar={handleDescargar}
+              className="bg-accent text-accent-foreground hover:opacity-90"
+            />
           </div>
         </div>
       )}
 
-      {/* Mensaje de conformidad si no hay recurso */}
+      {/* ── Conformity banner ────────────────────────────────────── */}
       {!tieneRecurso && analisis.cantidad_no_conforme === 0 && analisis.cantidad_parcial === 0 && (
-        <div className="card p-6 border-l-4 border-green-500">
-          <h3 className="font-semibold text-green-700 flex items-center gap-2">
+        <div className="mt-6 bg-card border border-border rounded-xl shadow-card p-6 border-l-4 border-l-cumple-icon">
+          <h3 className="font-semibold text-cumple-text flex items-center gap-2">
             <CheckCircle className="h-5 w-5" />
             Pliegos Conformes con el ENS
           </h3>
-          <p className="text-sm text-gray-600 mt-1">
+          <p className="text-sm text-text-body mt-1">
             No se han detectado incumplimientos significativos. No es necesario generar un Recurso REMC.
           </p>
         </div>
       )}
 
-      {/* Estadisticas resumen */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        <TarjetaEstadistica etiqueta="Tasa de Cumplimiento" valor={`${tasaCumplimiento}%`} color="text-primary-600" />
-        <TarjetaEstadistica etiqueta="Cumple" valor={analisis.cantidad_conforme} color="text-green-600" icono={<CheckCircle className="h-5 w-5" />} />
-        <TarjetaEstadistica etiqueta="Parcial" valor={analisis.cantidad_parcial} color="text-yellow-600" icono={<AlertTriangle className="h-5 w-5" />} />
-        <TarjetaEstadistica etiqueta="No Cumple" valor={analisis.cantidad_no_conforme} color="text-red-600" icono={<XCircle className="h-5 w-5" />} />
-        <TarjetaEstadistica etiqueta="No Aplica" valor={analisis.cantidad_no_aplica} color="text-gray-500" icono={<MinusCircle className="h-5 w-5" />} />
-      </div>
-
-      {/* Trazabilidad de normas */}
-      {(analisis.total_requisitos_verificados > 0 || analisis.total_normas_referenciadas > 0) && (
-        <div className="card p-6">
-          <h3 className="font-semibold text-gray-900 mb-3">Trazabilidad Normativa</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-            <div>
-              <p className="text-2xl font-bold text-primary-600">{analisis.total_requisitos_verificados}</p>
-              <p className="text-xs text-gray-500">Requisitos Verificados</p>
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-primary-600">{analisis.total_normas_referenciadas}</p>
-              <p className="text-xs text-gray-500">Normas Referenciadas</p>
-            </div>
-            {analisis.perfil_sectorial && (
-              <div>
-                <p className="text-lg font-bold text-primary-600 capitalize">{analisis.perfil_sectorial.replace('_', ' ')}</p>
-                <p className="text-xs text-gray-500">Perfil Sectorial</p>
-              </div>
-            )}
-            {analisis.proveedores_nube && analisis.proveedores_nube.length > 0 && (
-              <div>
-                <p className="text-lg font-bold text-primary-600">{analisis.proveedores_nube.join(', ')}</p>
-                <p className="text-xs text-gray-500">Proveedores Nube</p>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Graficos */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Grafico de tarta de cumplimiento */}
-        <div className="card p-6">
-          <h3 className="font-semibold text-gray-900 mb-4">Distribucion de Cumplimiento</h3>
-          <ResponsiveContainer width="100%" height={250}>
-            <PieChart>
-              <Pie
-                data={datosTartaCumplimiento}
-                cx="50%"
-                cy="50%"
-                innerRadius={60}
-                outerRadius={100}
-                dataKey="valor"
-                label={({ nombre, valor }: { nombre: string; valor: number }) => `${nombre}: ${valor}`}
-              >
-                {datosTartaCumplimiento.map((entrada, indice) => (
-                  <Cell key={indice} fill={entrada.color} />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Grafico radar de dimensiones */}
-        {datosDimensiones.length > 0 && (
-          <div className="card p-6">
-            <h3 className="font-semibold text-gray-900 mb-4">Dimensiones de Seguridad</h3>
-            <ResponsiveContainer width="100%" height={250}>
-              <RadarChart data={datosDimensiones}>
-                <PolarGrid />
-                <PolarAngleAxis dataKey="dimension" />
-                <PolarRadiusAxis domain={[0, 3]} tickCount={4} />
-                <Radar
-                  name="Nivel"
-                  dataKey="valor"
-                  stroke="#2563eb"
-                  fill="#3b82f6"
-                  fillOpacity={0.3}
+      {/* ── Tabs ─────────────────────────────────────────────────── */}
+      <div className="mt-6">
+        <div className="flex gap-0 overflow-x-auto border-b border-border">
+          {TABS.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`relative px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors ${
+                activeTab === tab.id
+                  ? "text-text-heading"
+                  : "text-text-muted hover:text-text-body"
+              }`}
+            >
+              {tab.label}
+              {activeTab === tab.id && (
+                <motion.div
+                  layoutId="tab-indicator"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full"
                 />
-                <Tooltip formatter={(valor: number) => {
-                  if (valor === 3) return 'ALTO'
-                  if (valor === 2) return 'MEDIO'
-                  return 'BAJO'
-                }} />
-              </RadarChart>
-            </ResponsiveContainer>
-          </div>
-        )}
-      </div>
-
-      {/* Justificacion de categoria */}
-      {analisis.justificacion_categoria && (
-        <div className="card p-6">
-          <h3 className="font-semibold text-gray-900 mb-2">Justificacion de Categoria</h3>
-          <p className="text-sm text-gray-700 leading-relaxed">{analisis.justificacion_categoria}</p>
-        </div>
-      )}
-
-      {/* Tabla de hallazgos */}
-      <div className="card">
-        <div className="px-5 py-4 border-b border-gray-200 flex items-center justify-between">
-          <h3 className="font-semibold text-gray-900">Hallazgos por Control ({hallazgos.length})</h3>
-        </div>
-
-        <div className="divide-y divide-gray-200">
-          {hallazgos.map((hallazgo) => (
-            <div key={hallazgo.id} className="px-5 py-3">
-              <button
-                onClick={() => setHallazgoExpandido(hallazgoExpandido === hallazgo.id ? null : hallazgo.id)}
-                className="w-full text-left flex items-center justify-between"
-              >
-                <div className="flex items-center gap-3">
-                  <IconoCumplimiento nivel={hallazgo.nivel_cumplimiento} />
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">
-                      {hallazgo.control_id}: {hallazgo.nombre_control}
-                    </p>
-                    <p className="text-xs text-gray-500">{hallazgo.resumen_hallazgo}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  {hallazgo.prioridad && <BadgePrioridad prioridad={hallazgo.prioridad as PrioridadHallazgo} />}
-                  <BadgeCumplimiento nivel={hallazgo.nivel_cumplimiento} />
-                  {hallazgoExpandido === hallazgo.id ? (
-                    <ChevronUp className="h-4 w-4 text-gray-400" />
-                  ) : (
-                    <ChevronDown className="h-4 w-4 text-gray-400" />
-                  )}
-                </div>
-              </button>
-
-              {/* Detalle IRAC expandido */}
-              {hallazgoExpandido === hallazgo.id && (
-                <div className="mt-4 ml-8 space-y-3">
-                  {hallazgo.irac_asunto && (
-                    <div className="bg-gray-50 rounded-lg p-4 space-y-3">
-                      <h4 className="text-xs font-bold uppercase text-gray-500">Analisis IRAC</h4>
-
-                      <div>
-                        <p className="text-xs font-semibold text-primary-700">Cuestion (Issue)</p>
-                        <p className="text-sm text-gray-700">{hallazgo.irac_asunto}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs font-semibold text-primary-700">Norma (Rule)</p>
-                        <p className="text-sm text-gray-700">{hallazgo.irac_regla}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs font-semibold text-primary-700">Aplicacion</p>
-                        <p className="text-sm text-gray-700">{hallazgo.irac_aplicacion}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs font-semibold text-primary-700">Conclusion</p>
-                        <p className="text-sm text-gray-700">{hallazgo.irac_conclusion}</p>
-                      </div>
-                    </div>
-                  )}
-
-                  {hallazgo.texto_evidencia && (
-                    <div className="bg-green-50 border-l-3 border-green-500 p-3 rounded">
-                      <p className="text-xs font-semibold text-green-700 mb-1">Evidencia del Documento</p>
-                      <p className="text-sm text-gray-700 italic">"{hallazgo.texto_evidencia}"</p>
-                    </div>
-                  )}
-
-                  {hallazgo.descripcion_brecha && (
-                    <div className="bg-red-50 border-l-3 border-red-500 p-3 rounded">
-                      <p className="text-xs font-semibold text-red-700 mb-1">Brecha Identificada</p>
-                      <p className="text-sm text-gray-700">{hallazgo.descripcion_brecha}</p>
-                    </div>
-                  )}
-
-                  {hallazgo.recomendacion && (
-                    <div className="bg-yellow-50 border-l-3 border-yellow-500 p-3 rounded">
-                      <p className="text-xs font-semibold text-yellow-700 mb-1">Recomendacion</p>
-                      <p className="text-sm text-gray-700">{hallazgo.recomendacion}</p>
-                    </div>
-                  )}
-                </div>
               )}
-            </div>
+            </button>
           ))}
         </div>
+
+        {/* Tab content */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="py-6"
+          >
+            {activeTab === 'resumen' && (
+              <ResumenTab
+                analisis={analisis}
+                hallazgos={hallazgos}
+                tasaCumplimiento={tasaCumplimiento}
+                datosDimensiones={datosDimensiones}
+                datosCategoria={datosCategoria}
+                datosRiesgo={datosRiesgo}
+              />
+            )}
+            {activeTab === 'medidas' && (
+              <MedidasTab hallazgos={hallazgos} />
+            )}
+            {activeTab === 'dimensiones' && (
+              <DimensionesTab
+                dimensions={datosDimensiones}
+                dimensionDetails={dimensionDetails}
+              />
+            )}
+            {activeTab === 'riesgos' && (
+              <RiesgosTab
+                hallazgos={hallazgos}
+                datosRiesgo={datosRiesgo}
+              />
+            )}
+          </motion.div>
+        </AnimatePresence>
       </div>
 
-      {/* Resumen de costes */}
+      {/* ── Cost summary ─────────────────────────────────────────── */}
       {analisis.costo_estimado_usd > 0 && (
-        <div className="text-xs text-gray-400 text-right">
+        <div className="text-xs text-text-placeholder text-right pb-4">
           Coste estimado del analisis: ${analisis.costo_estimado_usd.toFixed(4)} USD |{' '}
           Tokens: {analisis.total_tokens_entrada + analisis.total_tokens_salida}
         </div>
       )}
     </div>
   )
-}
-
-function TarjetaEstadistica({ etiqueta, valor, color, icono }: {
-  etiqueta: string; valor: string | number; color: string; icono?: React.ReactNode
-}) {
-  return (
-    <div className="card p-4 text-center">
-      {icono && <div className={`${color} flex justify-center mb-1`}>{icono}</div>}
-      <p className={`text-2xl font-bold ${color}`}>{valor}</p>
-      <p className="text-xs text-gray-500">{etiqueta}</p>
-    </div>
-  )
-}
-
-function IconoCumplimiento({ nivel }: { nivel: NivelCumplimiento }) {
-  switch (nivel) {
-    case 'CONFORME': return <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
-    case 'PARCIALMENTE_CONFORME': return <AlertTriangle className="h-5 w-5 text-yellow-500 flex-shrink-0" />
-    case 'NO_CONFORME': return <XCircle className="h-5 w-5 text-red-500 flex-shrink-0" />
-    case 'NO_APLICA': return <MinusCircle className="h-5 w-5 text-gray-400 flex-shrink-0" />
-  }
-}
-
-function BadgeCumplimiento({ nivel }: { nivel: NivelCumplimiento }) {
-  const clases: Record<NivelCumplimiento, string> = {
-    CONFORME: 'badge-compliant',
-    PARCIALMENTE_CONFORME: 'badge-partial',
-    NO_CONFORME: 'badge-non-compliant',
-    NO_APLICA: 'badge-not-applicable',
-  }
-  const etiquetas: Record<NivelCumplimiento, string> = {
-    CONFORME: 'Cumple',
-    PARCIALMENTE_CONFORME: 'Parcial',
-    NO_CONFORME: 'No Cumple',
-    NO_APLICA: 'N/A',
-  }
-  return <span className={clases[nivel]}>{etiquetas[nivel]}</span>
-}
-
-function BadgePrioridad({ prioridad }: { prioridad: PrioridadHallazgo }) {
-  const clases: Record<PrioridadHallazgo, string> = {
-    CRITICA: 'bg-red-600 text-white',
-    ALTA: 'bg-red-100 text-red-700',
-    MEDIA: 'bg-yellow-100 text-yellow-700',
-    BAJA: 'bg-gray-100 text-gray-600',
-  }
-  return <span className={`text-xs px-1.5 py-0.5 rounded font-medium ${clases[prioridad]}`}>{prioridad}</span>
 }

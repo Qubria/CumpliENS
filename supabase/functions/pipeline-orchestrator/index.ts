@@ -32,7 +32,8 @@ Deno.serve(async (req: Request) => {
 
     const supabase = crearClienteServicio()
     const urlBase = Deno.env.get('SUPABASE_URL')!
-    const claveServicio = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+    // Reenviar el Authorization header de la peticion entrante para llamadas internas
+    const authHeader = req.headers.get('Authorization') ?? `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!}`
 
     // Obtener detalles del analisis
     const { data: analisis, error: errorConsulta } = await supabase
@@ -82,7 +83,7 @@ Deno.serve(async (req: Request) => {
       const respuestaEmb = await fetch(`${urlBase}/functions/v1/generate-embeddings`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${claveServicio}`,
+          'Authorization': authHeader,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -124,7 +125,7 @@ Deno.serve(async (req: Request) => {
         const respuestaEmbTec = await fetch(`${urlBase}/functions/v1/generate-embeddings`, {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${claveServicio}`,
+            'Authorization': authHeader,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
@@ -167,7 +168,7 @@ Deno.serve(async (req: Request) => {
     const respuestaFase1 = await fetch(`${urlBase}/functions/v1/analyze-phase1`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${claveServicio}`,
+        'Authorization': authHeader,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ analisisId }),

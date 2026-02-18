@@ -1,57 +1,197 @@
+/* --- Google Fonts (must precede all other rules) --- */
+@import url("https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ===================================================================
+   CumpliENS Design System
+   Inspired by Monday.com: white, clean, airy, no black, modern
+   Primary: Indigo #4F46E5 (Tailwind indigo-600)
+   Font: Figtree (body) + JetBrains Mono (code/IDs)
+   =================================================================== */
+
+/* ===================================================================
+   :root — CSS Custom Property values (source of truth)
+   Light-only: NO dark mode per design decision
+   =================================================================== */
+:root {
+  --radius: 0.625rem; /* 10px */
+
+  /* --- Core shadcn/ui tokens (Indigo-based) --- */
+  --background: #FAFBFF;
+  --foreground: #1E1B4B;
+  --card: #FFFFFF;
+  --card-foreground: #1E1B4B;
+  --popover: #FFFFFF;
+  --popover-foreground: #1E1B4B;
+  --primary: #4F46E5;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F0F1FE;
+  --secondary-foreground: #1E1B4B;
+  --muted: #F5F5F9;
+  --muted-foreground: #6B7280;
+  --accent: #7C3AED;
+  --accent-foreground: #FFFFFF;
+  --destructive: #EF4444;
+  --border: #E5E7EB;
+  --input: #E5E7EB;
+  --ring: #818CF8;
+
+  /* --- Chart colors: 5 ENS dimensions --- */
+  --chart-1: #6366F1;
+  --chart-2: #14B8A6;
+  --chart-3: #F59E0B;
+  --chart-4: #EC4899;
+  --chart-5: #8B5CF6;
+
+  /* --- Sidebar --- */
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #1E1B4B;
+  --sidebar-primary: #4F46E5;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #F0F1FE;
+  --sidebar-accent-foreground: #1E1B4B;
+  --sidebar-border: #E5E7EB;
+  --sidebar-ring: #818CF8;
+
+  /* --- Surface variants --- */
+  --surface: #FFFFFF;
+  --surface-subtle: #F0F1FE;
+  --surface-muted: #F5F5F9;
+  --surface-wash: #EEF0FF;
+
+  /* --- Compliance Status Badges --- */
+  --cumple-bg: #D1FAE5;
+  --cumple-text: #15803D;
+  --cumple-icon: #22C55E;
+  --parcial-bg: #FEF3C7;
+  --parcial-text: #B45309;
+  --parcial-icon: #F59E0B;
+  --nocumple-bg: #FEE2E2;
+  --nocumple-text: #B91C1C;
+  --nocumple-icon: #EF4444;
+  --noaplica-bg: #F3F4F6;
+  --noaplica-text: #6B7280;
+  --noaplica-icon: #9CA3AF;
+
+  /* --- ENS Categories --- */
+  --ens-basica-bg: #DBEAFE;
+  --ens-basica: #3B82F6;
+  --ens-media-bg: #E0E7FF;
+  --ens-media: #4F46E5;
+  --ens-alta-bg: #EDE9FE;
+  --ens-alta: #7C3AED;
+
+  /* --- Risk Levels --- */
+  --risk-critico-bg: #FEE2E2;
+  --risk-critico: #DC2626;
+  --risk-alto-bg: #FFEDD5;
+  --risk-alto: #EA580C;
+  --risk-medio-bg: #FEF3C7;
+  --risk-medio: #F59E0B;
+  --risk-bajo-bg: #DCFCE7;
+  --risk-bajo: #22C55E;
+
+  /* --- Border variants --- */
+  --border-subtle: #F3F4F6;
+  --border-strong: #D1D5DB;
+  --border-focus: #818CF8;
+
+  /* --- Text variants (NO pure black) --- */
+  --text-heading: #1E1B4B;
+  --text-body: #4B5563;
+  --text-muted: #6B7280;
+  --text-placeholder: #9CA3AF;
+
+  /* --- Accent Violet (AI/Premium) --- */
+  --accent-violet-bg: #F5F3FF;
+  --accent-violet: #8B5CF6;
+  --accent-violet-strong: #7C3AED;
+
+  /* --- Shadows (Stripe-style) --- */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 8px -2px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 12px 24px -4px rgba(0, 0, 0, 0.06), 0 4px 8px -2px rgba(0, 0, 0, 0.03);
+}
+
+/* ===================================================================
+   Base layer — Global resets and defaults
+   =================================================================== */
 @layer base {
+  * {
+    border-color: var(--border);
+  }
   body {
-    @apply bg-gray-50 text-gray-900;
+    @apply bg-background text-foreground antialiased;
+    font-family: "Figtree", ui-sans-serif, system-ui, sans-serif;
+  }
+  code, .font-mono {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
   }
 }
 
+/* ===================================================================
+   Component layer — Reusable component classes
+   =================================================================== */
 @layer components {
   .btn-primary {
-    @apply bg-primary-600 text-white px-4 py-2 rounded-lg font-medium
-           hover:bg-primary-700 transition-colors duration-200
+    @apply bg-primary text-white px-4 py-2 rounded-lg font-medium
+           hover:opacity-90 transition-colors duration-200
            disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
   .btn-secondary {
-    @apply bg-white text-gray-700 px-4 py-2 rounded-lg font-medium
-           border border-gray-300 hover:bg-gray-50 transition-colors duration-200
+    @apply bg-white text-foreground px-4 py-2 rounded-lg font-medium
+           border border-border hover:bg-secondary transition-colors duration-200
            disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
-  .card {
-    @apply bg-white rounded-xl border border-gray-200 shadow-sm;
-  }
-
-  .badge-compliant {
-    @apply bg-green-100 text-green-800 px-2.5 py-0.5 rounded-full text-xs font-medium;
-  }
-
-  .badge-partial {
-    @apply bg-yellow-100 text-yellow-800 px-2.5 py-0.5 rounded-full text-xs font-medium;
-  }
-
-  .badge-non-compliant {
-    @apply bg-red-100 text-red-800 px-2.5 py-0.5 rounded-full text-xs font-medium;
-  }
-
-  .badge-not-applicable {
-    @apply bg-gray-100 text-gray-600 px-2.5 py-0.5 rounded-full text-xs font-medium;
-  }
-
   .input-field {
-    @apply w-full px-3 py-2 text-sm border border-gray-300 rounded-lg
-           focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500
-           disabled:bg-gray-100 disabled:cursor-not-allowed;
+    @apply w-full px-3 py-2 text-sm border border-input rounded-lg
+           focus:outline-none focus:ring-2 focus:ring-ring focus:border-primary
+           disabled:bg-muted disabled:cursor-not-allowed;
   }
 }
 
-/* Print styles for report generation */
+/* ===================================================================
+   Upload zone
+   =================================================================== */
+.upload-zone {
+  background: #FFFFFF;
+  border: 1.5px dashed var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-xs);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.upload-zone:hover {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.upload-zone.has-file {
+  border-style: solid;
+  border-color: var(--cumple-icon);
+}
+
+/* ===================================================================
+   Brand utility
+   =================================================================== */
+.bg-brand {
+  background: var(--primary);
+}
+
+/* ===================================================================
+   Print styles for report generation
+   =================================================================== */
 @media print {
   body {
-    @apply bg-white text-black;
+    @apply bg-white;
+    color: #000;
     font-size: 11pt;
     line-height: 1.5;
   }
@@ -62,10 +202,5 @@
 
   .page-break {
     page-break-before: always;
-  }
-
-  .card {
-    @apply shadow-none border;
-    break-inside: avoid;
   }
 }

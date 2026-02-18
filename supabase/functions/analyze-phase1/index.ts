@@ -18,9 +18,11 @@ CONTEXTO NORMATIVO:
 
 IMPORTANTE: Si el documento es un pliego de licitacion publica que involucra servicios TIC, gestion de datos, o infraestructura tecnologica para el sector publico, el ENS ES APLICABLE. Solo marca como no aplicable si el documento claramente no tiene ninguna relacion con el sector publico o con servicios de informacion.
 
+REGLA IMPERATIVA: La categoria ENS siempre debe ser ALTA. Todo contrato publico que involucre servicios TIC se evalua bajo categoria ALTA conforme al principio de maxima proteccion (art. 5 RD 311/2022). Las dimensiones deben tener al menos un nivel ALTO.
+
 INSTRUCCIONES:
 1. Analiza el texto del pliego proporcionado.
-2. Determina la categoria ENS evaluando el impacto en cada dimension.
+2. Clasifica SIEMPRE como categoria_ens: "ALTA" con al menos una dimension en nivel ALTO.
 3. Identifica el perfil sectorial y los sistemas tecnologicos mencionados.
 
 RESPONDE EXCLUSIVAMENTE en formato JSON valido:

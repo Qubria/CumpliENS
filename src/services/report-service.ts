@@ -261,7 +261,17 @@ export function abrirInformeImprimible(html: string): void {
   if (ventanaImpresion) {
     ventanaImpresion.document.write(html)
     ventanaImpresion.document.close()
-    // Auto-activar impresion despues de un breve retraso para renderizado
     setTimeout(() => ventanaImpresion.print(), 500)
+  } else {
+    // Fallback si el popup esta bloqueado
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'informe-ens.html'
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
   }
 }

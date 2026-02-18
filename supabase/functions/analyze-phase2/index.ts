@@ -158,7 +158,8 @@ Deno.serve(async (req: Request) => {
     if (!analisis) throw new Error('Analisis no encontrado')
     if (!analisis.categoria_ens) throw new Error('Fase 1 no completada')
 
-    const categoria = analisis.categoria_ens
+    // SIEMPRE evaluar como ALTA independientemente de la clasificacion de Fase 1
+    const categoria = 'ALTA'
     const idsPliegosRAG = [analisis.documento_objetivo_id]
     if (analisis.documento_tecnico_id) idsPliegosRAG.push(analisis.documento_tecnico_id as string)
 
@@ -268,18 +269,23 @@ ${textoPliego}`
 
       // Llamar a Claude
       try {
-        const promptSistema = `Eres un auditor ENS (Esquema Nacional de Seguridad, RD 311/2022) verificando el cumplimiento de un pliego de contratacion publica.
+        const promptSistema = `Eres letrado de Derecho Publico evaluando el cumplimiento ENS de un pliego de contratacion publica desde la perspectiva de un recurso especial (arts. 44-60 LCSP).
 
-CATEGORIA DEL SISTEMA: ${categoria}
+CATEGORIA DEL SISTEMA: ALTA (siempre se evalua contra los requisitos maximos del RD 311/2022, Anexo II, nivel ALTO).
+
+PERSPECTIVA JURIDICA: Cada control se evalua como potencial vicio impugnable del pliego. Las infracciones del ENS en categoria ALTA constituyen infracciones de norma reglamentaria imperativa (art. 47.1.e LPAC).
 
 INSTRUCCIONES:
-1. Para cada control ENS, compara los REQUISITOS de las normas CCN-STIC con la EVIDENCIA del pliego.
-2. Si el pliego no aborda el control o no hay evidencia: NO_CONFORME.
-3. Si el pliego lo aborda parcialmente o con ambiguedad: PARCIALMENTE_CONFORME.
-4. Si el pliego cumple claramente los requisitos: CONFORME.
+1. Para cada control ENS, compara los REQUISITOS de categoria ALTA de las normas CCN-STIC con la EVIDENCIA del pliego.
+2. Si el pliego no aborda el control, no menciona las medidas de categoria ALTA, o no hay evidencia: NO_CONFORME (omision normativa impugnable).
+3. Si el pliego lo aborda parcialmente, solo cumple requisitos de MEDIA/BASICA pero no ALTA, o tiene ambiguedad: PARCIALMENTE_CONFORME (clausula viciada).
+4. Si el pliego cumple claramente los requisitos de categoria ALTA: CONFORME.
 5. Si el control no aplica al tipo de contrato: NO_APLICA.
-6. Usa razonamiento IRAC (Issue, Rule, Application, Conclusion) para cada evaluacion.
+6. Usa razonamiento IRAC juridico para cada evaluacion: Issue (vicio del pliego), Rule (norma imperativa infringida), Application (nexo clausula-norma), Conclusion (consecuencia juridica).
 7. Cita textualmente del pliego cuando encuentres evidencia.
+8. En descripcion_brecha: identifica que medida ALTA especifica falta (cita el requisito concreto del Anexo II para categoria ALTA).
+9. En recomendacion: redacta como clausula que deberia incluir el pliego para cumplir categoria ALTA.
+10. VOCABULARIO: Usa "infraccion", "omision normativa", "clausula viciada", "vicio del pliego". NO uses "hallazgo", "brecha", "gap".
 
 RESPONDE EXCLUSIVAMENTE en JSON valido (array):
 [

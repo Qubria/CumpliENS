@@ -1,4 +1,21 @@
-import type { DatosRecursoCompleto } from '@/types/recurso'
+import type {
+  DatosRecursoCompleto,
+  ContenidoRecursoV4,
+  ContenidoRecursoV3,
+  ContenidoRecursoV2,
+  ContenidoRecursoLegacy,
+  AntecedenteHecho,
+  FundamentoCascada,
+  FundamentoCascadaV4,
+  SeccionCausasNulidad,
+  SeccionCausasNulidadV4,
+  CausaNulidadV4,
+  CausaNulidadDinamica,
+  SeccionOtrosies,
+  SeccionLegitimacionV3,
+  SeccionActoRecurribleV3,
+} from '@/types/recurso'
+import { esFormatoV2, esFormatoV3, esFormatoV4, esFormatoV5, esCausasDinamicas } from '@/types/recurso'
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -11,6 +28,11 @@ function escaparHTML(texto: string | null | undefined): string {
     .replace(/"/g, '&quot;')
 }
 
+function textoSeguro(valor: string | null | undefined, fallback = '[Pendiente de redaccion]'): string {
+  const t = valor?.trim()
+  return t && t.length > 0 ? t : fallback
+}
+
 function formatearMoneda(valor: number | undefined): string {
   if (valor === undefined || valor === null) return 'N/D'
   return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(valor)
@@ -21,9 +43,1642 @@ function formatearFecha(fecha: string | undefined): string {
   return fecha
 }
 
-// ─── CSS ─────────────────────────────────────────────────────────────────────
+// ─── CSS v2: Georgia 11.5pt, margenes 3cm izq / 2.5cm resto ────────────────
 
-function generarCSS(): string {
+function generarCSS_v2(): string {
+  return `
+    @page {
+      size: A4;
+      margin: 2.5cm 2.5cm 2.5cm 3cm;
+      @bottom-center {
+        content: "Pagina " counter(page) " de " counter(pages);
+        font-size: 8pt;
+        color: #94a3b8;
+      }
+    }
+
+    @media print {
+      .page-break { page-break-before: always; }
+      .no-print { display: none; }
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-size: 11.5pt;
+      line-height: 1.7;
+      color: #1a202c;
+      max-width: 210mm;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1 {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-size: 15pt;
+      color: #1e3a8a;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    h2.section-header {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      color: #1e3a8a;
+      font-size: 15pt;
+      border-bottom: 3px solid #1e3a8a;
+      padding-bottom: 8px;
+      margin: 30px 0 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    h3 {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      color: #2563eb;
+      font-size: 12pt;
+      margin: 20px 0 10px;
+      font-weight: bold;
+    }
+
+    h4 {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      color: #334155;
+      font-size: 11pt;
+      margin: 14px 0 8px;
+      font-style: italic;
+    }
+
+    p { margin: 8px 0; text-align: justify; }
+
+    /* Cover page */
+    .cover {
+      text-align: center;
+      padding: 100px 40px 60px;
+      min-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .cover h1 {
+      font-size: 24pt;
+      color: #1e3a8a;
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+    .cover .subtitle {
+      font-size: 12pt;
+      color: #4a5568;
+      margin-bottom: 30px;
+      font-style: italic;
+    }
+    .cover .meta-table {
+      text-align: left;
+      margin: 20px auto;
+      border-collapse: collapse;
+      font-size: 10pt;
+    }
+    .cover .meta-table td {
+      padding: 4px 12px;
+      border: none;
+      vertical-align: top;
+    }
+    .cover .meta-table td:first-child {
+      font-weight: 700;
+      color: #1e3a8a;
+      white-space: nowrap;
+    }
+    .cover .classification {
+      margin-top: 30px;
+      padding: 8px 24px;
+      border: 2px solid #1e3a8a;
+      display: inline-block;
+      font-size: 10pt;
+      font-weight: 700;
+      color: #1e3a8a;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .page-break { page-break-before: always; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      font-size: 10pt;
+    }
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 8px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: #1e3a8a;
+      color: white;
+      font-weight: 600;
+      font-size: 9pt;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    tr:nth-child(even) { background: #f8fafc; }
+
+    .legal-block {
+      background: #f8fafc;
+      border-left: 4px solid #1e3a8a;
+      padding: 16px 20px;
+      margin: 14px 0;
+      border-radius: 0 6px 6px 0;
+    }
+    .legal-block p { margin: 6px 0; }
+
+    .highlight-box {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 14px 0;
+    }
+
+    .cascada-bloque {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 16px 0;
+      break-inside: avoid;
+    }
+    .cascada-campo {
+      margin: 8px 0;
+      padding: 8px 12px;
+      background: #f8fafc;
+      border-left: 3px solid #3b82f6;
+      border-radius: 0 4px 4px 0;
+    }
+    .cascada-campo .campo-etiqueta {
+      font-size: 9pt;
+      font-weight: 700;
+      color: #1e3a8a;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin-bottom: 4px;
+    }
+    .cascada-campo .campo-texto {
+      font-size: 10.5pt;
+      color: #334155;
+    }
+
+    .analisis-juridico {
+      background: #eff6ff;
+      border-left: 4px solid #2563eb;
+      padding: 16px 20px;
+      margin: 12px 0 20px;
+      border-radius: 0 6px 6px 0;
+      font-size: 10.5pt;
+      color: #1e293b;
+    }
+    .analisis-juridico .aj-titulo {
+      font-size: 9pt;
+      font-weight: 700;
+      color: #1e3a8a;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin-bottom: 8px;
+    }
+
+    .jurisprudencia-bloque {
+      background: #fefce8;
+      border-left: 3px solid #ca8a04;
+      padding: 10px 14px;
+      margin: 8px 0;
+      font-size: 10pt;
+      color: #713f12;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .causa-card {
+      border: 1px solid #e2e8f0;
+      border-left: 4px solid #dc2626;
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin: 12px 0;
+      break-inside: avoid;
+    }
+    .causa-card .causa-base {
+      font-size: 9pt;
+      font-weight: 700;
+      color: #dc2626;
+      margin-bottom: 4px;
+    }
+    .causa-card .causa-titulo {
+      font-weight: 700;
+      color: #1e3a8a;
+      font-size: 11pt;
+      margin-bottom: 6px;
+    }
+
+    .clausula-card {
+      border: 1px solid #e2e8f0;
+      border-left: 4px solid #ef4444;
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin: 12px 0;
+      break-inside: avoid;
+    }
+    .clausula-card .clausula-header {
+      font-weight: 700;
+      color: #1e3a8a;
+      font-size: 10pt;
+      margin-bottom: 6px;
+    }
+    .clausula-card .clausula-meta {
+      font-size: 9pt;
+      color: #64748b;
+      margin-bottom: 8px;
+    }
+    .clausula-card .clausula-text {
+      font-style: italic;
+      font-size: 10pt;
+      color: #334155;
+      padding: 8px 12px;
+      background: #fef2f2;
+      border-radius: 4px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 8pt;
+      font-weight: 600;
+    }
+    .badge-danger { background: #fee2e2; color: #991b1b; }
+    .badge-warning { background: #fef3c7; color: #92400e; }
+
+    .toc { margin: 20px 0; }
+    .toc-entry {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 4px 0;
+      border-bottom: 1px dotted #cbd5e1;
+      font-size: 10pt;
+    }
+    .toc-entry.main {
+      font-weight: 700;
+      color: #1e3a8a;
+      font-size: 11pt;
+      margin-top: 6px;
+    }
+
+    .footer {
+      text-align: center;
+      color: #94a3b8;
+      font-size: 8pt;
+      margin-top: 40px;
+      padding-top: 16px;
+      border-top: 1px solid #e2e8f0;
+    }
+  `
+}
+
+// ─── v2 Section Generators (8 secciones Manual de Formalidades) ─────────────
+
+function generarPortada_v2(datos: DatosRecursoCompleto): string {
+  const f = datos.datosFormulario
+  return `
+  <div class="cover">
+    <h1>RECURSO ESPECIAL EN MATERIA<br>DE CONTRATACION</h1>
+    <p class="subtitle">Arts. 44 a 60 de la Ley 9/2017, de Contratos del Sector Publico</p>
+    <p style="font-size: 11pt; color: #334155; max-width: 500px; margin: 0 auto 10px;">Contra los pliegos del expediente n.&ordm; ${escaparHTML(f.expediente_numero)}</p>
+    ${f.expediente_denominacion ? `<p style="font-size: 10pt; color: #4a5568; max-width: 500px; margin: 0 auto 20px;">&laquo;${escaparHTML(f.expediente_denominacion)}&raquo;</p>` : ''}
+    <p style="font-size: 10pt; color: #64748b; margin-bottom: 20px;">Con solicitud de medida cautelar de suspension del procedimiento</p>
+
+    <table class="meta-table">
+      <tr><td>Recurrente:</td><td>${escaparHTML(f.recurrente_denominacion)}</td></tr>
+      <tr><td>CIF:</td><td>${escaparHTML(f.recurrente_cif)}</td></tr>
+      <tr><td>Expediente:</td><td>${escaparHTML(f.expediente_numero)}</td></tr>
+      <tr><td>Organo contratacion:</td><td>${escaparHTML(f.organo_contratacion)}</td></tr>
+      <tr><td>Tribunal:</td><td>${escaparHTML(f.tribunal_competente)}</td></tr>
+      <tr><td>Fecha:</td><td>${escaparHTML(datos.fechaGeneracion)}</td></tr>
+    </table>
+
+    <div class="classification">Recurso Especial &mdash; Art. 44 LCSP</div>
+  </div>`
+}
+
+function generarIndice_v2(): string {
+  return `
+  <div class="page-break"></div>
+  <h2 class="section-header">INDICE</h2>
+
+  <div class="toc">
+    <div class="toc-entry main"><span>I. Encabezamiento</span></div>
+    <div class="toc-entry main"><span>II. Antecedentes de Hecho</span></div>
+    <div class="toc-entry main"><span>III. Fundamentos de Derecho</span></div>
+    <div class="toc-entry main"><span>IV. Causas de Nulidad</span></div>
+    <div class="toc-entry main"><span>V. Medidas Cautelares</span></div>
+    <div class="toc-entry main"><span>VI. Suplico / Petitum</span></div>
+    <div class="toc-entry main"><span>VII. Otrosies</span></div>
+    <div class="toc-entry main"><span>VIII. Documentacion</span></div>
+  </div>`
+}
+
+/** Seccion I: ENCABEZAMIENTO (merge de antiguas I-V) */
+function generarSeccionI_v2(datos: DatosRecursoCompleto): string {
+  const f = datos.datosFormulario
+  return `
+  <div class="page-break"></div>
+  <h2 class="section-header">I. ENCABEZAMIENTO</h2>
+
+  <div class="legal-block">
+    <p><strong>AL ${escaparHTML(f.tribunal_competente).toUpperCase()}</strong></p>
+    ${f.tribunal_direccion ? `<p>${escaparHTML(f.tribunal_direccion)}</p>` : ''}
+  </div>
+
+  <p>D./D.&ordf; <strong>${escaparHTML(f.representante_nombre)}</strong>, en calidad de <strong>${escaparHTML(f.representante_titulo)}</strong> de la entidad <strong>${escaparHTML(f.recurrente_denominacion)}</strong> (CIF: ${escaparHTML(f.recurrente_cif)}), con domicilio social en ${escaparHTML(f.recurrente_domicilio)}${f.recurrente_registro_mercantil ? `, inscrita en el Registro Mercantil (${escaparHTML(f.recurrente_registro_mercantil)})` : ''}${f.recurrente_email ? `, con correo electronico a efectos de notificaciones: ${escaparHTML(f.recurrente_email)}` : ''}, ante ese Tribunal comparece y, como mejor proceda en Derecho,</p>
+
+  <p><strong>DICE:</strong></p>
+
+  <p>Que, al amparo de lo dispuesto en los articulos 44 y siguientes de la Ley 9/2017, de 8 de noviembre, de Contratos del Sector Publico (en adelante, LCSP), dentro del plazo legalmente establecido, interpone <strong>RECURSO ESPECIAL EN MATERIA DE CONTRATACION</strong> contra los pliegos reguladores del expediente de contratacion n.&ordm; ${escaparHTML(f.expediente_numero)}, denominado &laquo;${escaparHTML(f.expediente_denominacion)}&raquo;, tramitado por ${escaparHTML(f.organo_contratacion)}${f.organo_nivel ? ` (ambito ${escaparHTML(f.organo_nivel)})` : ''}, con solicitud de medida cautelar de suspension del procedimiento de adjudicacion, y ello en base a los siguientes antecedentes de hecho y fundamentos de derecho.</p>
+
+  <div class="highlight-box">
+    <p><strong>Datos del procedimiento:</strong></p>
+    <p><strong>Tipo contractual:</strong> ${escaparHTML(f.expediente_tipo_contractual)} &mdash; Procedimiento ${escaparHTML(f.expediente_procedimiento)}</p>
+    ${f.expediente_valor_estimado ? `<p><strong>Valor estimado:</strong> ${formatearMoneda(f.expediente_valor_estimado)}</p>` : ''}
+    ${f.expediente_presupuesto_base ? `<p><strong>Presupuesto base:</strong> ${formatearMoneda(f.expediente_presupuesto_base)}</p>` : ''}
+    ${f.expediente_duracion ? `<p><strong>Duracion:</strong> ${escaparHTML(f.expediente_duracion)}</p>` : ''}
+    ${f.expediente_cpv ? `<p><strong>CPV:</strong> ${escaparHTML(f.expediente_cpv)}</p>` : ''}
+    ${f.es_contrato_sara ? `<p><strong>Contrato sujeto a regulacion armonizada (SARA).</strong></p>` : ''}
+  </div>
+
+  <h3>Legitimacion activa</h3>
+  <p>La legitimacion activa de esta parte se fundamenta en el articulo 48 de la LCSP, que reconoce legitimacion a toda persona cuyos derechos o intereses legitimos se hayan visto perjudicados o puedan resultar afectados por las decisiones objeto de recurso. La entidad recurrente ostenta plena capacidad de obrar conforme al articulo 65 de la LCSP y no concurre ninguna de las prohibiciones de contratar previstas en el articulo 71 de la LCSP.</p>
+
+  <h3>Acto recurrible</h3>
+  <p>El acto impugnado &mdash;los pliegos reguladores del expediente&mdash; es susceptible de recurso especial conforme al articulo 44.2.a) de la LCSP, en cuanto acto de tramite que determina directa e irremediablemente las condiciones de concurrencia al procedimiento.</p>
+
+  <h3>Plazo y admisibilidad</h3>
+  <div class="highlight-box">
+    <table style="border: none;">
+      <tr><td style="border: none; font-weight: 700; width: 200px;">Dies a quo:</td><td style="border: none;">${formatearFecha(f.dies_a_quo) !== 'N/D' ? formatearFecha(f.dies_a_quo) : 'Dia siguiente a la publicacion del acto impugnado'}</td></tr>
+      <tr><td style="border: none; font-weight: 700;">Dies ad quem:</td><td style="border: none;">${formatearFecha(f.dies_ad_quem) !== 'N/D' ? formatearFecha(f.dies_ad_quem) : 'Decimoquinto dia habil desde el dies a quo'}</td></tr>
+      ${f.fecha_publicacion_perfil ? `<tr><td style="border: none; font-weight: 700;">Publicacion perfil:</td><td style="border: none;">${escaparHTML(f.fecha_publicacion_perfil)}</td></tr>` : ''}
+      ${f.fecha_publicacion_doue ? `<tr><td style="border: none; font-weight: 700;">Publicacion DOUE:</td><td style="border: none;">${escaparHTML(f.fecha_publicacion_doue)}</td></tr>` : ''}
+      <tr><td style="border: none; font-weight: 700;">Fecha presentacion:</td><td style="border: none;">${escaparHTML(datos.fechaGeneracion)}</td></tr>
+    </table>
+  </div>
+
+  <p>El presente recurso se interpone dentro del plazo legal de quince dias habiles previsto en el articulo 50 LCSP${f.dies_a_quo ? `, computado desde el ${escaparHTML(f.dies_a_quo)}` : ''}.</p>`
+}
+
+/** Seccion II: ANTECEDENTES DE HECHO */
+function generarSeccionII_v2(datos: DatosRecursoCompleto, contenido: ContenidoRecursoV2): string {
+  const antecedentes = contenido.antecedentes ?? []
+  const clausulas = datos.clausulasImpugnadas
+
+  let html = `
+  <div class="page-break"></div>
+  <h2 class="section-header">II. ANTECEDENTES DE HECHO</h2>`
+
+  antecedentes.forEach((ant: AntecedenteHecho) => {
+    html += `
+    <h3>${escaparHTML(ant.ordinal)}.- ${escaparHTML(ant.titulo)}</h3>
+    <div class="legal-block">
+      ${escaparHTML(textoSeguro(ant.texto)).split('\n').map(p => `<p>${p}</p>`).join('')}
+      <p style="text-align: right; font-size: 9pt; color: #64748b; font-style: italic;">${escaparHTML(ant.documentoRef)}</p>
+    </div>`
+  })
+
+  // Incluir tabla de clausulas impugnadas
+  if (clausulas.length > 0) {
+    html += `
+    <h3>Clausulas del pliego impugnadas</h3>
+    ${clausulas.map((cl, idx) => `
+    <div class="clausula-card">
+      <div class="clausula-header">Clausula ${idx + 1}: ${escaparHTML(cl.controlId)}</div>
+      <div class="clausula-meta">
+        Norma infringida: ${escaparHTML(cl.normaFuente)} |
+        Gravedad: <span class="badge ${cl.prioridad === 'ALTA' || cl.prioridad === 'CRITICA' ? 'badge-danger' : 'badge-warning'}">${escaparHTML(cl.prioridad)}</span>
+      </div>
+      ${cl.textoClausula ? `<div class="clausula-text">&laquo;${escaparHTML(cl.textoClausula)}&raquo;</div>` : '<p style="font-size: 9pt; color: #64748b;"><em>Omision total en el pliego: sin clausula equivalente al requisito normativo.</em></p>'}
+      ${cl.explicacionIRAC ? `<p style="font-size: 9pt; color: #334155; margin-top: 6px;">${escaparHTML(cl.explicacionIRAC)}</p>` : ''}
+    </div>`).join('')}`
+  }
+
+  return html
+}
+
+/** Seccion III: FUNDAMENTOS DE DERECHO (cascada argumental) */
+function generarSeccionIII_v2(contenido: ContenidoRecursoV2): string {
+  const fundamentos = contenido.fundamentos ?? []
+
+  let html = `
+  <div class="page-break"></div>
+  <h2 class="section-header">III. FUNDAMENTOS DE DERECHO</h2>
+
+  <p>Los fundamentos juridicos del presente recurso se estructuran conforme a la cascada argumental: norma vulnerada, clausula viciada, nexo juridico, doctrina y consecuencia pretendida.</p>`
+
+  fundamentos.forEach((fund: FundamentoCascada, idx: number) => {
+    html += `
+    ${idx > 0 && idx % 3 === 0 ? '<div class="page-break"></div>' : ''}
+    <h3>${escaparHTML(fund.ordinal)}.- ${escaparHTML(fund.titulo)}</h3>
+    <div class="cascada-bloque">
+      <div class="cascada-campo">
+        <div class="campo-etiqueta">1. Norma vulnerada</div>
+        <div class="campo-texto">${escaparHTML(textoSeguro(fund.normaVulnerada))}</div>
+      </div>
+      <div class="cascada-campo">
+        <div class="campo-etiqueta">2. Clausula viciada del pliego</div>
+        <div class="campo-texto">${escaparHTML(textoSeguro(fund.clausulaViciada))}</div>
+      </div>
+      <div class="cascada-campo">
+        <div class="campo-etiqueta">3. Nexo juridico (silogismo)</div>
+        <div class="campo-texto">${escaparHTML(textoSeguro(fund.nexoJuridico))}</div>
+      </div>
+      <div class="cascada-campo">
+        <div class="campo-etiqueta">4. Doctrina y jurisprudencia</div>
+        <div class="campo-texto">${escaparHTML(textoSeguro(fund.doctrinaJurisprudencia))}</div>
+      </div>
+      <div class="cascada-campo" style="border-left-color: #dc2626;">
+        <div class="campo-etiqueta" style="color: #dc2626;">5. Consecuencia pretendida</div>
+        <div class="campo-texto">${escaparHTML(textoSeguro(fund.consecuenciaPretendida))}</div>
+      </div>
+    </div>`
+  })
+
+  return html
+}
+
+/** Seccion IV: CAUSAS DE NULIDAD */
+function generarSeccionIV_v2(contenido: ContenidoRecursoV2): string {
+  const causas = contenido.causasNulidad
+  if (!causas) {
+    return `
+    <div class="page-break"></div>
+    <h2 class="section-header">IV. CAUSAS DE NULIDAD</h2>
+    <div class="highlight-box"><p>[Pendiente de generacion]</p></div>`
+  }
+
+  const lista: { clave: keyof SeccionCausasNulidad; numero: number }[] = [
+    { clave: 'infracciones_reglamentarias', numero: 1 },
+    { clave: 'igualdad_trato', numero: 2 },
+    { clave: 'contenido_imposible', numero: 3 },
+    { clave: 'buena_administracion', numero: 4 },
+    { clave: 'rgpd_concurrente', numero: 5 },
+  ]
+
+  let html = `
+  <div class="page-break"></div>
+  <h2 class="section-header">IV. CAUSAS DE NULIDAD</h2>
+
+  <p>Las infracciones identificadas en los pliegos determinan las siguientes causas de nulidad de pleno derecho conforme a los articulos 47 y 48 de la Ley 39/2015 (LPAC) y articulo 39 de la LCSP:</p>`
+
+  lista.forEach(({ clave, numero }) => {
+    const causa = causas[clave]
+    if (!causa) return
+    html += `
+    <div class="causa-card">
+      <div class="causa-base">${escaparHTML(causa.base)}</div>
+      <div class="causa-titulo">${numero}. ${escaparHTML(causa.titulo)}</div>
+      <p>${escaparHTML(textoSeguro(causa.fundamentacion))}</p>
+    </div>`
+  })
+
+  return html
+}
+
+/** Seccion V: MEDIDAS CAUTELARES */
+function generarSeccionV_v2(contenido: ContenidoRecursoV2): string {
+  const c = contenido.cautelares
+  return `
+  <div class="page-break"></div>
+  <h2 class="section-header">V. MEDIDAS CAUTELARES</h2>
+
+  <p>Al amparo del articulo 56 de la LCSP, esta parte solicita la adopcion de la medida cautelar de <strong>suspension del procedimiento de adjudicacion</strong>, fundamentada en los siguientes presupuestos:</p>
+
+  <h3>Primero. Fumus Boni Iuris (Apariencia de Buen Derecho)</h3>
+  <div class="legal-block">
+    ${escaparHTML(textoSeguro(c?.fumusBoniIuris)).split('\n').map(p => `<p>${p}</p>`).join('')}
+  </div>
+
+  <h3>Segundo. Periculum in Mora (Riesgo de Perdida de Finalidad)</h3>
+  <div class="legal-block">
+    ${escaparHTML(textoSeguro(c?.periculumInMora)).split('\n').map(p => `<p>${p}</p>`).join('')}
+  </div>
+
+  <h3>Tercero. Ponderacion de Intereses</h3>
+  <div class="legal-block">
+    ${escaparHTML(textoSeguro(c?.ponderacionIntereses)).split('\n').map(p => `<p>${p}</p>`).join('')}
+  </div>
+
+  <p>Por todo ello, se solicita a ese Tribunal que acuerde la <strong>suspension inmediata del procedimiento de adjudicacion</strong> hasta la resolucion del presente recurso.</p>`
+}
+
+/** Seccion VI: SUPLICO / PETITUM */
+function generarSeccionVI_v2(datos: DatosRecursoCompleto, contenido: ContenidoRecursoV2): string {
+  const p = contenido.peticion
+  const clausulas = datos.clausulasImpugnadas
+  return `
+  <div class="page-break"></div>
+  <h2 class="section-header">VI. SUPLICO</h2>
+
+  <div class="legal-block" style="border-left-color: #1e3a8a; background: #eff6ff;">
+    <p>Por todo lo expuesto,</p>
+    <p><strong>SUPLICO AL TRIBUNAL</strong> que, teniendo por presentado este escrito con los documentos que se acompanan, se sirva admitirlo y, en su virtud:</p>
+
+    <h4>A) Con caracter principal</h4>
+    ${escaparHTML(textoSeguro(p?.principal)).split('\n').map(pr => `<p>${pr}</p>`).join('')}
+    ${clausulas.length > 0 ? `
+    <p>En particular, declare la nulidad de las siguientes clausulas:</p>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Control ENS</th><th>Norma infringida</th><th>Vicio</th><th>Gravedad</th></tr>
+      </thead>
+      <tbody>
+        ${clausulas.map((cl, idx) => `
+        <tr>
+          <td>${idx + 1}</td>
+          <td>${escaparHTML(cl.controlId)}</td>
+          <td>${escaparHTML(cl.normaFuente)}</td>
+          <td>${escaparHTML(cl.textoClausula).substring(0, 150)}${(cl.textoClausula?.length ?? 0) > 150 ? '...' : ''}</td>
+          <td><span class="badge ${cl.prioridad === 'ALTA' || cl.prioridad === 'CRITICA' ? 'badge-danger' : 'badge-warning'}">${escaparHTML(cl.prioridad)}</span></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+    ` : ''}
+
+    <h4>B) Con caracter subsidiario</h4>
+    ${escaparHTML(textoSeguro(p?.subsidiaria)).split('\n').map(pr => `<p>${pr}</p>`).join('')}
+
+    <h4>C) Como medida cautelar</h4>
+    ${escaparHTML(textoSeguro(p?.cautelar)).split('\n').map(pr => `<p>${pr}</p>`).join('')}
+
+    <p style="margin-top: 16px;"><strong>Todo ello con los demas pronunciamientos que en Derecho procedan.</strong></p>
+
+    <p style="margin-top: 30px; text-align: right;">${escaparHTML(datos.datosFormulario.recurrente_domicilio ? datos.datosFormulario.recurrente_domicilio.split(',').pop()?.trim() || '' : '')}, a ${escaparHTML(datos.fechaGeneracion)}</p>
+    <p style="text-align: right; margin-top: 12px;"><strong>Fdo.: ${escaparHTML(datos.datosFormulario.representante_nombre)}</strong></p>
+    <p style="text-align: right; font-size: 9pt; color: #64748b;">${escaparHTML(datos.datosFormulario.representante_titulo)} de ${escaparHTML(datos.datosFormulario.recurrente_denominacion)}</p>
+  </div>`
+}
+
+/** Seccion VII: OTROSIES */
+function generarSeccionVII_v2(contenido: ContenidoRecursoV2): string {
+  const o = contenido.otrosies as SeccionOtrosies | undefined
+  return `
+  <div class="page-break"></div>
+  <h2 class="section-header">VII. OTROSIES</h2>
+
+  <h3>PRIMER OTROSI. Proposicion de prueba</h3>
+  <div class="legal-block">
+    ${escaparHTML(textoSeguro(o?.proposicionPrueba, 'Se propone como prueba la documental adjunta al presente escrito, asi como pericial tecnica sobre los requisitos del Anexo II del RD 311/2022.')).split('\n').map(p => `<p>${p}</p>`).join('')}
+  </div>
+
+  <h3>SEGUNDO OTROSI. Reclamacion del expediente administrativo</h3>
+  <div class="legal-block">
+    ${escaparHTML(textoSeguro(o?.reclamacionExpediente, 'Se solicita la remision del expediente administrativo completo conforme al articulo 51.3 de la LCSP, en el plazo de dos dias habiles.')).split('\n').map(p => `<p>${p}</p>`).join('')}
+  </div>
+
+  <h3>TERCER OTROSI. Notificaciones</h3>
+  <div class="legal-block">
+    ${escaparHTML(textoSeguro(o?.notificaciones, 'Se designa como direccion a efectos de notificaciones electronicas el correo indicado en el encabezamiento del presente escrito.')).split('\n').map(p => `<p>${p}</p>`).join('')}
+  </div>`
+}
+
+/** Seccion VIII: DOCUMENTACION (indice bates) */
+function generarSeccionVIII_v2(datos: DatosRecursoCompleto): string {
+  const f = datos.datosFormulario
+  const clausulas = datos.clausulasImpugnadas
+
+  return `
+  <div class="page-break"></div>
+  <h2 class="section-header">VIII. DOCUMENTACION</h2>
+
+  <p>Al amparo de lo dispuesto en el articulo 51.2 de la LCSP, se acompana al presente recurso la siguiente documentacion:</p>
+
+  <table>
+    <thead>
+      <tr><th>Doc.</th><th>Titulo</th><th>Descripcion</th></tr>
+    </thead>
+    <tbody>
+      <tr><td style="text-align: center; font-weight: 700;">1</td><td><strong>Poder de representacion</strong></td><td>Acreditacion de facultades para interponer recursos y solicitar cautelares</td></tr>
+      <tr><td style="text-align: center; font-weight: 700;">2</td><td><strong>Escrituras sociales</strong></td><td>Escritura de constitucion, nombramiento del administrador y certificacion registral</td></tr>
+      <tr><td style="text-align: center; font-weight: 700;">3</td><td><strong>PCAP</strong></td><td>Pliego de Clausulas Administrativas Particulares del expediente</td></tr>
+      <tr><td style="text-align: center; font-weight: 700;">4</td><td><strong>PPT</strong></td><td>Pliego de Prescripciones Tecnicas</td></tr>
+      <tr><td style="text-align: center; font-weight: 700;">5</td><td><strong>Anuncio de licitacion</strong></td><td>Publicacion en perfil del contratante${f.fecha_publicacion_perfil ? ` (${escaparHTML(f.fecha_publicacion_perfil)})` : ''}${f.fecha_publicacion_doue ? ` y DOUE (${escaparHTML(f.fecha_publicacion_doue)})` : ''}</td></tr>
+      <tr><td style="text-align: center; font-weight: 700;">6</td><td><strong>Aclaraciones</strong></td><td>Respuestas oficiales y rectificaciones publicadas</td></tr>
+      <tr><td style="text-align: center; font-weight: 700;">7</td><td><strong>Informe tecnico</strong></td><td>Analisis de requisitos ENS y evaluacion de alternativas menos restrictivas</td></tr>
+      <tr><td style="text-align: center; font-weight: 700;">8</td><td><strong>Justificante de registro</strong></td><td>Resguardo electronico acreditativo de la tempestividad de la presentacion</td></tr>
+    </tbody>
+  </table>
+
+  ${clausulas.length > 0 ? `
+  <h3>Tabla de correspondencia: clausulas impugnadas y fundamentos</h3>
+  <table>
+    <thead>
+      <tr><th>Clausula</th><th>Control ENS</th><th>Norma infringida</th><th>Fundamento</th></tr>
+    </thead>
+    <tbody>
+      ${clausulas.map((cl, idx) => `
+      <tr>
+        <td>${idx + 1}</td>
+        <td>${escaparHTML(cl.controlId)}</td>
+        <td>${escaparHTML(cl.normaFuente)}</td>
+        <td>Fundamento ${idx < 2 ? 'Primero' : idx < 4 ? 'Segundo a Cuarto' : 'Quinto a Decimo'}</td>
+      </tr>`).join('')}
+    </tbody>
+  </table>
+  ` : ''}`
+}
+
+// ─── Main v2 HTML Generator ─────────────────────────────────────────────────
+
+function seccionSegura(nombre: string, generador: () => string): string {
+  try {
+    return generador()
+  } catch (err) {
+    console.error(`Error generando seccion ${nombre}:`, err)
+    return `<div class="page-break"></div><div class="highlight-box"><p><strong>Error:</strong> No se pudo generar la seccion ${escaparHTML(nombre)}.</p></div>`
+  }
+}
+
+function generarRecursoHTML_v2(datos: DatosRecursoCompleto): string {
+  const contenido = datos.contenidoRecurso as ContenidoRecursoV2
+
+  return `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>REMC - ${escaparHTML(datos.codigoRecurso)} - ${escaparHTML(datos.datosFormulario.expediente_numero)}</title>
+  <style>${generarCSS_v2()}</style>
+</head>
+<body>
+  ${generarPortada_v2(datos)}
+  ${generarIndice_v2()}
+  ${seccionSegura('I', () => generarSeccionI_v2(datos))}
+  ${seccionSegura('II', () => generarSeccionII_v2(datos, contenido))}
+  ${seccionSegura('III', () => generarSeccionIII_v2(contenido))}
+  ${seccionSegura('IV', () => generarSeccionIV_v2(contenido))}
+  ${seccionSegura('V', () => generarSeccionV_v2(contenido))}
+  ${seccionSegura('VI', () => generarSeccionVI_v2(datos, contenido))}
+  ${seccionSegura('VII', () => generarSeccionVII_v2(contenido))}
+  ${seccionSegura('VIII', () => generarSeccionVIII_v2(datos))}
+
+  <div class="footer">
+    <p>Recurso Especial en Materia de Contratacion &mdash; ${escaparHTML(datos.codigoRecurso)}</p>
+    <p>${escaparHTML(datos.datosFormulario.recurrente_denominacion)} | Expediente ${escaparHTML(datos.datosFormulario.expediente_numero)} | ${escaparHTML(datos.fechaGeneracion)}</p>
+    <p>Documento destinado a su presentacion ante ${escaparHTML(datos.datosFormulario.tribunal_competente)}.</p>
+  </div>
+</body>
+</html>`
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// V3 HTML Generator (12 secciones segun plantilla "base del recurso")
+// ══════════════════════════════════════════════════════════════════════════════
+
+/** Portada Tecnica V3: control versiones + clasificacion + codigo documento */
+function generarPortada_v3(datos: DatosRecursoCompleto): string {
+  const f = datos.datosFormulario
+  return `
+  <div class="cover">
+    <h1>RECURSO ESPECIAL EN MATERIA<br>DE CONTRATACION</h1>
+    <p class="subtitle">Arts. 44 a 60 de la Ley 9/2017, de Contratos del Sector Publico</p>
+    <p style="font-size: 11pt; color: #334155; max-width: 500px; margin: 0 auto 10px;">Contra los pliegos del expediente n.&ordm; ${escaparHTML(f.expediente_numero)}</p>
+    ${f.expediente_denominacion ? `<p style="font-size: 10pt; color: #4a5568; max-width: 500px; margin: 0 auto 20px;">&laquo;${escaparHTML(f.expediente_denominacion)}&raquo;</p>` : ''}
+    <p style="font-size: 10pt; color: #64748b; margin-bottom: 20px;">Con solicitud de medida cautelar de suspension del procedimiento</p>
+
+    <table class="meta-table">
+      <tr><td>Codigo documento:</td><td>${escaparHTML(datos.codigoRecurso)}</td></tr>
+      <tr><td>Recurrente:</td><td>${escaparHTML(f.recurrente_denominacion)}</td></tr>
+      <tr><td>CIF:</td><td>${escaparHTML(f.recurrente_cif)}</td></tr>
+      <tr><td>Expediente:</td><td>${escaparHTML(f.expediente_numero)}</td></tr>
+      <tr><td>Organo contratacion:</td><td>${escaparHTML(f.organo_contratacion)}</td></tr>
+      <tr><td>Tribunal:</td><td>${escaparHTML(f.tribunal_competente)}</td></tr>
+      <tr><td>Fecha:</td><td>${escaparHTML(datos.fechaGeneracion)}</td></tr>
+      <tr><td>Version:</td><td>1.0</td></tr>
+    </table>
+
+    <div class="classification">Recurso Especial &mdash; Art. 44 LCSP</div>
+  </div>`
+}
+
+/** Indice V3: 12 secciones */
+function generarIndice_v3(): string {
+  return `
+  <div class="page-break"></div>
+  <h2 class="section-header">INDICE</h2>
+
+  <div class="toc">
+    <div class="toc-entry main"><span>I. Encabezamiento</span></div>
+    <div class="toc-entry main"><span>II. Comparecencia</span></div>
+    <div class="toc-entry main"><span>III. Legitimacion Activa</span></div>
+    <div class="toc-entry main"><span>IV. Acto Recurrible</span></div>
+    <div class="toc-entry main"><span>V. Plazo y Admisibilidad</span></div>
+    <div class="toc-entry main"><span>VI. Antecedentes de Hecho</span></div>
+    <div class="toc-entry main"><span>VII. Fundamentos de Derecho</span></div>
+    <div class="toc-entry main"><span>VIII. Medidas Cautelares</span></div>
+    <div class="toc-entry main"><span>IX. Suplico / Petitum</span></div>
+    <div class="toc-entry main"><span>Otrosies</span></div>
+    <div class="toc-entry main"><span>X. Documentacion</span></div>
+  </div>`
+}
+
+/** Seccion I V3: ENCABEZAMIENTO (competencia + objeto + perimetro) */
+function generarSeccionI_v3(datos: DatosRecursoCompleto): string {
+  const f = datos.datosFormulario
+  return `
+  <div class="page-break"></div>
+  <h2 class="section-header">I. ENCABEZAMIENTO</h2>
+
+  <div class="legal-block">
+    <p><strong>AL ${escaparHTML(f.tribunal_competente).toUpperCase()}</strong></p>
+    ${f.tribunal_direccion ? `<p>${escaparHTML(f.tribunal_direccion)}</p>` : ''}
+  </div>
+
+  <h3>Competencia</h3>
+  <p>El presente recurso se interpone ante ese Tribunal al amparo de los articulos 44 y siguientes de la Ley 9/2017, de 8 de noviembre, de Contratos del Sector Publico (LCSP), siendo el organo competente para conocer del mismo conforme al articulo 45 de la citada Ley.</p>
+
+  <h3>Objeto del recurso</h3>
+  <p>El presente recurso tiene por objeto la impugnacion de los pliegos reguladores (PCAP y PPT) del expediente de contratacion n.&ordm; ${escaparHTML(f.expediente_numero)}, denominado &laquo;${escaparHTML(f.expediente_denominacion)}&raquo;, tramitado por ${escaparHTML(f.organo_contratacion)}${f.organo_nivel ? ` (ambito ${escaparHTML(f.organo_nivel)})` : ''}, con solicitud de medida cautelar de suspension del procedimiento de adjudicacion.</p>
+
+  <h3>Perimetro de analisis</h3>
+  <div class="highlight-box">
+    <p><strong>Tipo contractual:</strong> ${escaparHTML(f.expediente_tipo_contractual)} &mdash; Procedimiento ${escaparHTML(f.expediente_procedimiento)}</p>
+    ${f.expediente_valor_estimado ? `<p><strong>Valor estimado:</strong> ${formatearMoneda(f.expediente_valor_estimado)}</p>` : ''}
+    ${f.expediente_presupuesto_base ? `<p><strong>Presupuesto base:</strong> ${formatearMoneda(f.expediente_presupuesto_base)}</p>` : ''}
+    ${f.expediente_duracion ? `<p><strong>Duracion:</strong> ${escaparHTML(f.expediente_duracion)}</p>` : ''}
+    ${f.expediente_cpv ? `<p><strong>CPV:</strong> ${escaparHTML(f.expediente_cpv)}</p>` : ''}
+    ${f.es_contrato_sara ? `<p><strong>Contrato sujeto a regulacion armonizada (SARA).</strong></p>` : ''}
+    <p><strong>Marco normativo de referencia:</strong> RD 311/2022 (ENS), categoria ALTA.</p>
+  </div>`
+}
+
+/** Seccion II V3: COMPARECENCIA (datos formulario, sin AI) */
+function generarSeccionII_v3(datos: DatosRecursoCompleto): string {
+  const f = datos.datosFormulario
+  return `
+  <div class="page-break"></div>
+  <h2 class="section-header">II. COMPARECENCIA</h2>
+
+  <h3>Identificacion del recurrente</h3>
+  <p>D./D.&ordf; <strong>${escaparHTML(f.representante_nombre)}</strong>, en calidad de <strong>${escaparHTML(f.representante_titulo)}</strong>
+  ${f.representante_facultades ? `, con facultades para ${escaparHTML(f.representante_facultades)}` : ''}, en nombre y representacion de:</p>
+
+  <div class="highlight-box">
+    <table style="border: none; width: 100%;">
+      <tr><td style="border: none; font-weight: 700; width: 200px; color: #1e3a8a;">Denominacion social:</td><td style="border: none;">${escaparHTML(f.recurrente_denominacion)}</td></tr>
+      <tr><td style="border: none; font-weight: 700; color: #1e3a8a;">CIF:</td><td style="border: none;">${escaparHTML(f.recurrente_cif)}</td></tr>
+      <tr><td style="border: none; font-weight: 700; color: #1e3a8a;">Domicilio social:</td><td style="border: none;">${escaparHTML(f.recurrente_domicilio)}</td></tr>
+      ${f.recurrente_registro_mercantil ? `<tr><td style="border: none; font-weight: 700; color: #1e3a8a;">Registro Mercantil:</td><td style="border: none;">${escaparHTML(f.recurrente_registro_mercantil)}</td></tr>` : ''}
+      ${f.recurrente_objeto_social ? `<tr><td style="border: none; font-weight: 700; color: #1e3a8a;">Objeto social:</td><td style="border: none;">${escaparHTML(f.recurrente_objeto_social)}</td></tr>` : ''}
+      ${f.recurrente_cnae ? `<tr><td style="border: none; font-weight: 700; color: #1e3a8a;">CNAE:</td><td style="border: none;">${escaparHTML(f.recurrente_cnae)}</td></tr>` : ''}
+      ${f.recurrente_email ? `<tr><td style="border: none; font-weight: 700; color: #1e3a8a;">Email notificaciones:</td><td style="border: none;">${escaparHTML(f.recurrente_email)}</td></tr>` : ''}
+      ${f.recurrente_telefono ? `<tr><td style="border: none; font-weight: 700; color: #1e3a8a;">Telefono:</td><td style="border: none;">${escaparHTML(f.recurrente_telefono)}</td></tr>` : ''}
+    </table>
+  </div>
+
+  <h3>Capacidad de obrar</h3>
+  <p>La entidad recurrente ostenta plena capacidad de obrar conforme al articulo 65 de la LCSP, acreditada mediante escritura de constitucion debidamente inscrita en el Registro Mercantil${f.recurrente_registro_mercantil ? ` (${escaparHTML(f.recurrente_registro_mercantil)})` : ''}. No concurre ninguna de las prohibiciones de contratar previstas en el articulo 71 de la LCSP.</p>
+
+  <h3>Representacion</h3>
+  <p>La representacion de la entidad recurrente se acredita mediante poder de representacion otorgado a favor de D./D.&ordf; ${escaparHTML(f.representante_nombre)}, en calidad de ${escaparHTML(f.representante_titulo)}, con facultades suficientes para interponer recursos administrativos y solicitar medidas cautelares (Documento n. 1).</p>`
+}
+
+/** Seccion III V3: LEGITIMACION ACTIVA (AI genera S5) */
+function generarSeccionIII_v3(contenido: ContenidoRecursoV3): string {
+  const leg = contenido.legitimacion as SeccionLegitimacionV3 | undefined
+  if (!leg) {
+    return `
+    <div class="page-break"></div>
+    <h2 class="section-header">III. LEGITIMACION ACTIVA</h2>
+    <div class="highlight-box"><p>[Pendiente de generacion]</p></div>`
+  }
+
+  return `
+  <div class="page-break"></div>
+  <h2 class="section-header">III. LEGITIMACION ACTIVA</h2>
+
+  <h3>Fundamento juridico</h3>
+  <div class="legal-block">
+    ${escaparHTML(textoSeguro(leg.fundamentoLegal)).split('\n').map(p => `<p>${p}</p>`).join('')}
+  </div>
+
+  <h3>Pilar 1. Interes real y efectivo</h3>
+  <div class="legal-block">
+    ${escaparHTML(textoSeguro(leg.interesReal)).split('\n').map(p => `<p>${p}</p>`).join('')}
+  </div>
+
+  <h3>Pilar 2. Aptitud objetiva como potencial licitador</h3>
+  <div class="legal-block">
+    ${escaparHTML(textoSeguro(leg.potencialLicitador)).split('\n').map(p => `<p>${p}</p>`).join('')}
+  </div>
+
+  <h3>Pilar 3. Cadena causal de perjuicio</h3>
+  <div class="legal-block">
+    ${escaparHTML(textoSeguro(leg.perjuicioConcreto)).split('\n').map(p => `<p>${p}</p>`).join('')}
+  </div>
+
+  <div class="highlight-box">
+    <p><strong>Conclusion:</strong> ${escaparHTML(textoSeguro(leg.conclusionLegitimacion))}</p>
+  </div>`
+}
+
+/** Seccion IV V3: ACTO RECURRIBLE (AI genera S5) */
+function generarSeccionIV_v3(contenido: ContenidoRecursoV3): string {
+  const acto = contenido.actoRecurrible as SeccionActoRecurribleV3 | undefined
+  if (!acto) {
+    return `
+    <div class="page-break"></div>
+    <h2 class="section-header">IV. ACTO RECURRIBLE</h2>
+    <div class="highlight-box"><p>[Pendiente de generacion]</p></div>`
+  }
+
+  return `
+  <div class="page-break"></div>
+  <h2 class="section-header">IV. ACTO RECURRIBLE</h2>
+
+  <h3>Tipologia del acto impugnado</h3>
+  <div class="legal-block">
+    ${escaparHTML(textoSeguro(acto.tipologia)).split('\n').map(p => `<p>${p}</p>`).join('')}
+  </div>
+
+  <h3>Tramite cualificado con efectos juridicos directos</h3>
+  <div class="legal-block">
+    ${escaparHTML(textoSeguro(acto.tramiteCualificado)).split('\n').map(p => `<p>${p}</p>`).join('')}
+  </div>
+
+  <h3>Conexion acto-lesion</h3>
+  <div class="legal-block">
+    ${escaparHTML(textoSeguro(acto.conexionLesion)).split('\n').map(p => `<p>${p}</p>`).join('')}
+  </div>
+
+  <div class="highlight-box">
+    <p><strong>Conclusion:</strong> ${escaparHTML(textoSeguro(acto.conclusionRecurribilidad))}</p>
+  </div>`
+}
+
+/** Seccion V V3: PLAZO Y ADMISIBILIDAD (datos formulario, expandido) */
+function generarSeccionV_v3(datos: DatosRecursoCompleto): string {
+  const f = datos.datosFormulario
+  return `
+  <div class="page-break"></div>
+  <h2 class="section-header">V. PLAZO Y ADMISIBILIDAD</h2>
+
+  <h3>Computo del plazo</h3>
+  <p>El articulo 50.1.a) de la LCSP establece un plazo de quince dias habiles para la interposicion del recurso especial contra los pliegos y documentos contractuales estableciendo condiciones.</p>
+
+  <div class="highlight-box">
+    <table style="border: none; width: 100%;">
+      <tr><td style="border: none; font-weight: 700; width: 200px; color: #1e3a8a;">Dies a quo:</td><td style="border: none;">${formatearFecha(f.dies_a_quo) !== 'N/D' ? escaparHTML(f.dies_a_quo!) : 'Dia siguiente a la publicacion del acto impugnado en el perfil del contratante'}</td></tr>
+      <tr><td style="border: none; font-weight: 700; color: #1e3a8a;">Dies ad quem:</td><td style="border: none;">${formatearFecha(f.dies_ad_quem) !== 'N/D' ? escaparHTML(f.dies_ad_quem!) : 'Decimoquinto dia habil desde el dies a quo'}</td></tr>
+      ${f.fecha_publicacion_perfil ? `<tr><td style="border: none; font-weight: 700; color: #1e3a8a;">Publicacion perfil contratante:</td><td style="border: none;">${escaparHTML(f.fecha_publicacion_perfil)}</td></tr>` : ''}
+      ${f.fecha_publicacion_doue ? `<tr><td style="border: none; font-weight: 700; color: #1e3a8a;">Publicacion DOUE:</td><td style="border: none;">${escaparHTML(f.fecha_publicacion_doue)}</td></tr>` : ''}
+      <tr><td style="border: none; font-weight: 700; color: #1e3a8a;">Fecha de presentacion:</td><td style="border: none;">${escaparHTML(datos.fechaGeneracion)}</td></tr>
+    </table>
+  </div>
+
+  <h3>Calendario de dias habiles</h3>
+  <p>A los efectos del computo del plazo, se excluyen los sabados, domingos y festivos nacionales conforme al articulo 30.2 de la Ley 39/2015 (LPAC) y al calendario oficial de dias habiles publicado por resolucion del Ministerio.</p>
+
+  <h3>Tempestividad</h3>
+  <p>El presente recurso se interpone dentro del plazo legal de quince dias habiles previsto en el articulo 50 de la LCSP${f.dies_a_quo ? `, computado desde el ${escaparHTML(f.dies_a_quo)}` : ''}, resultando temporaneo y, por tanto, admisible.</p>
+
+  <h3>Requisitos de admisibilidad</h3>
+  <div class="legal-block">
+    <p>Se cumplen la totalidad de los requisitos de admisibilidad previstos en los articulos 44 a 51 de la LCSP:</p>
+    <p>&bull; <strong>Legitimacion activa</strong> (art. 48 LCSP): acreditada en la Seccion III.</p>
+    <p>&bull; <strong>Acto susceptible de recurso</strong> (art. 44.2 LCSP): acreditado en la Seccion IV.</p>
+    <p>&bull; <strong>Plazo</strong> (art. 50 LCSP): el recurso se presenta dentro de los 15 dias habiles.</p>
+    <p>&bull; <strong>Organo competente</strong> (art. 45 LCSP): el recurso se dirige al tribunal competente.</p>
+    <p>&bull; <strong>Contenido minimo</strong> (art. 51.2 LCSP): el escrito contiene la identificacion del recurrente, acto impugnado, motivos del recurso y petitum.</p>
+  </div>`
+}
+
+/** Seccion VI V3: ANTECEDENTES DE HECHO (reutiliza la v2) */
+function generarSeccionVI_v3(datos: DatosRecursoCompleto, contenido: ContenidoRecursoV3): string {
+  const antecedentes = contenido.antecedentes ?? []
+  const clausulas = datos.clausulasImpugnadas
+
+  let html = `
+  <div class="page-break"></div>
+  <h2 class="section-header">VI. ANTECEDENTES DE HECHO</h2>`
+
+  antecedentes.forEach((ant: AntecedenteHecho) => {
+    html += `
+    <h3>${escaparHTML(ant.ordinal)}.- ${escaparHTML(ant.titulo)}</h3>
+    <div class="legal-block">
+      ${escaparHTML(textoSeguro(ant.texto)).split('\n').map(p => `<p>${p}</p>`).join('')}
+      <p style="text-align: right; font-size: 9pt; color: #64748b; font-style: italic;">${escaparHTML(ant.documentoRef)}</p>
+    </div>`
+  })
+
+  if (clausulas.length > 0) {
+    html += `
+    <h3>Clausulas del pliego impugnadas</h3>
+    ${clausulas.map((cl, idx) => `
+    <div class="clausula-card">
+      <div class="clausula-header">Clausula ${idx + 1}: ${escaparHTML(cl.controlId)}</div>
+      <div class="clausula-meta">
+        Norma infringida: ${escaparHTML(cl.normaFuente)} |
+        Gravedad: <span class="badge ${cl.prioridad === 'ALTA' || cl.prioridad === 'CRITICA' ? 'badge-danger' : 'badge-warning'}">${escaparHTML(cl.prioridad)}</span>
+      </div>
+      ${cl.textoClausula ? `<div class="clausula-text">&laquo;${escaparHTML(cl.textoClausula)}&raquo;</div>` : '<p style="font-size: 9pt; color: #64748b;"><em>Omision total en el pliego: sin clausula equivalente al requisito normativo.</em></p>'}
+      ${cl.explicacionIRAC ? `<p style="font-size: 9pt; color: #334155; margin-top: 6px;">${escaparHTML(cl.explicacionIRAC)}</p>` : ''}
+    </div>`).join('')}`
+  }
+
+  return html
+}
+
+/** Seccion VII V3: FUNDAMENTOS DE DERECHO + CAUSAS DE NULIDAD (fusiona v2 III + IV) */
+function generarSeccionVII_v3(contenido: ContenidoRecursoV3): string {
+  const fundamentos = contenido.fundamentos ?? []
+  const causas = contenido.causasNulidad
+
+  let html = `
+  <div class="page-break"></div>
+  <h2 class="section-header">VII. FUNDAMENTOS DE DERECHO</h2>
+
+  <p>Los fundamentos juridicos del presente recurso se estructuran conforme a la cascada argumental: norma vulnerada, clausula viciada, nexo juridico, doctrina y consecuencia pretendida.</p>`
+
+  fundamentos.forEach((fund: FundamentoCascada, idx: number) => {
+    html += `
+    ${idx > 0 && idx % 3 === 0 ? '<div class="page-break"></div>' : ''}
+    <h3>${escaparHTML(fund.ordinal)}.- ${escaparHTML(fund.titulo)}</h3>
+    <div class="cascada-bloque">
+      <div class="cascada-campo">
+        <div class="campo-etiqueta">1. Norma vulnerada</div>
+        <div class="campo-texto">${escaparHTML(textoSeguro(fund.normaVulnerada))}</div>
+      </div>
+      <div class="cascada-campo">
+        <div class="campo-etiqueta">2. Clausula viciada del pliego</div>
+        <div class="campo-texto">${escaparHTML(textoSeguro(fund.clausulaViciada))}</div>
+      </div>
+      <div class="cascada-campo">
+        <div class="campo-etiqueta">3. Nexo juridico (silogismo)</div>
+        <div class="campo-texto">${escaparHTML(textoSeguro(fund.nexoJuridico))}</div>
+      </div>
+      <div class="cascada-campo">
+        <div class="campo-etiqueta">4. Doctrina y jurisprudencia</div>
+        <div class="campo-texto">${escaparHTML(textoSeguro(fund.doctrinaJurisprudencia))}</div>
+      </div>
+      <div class="cascada-campo" style="border-left-color: #dc2626;">
+        <div class="campo-etiqueta" style="color: #dc2626;">5. Consecuencia pretendida</div>
+        <div class="campo-texto">${escaparHTML(textoSeguro(fund.consecuenciaPretendida))}</div>
+      </div>
+    </div>`
+  })
+
+  // Causas de nulidad integradas dentro de Fundamentos
+  if (causas) {
+    html += `
+    <div class="page-break"></div>
+    <h3>Causas de Nulidad de Pleno Derecho</h3>
+
+    <p>Las infracciones identificadas en los pliegos determinan las siguientes causas de nulidad de pleno derecho conforme a los articulos 47 y 48 de la Ley 39/2015 (LPAC) y articulo 39 de la LCSP:</p>`
+
+    const lista: { clave: keyof SeccionCausasNulidad; numero: number }[] = [
+      { clave: 'infracciones_reglamentarias', numero: 1 },
+      { clave: 'igualdad_trato', numero: 2 },
+      { clave: 'contenido_imposible', numero: 3 },
+      { clave: 'buena_administracion', numero: 4 },
+      { clave: 'rgpd_concurrente', numero: 5 },
+    ]
+
+    lista.forEach(({ clave, numero }) => {
+      const causa = causas[clave]
+      if (!causa) return
+      html += `
+      <div class="causa-card">
+        <div class="causa-base">${escaparHTML(causa.base)}</div>
+        <div class="causa-titulo">${numero}. ${escaparHTML(causa.titulo)}</div>
+        <p>${escaparHTML(textoSeguro(causa.fundamentacion))}</p>
+      </div>`
+    })
+  }
+
+  return html
+}
+
+/** Seccion VIII V3: MEDIDAS CAUTELARES (reutiliza v2) */
+function generarSeccionVIII_v3(contenido: ContenidoRecursoV3): string {
+  const c = contenido.cautelares
+  return `
+  <div class="page-break"></div>
+  <h2 class="section-header">VIII. MEDIDAS CAUTELARES</h2>
+
+  <p>Al amparo del articulo 56 de la LCSP, esta parte solicita la adopcion de la medida cautelar de <strong>suspension del procedimiento de adjudicacion</strong>, fundamentada en los siguientes presupuestos:</p>
+
+  <h3>Primero. Fumus Boni Iuris (Apariencia de Buen Derecho)</h3>
+  <div class="legal-block">
+    ${escaparHTML(textoSeguro(c?.fumusBoniIuris)).split('\n').map(p => `<p>${p}</p>`).join('')}
+  </div>
+
+  <h3>Segundo. Periculum in Mora (Riesgo de Perdida de Finalidad)</h3>
+  <div class="legal-block">
+    ${escaparHTML(textoSeguro(c?.periculumInMora)).split('\n').map(p => `<p>${p}</p>`).join('')}
+  </div>
+
+  <h3>Tercero. Ponderacion de Intereses</h3>
+  <div class="legal-block">
+    ${escaparHTML(textoSeguro(c?.ponderacionIntereses)).split('\n').map(p => `<p>${p}</p>`).join('')}
+  </div>
+
+  <p>Por todo ello, se solicita a ese Tribunal que acuerde la <strong>suspension inmediata del procedimiento de adjudicacion</strong> hasta la resolucion del presente recurso.</p>`
+}
+
+/** Seccion IX V3: SUPLICO / PETITUM (reutiliza v2) */
+function generarSeccionIX_v3(datos: DatosRecursoCompleto, contenido: ContenidoRecursoV3): string {
+  const p = contenido.peticion
+  const clausulas = datos.clausulasImpugnadas
+  return `
+  <div class="page-break"></div>
+  <h2 class="section-header">IX. SUPLICO</h2>
+
+  <div class="legal-block" style="border-left-color: #1e3a8a; background: #eff6ff;">
+    <p>Por todo lo expuesto,</p>
+    <p><strong>SUPLICO AL TRIBUNAL</strong> que, teniendo por presentado este escrito con los documentos que se acompanan, se sirva admitirlo y, en su virtud:</p>
+
+    <h4>A) Con caracter principal</h4>
+    ${escaparHTML(textoSeguro(p?.principal)).split('\n').map(pr => `<p>${pr}</p>`).join('')}
+    ${clausulas.length > 0 ? `
+    <p>En particular, declare la nulidad de las siguientes clausulas:</p>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Control ENS</th><th>Norma infringida</th><th>Vicio</th><th>Gravedad</th></tr>
+      </thead>
+      <tbody>
+        ${clausulas.map((cl, idx) => `
+        <tr>
+          <td>${idx + 1}</td>
+          <td>${escaparHTML(cl.controlId)}</td>
+          <td>${escaparHTML(cl.normaFuente)}</td>
+          <td>${escaparHTML(cl.textoClausula).substring(0, 150)}${(cl.textoClausula?.length ?? 0) > 150 ? '...' : ''}</td>
+          <td><span class="badge ${cl.prioridad === 'ALTA' || cl.prioridad === 'CRITICA' ? 'badge-danger' : 'badge-warning'}">${escaparHTML(cl.prioridad)}</span></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+    ` : ''}
+
+    <h4>B) Con caracter subsidiario</h4>
+    ${escaparHTML(textoSeguro(p?.subsidiaria)).split('\n').map(pr => `<p>${pr}</p>`).join('')}
+
+    <h4>C) Como medida cautelar</h4>
+    ${escaparHTML(textoSeguro(p?.cautelar)).split('\n').map(pr => `<p>${pr}</p>`).join('')}
+
+    <p style="margin-top: 16px;"><strong>Todo ello con los demas pronunciamientos que en Derecho procedan.</strong></p>
+
+    <p style="margin-top: 30px; text-align: right;">${escaparHTML(datos.datosFormulario.recurrente_domicilio ? datos.datosFormulario.recurrente_domicilio.split(',').pop()?.trim() || '' : '')}, a ${escaparHTML(datos.fechaGeneracion)}</p>
+    <p style="text-align: right; margin-top: 12px;"><strong>Fdo.: ${escaparHTML(datos.datosFormulario.representante_nombre)}</strong></p>
+    <p style="text-align: right; font-size: 9pt; color: #64748b;">${escaparHTML(datos.datosFormulario.representante_titulo)} de ${escaparHTML(datos.datosFormulario.recurrente_denominacion)}</p>
+  </div>`
+}
+
+/** Otrosies V3 (reutiliza v2) */
+function generarOtrosies_v3(contenido: ContenidoRecursoV3): string {
+  const o = contenido.otrosies as SeccionOtrosies | undefined
+  return `
+  <div class="page-break"></div>
+  <h2 class="section-header">OTROSIES</h2>
+
+  <h3>PRIMER OTROSI. Proposicion de prueba</h3>
+  <div class="legal-block">
+    ${escaparHTML(textoSeguro(o?.proposicionPrueba, 'Se propone como prueba la documental adjunta al presente escrito, asi como pericial tecnica sobre los requisitos del Anexo II del RD 311/2022.')).split('\n').map(p => `<p>${p}</p>`).join('')}
+  </div>
+
+  <h3>SEGUNDO OTROSI. Reclamacion del expediente administrativo</h3>
+  <div class="legal-block">
+    ${escaparHTML(textoSeguro(o?.reclamacionExpediente, 'Se solicita la remision del expediente administrativo completo conforme al articulo 51.3 de la LCSP, en el plazo de dos dias habiles.')).split('\n').map(p => `<p>${p}</p>`).join('')}
+  </div>
+
+  <h3>TERCER OTROSI. Notificaciones</h3>
+  <div class="legal-block">
+    ${escaparHTML(textoSeguro(o?.notificaciones, 'Se designa como direccion a efectos de notificaciones electronicas el correo indicado en el encabezamiento del presente escrito.')).split('\n').map(p => `<p>${p}</p>`).join('')}
+  </div>`
+}
+
+/** Seccion X V3: DOCUMENTACION (reutiliza v2) */
+function generarSeccionX_v3(datos: DatosRecursoCompleto): string {
+  const f = datos.datosFormulario
+  const clausulas = datos.clausulasImpugnadas
+
+  return `
+  <div class="page-break"></div>
+  <h2 class="section-header">X. DOCUMENTACION</h2>
+
+  <p>Al amparo de lo dispuesto en el articulo 51.2 de la LCSP, se acompana al presente recurso la siguiente documentacion:</p>
+
+  <table>
+    <thead>
+      <tr><th>Doc.</th><th>Titulo</th><th>Descripcion</th></tr>
+    </thead>
+    <tbody>
+      <tr><td style="text-align: center; font-weight: 700;">1</td><td><strong>Poder de representacion</strong></td><td>Acreditacion de facultades para interponer recursos y solicitar cautelares</td></tr>
+      <tr><td style="text-align: center; font-weight: 700;">2</td><td><strong>Escrituras sociales</strong></td><td>Escritura de constitucion, nombramiento del administrador y certificacion registral</td></tr>
+      <tr><td style="text-align: center; font-weight: 700;">3</td><td><strong>PCAP</strong></td><td>Pliego de Clausulas Administrativas Particulares del expediente</td></tr>
+      <tr><td style="text-align: center; font-weight: 700;">4</td><td><strong>PPT</strong></td><td>Pliego de Prescripciones Tecnicas</td></tr>
+      <tr><td style="text-align: center; font-weight: 700;">5</td><td><strong>Anuncio de licitacion</strong></td><td>Publicacion en perfil del contratante${f.fecha_publicacion_perfil ? ` (${escaparHTML(f.fecha_publicacion_perfil)})` : ''}${f.fecha_publicacion_doue ? ` y DOUE (${escaparHTML(f.fecha_publicacion_doue)})` : ''}</td></tr>
+      <tr><td style="text-align: center; font-weight: 700;">6</td><td><strong>Aclaraciones</strong></td><td>Respuestas oficiales y rectificaciones publicadas</td></tr>
+      <tr><td style="text-align: center; font-weight: 700;">7</td><td><strong>Informe tecnico</strong></td><td>Analisis de requisitos ENS y evaluacion de alternativas menos restrictivas</td></tr>
+      <tr><td style="text-align: center; font-weight: 700;">8</td><td><strong>Justificante de registro</strong></td><td>Resguardo electronico acreditativo de la tempestividad de la presentacion</td></tr>
+    </tbody>
+  </table>
+
+  ${clausulas.length > 0 ? `
+  <h3>Tabla de correspondencia: clausulas impugnadas y fundamentos</h3>
+  <table>
+    <thead>
+      <tr><th>Clausula</th><th>Control ENS</th><th>Norma infringida</th><th>Fundamento</th></tr>
+    </thead>
+    <tbody>
+      ${clausulas.map((cl, idx) => `
+      <tr>
+        <td>${idx + 1}</td>
+        <td>${escaparHTML(cl.controlId)}</td>
+        <td>${escaparHTML(cl.normaFuente)}</td>
+        <td>Fundamento ${idx < 2 ? 'Primero' : idx < 4 ? 'Segundo a Cuarto' : 'Quinto a Decimo'}</td>
+      </tr>`).join('')}
+    </tbody>
+  </table>
+  ` : ''}`
+}
+
+// ─── Main v3 HTML Generator ─────────────────────────────────────────────────
+
+function generarRecursoHTML_v3(datos: DatosRecursoCompleto): string {
+  const contenido = datos.contenidoRecurso as ContenidoRecursoV3
+
+  return `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>REMC - ${escaparHTML(datos.codigoRecurso)} - ${escaparHTML(datos.datosFormulario.expediente_numero)}</title>
+  <style>${generarCSS_v2()}</style>
+</head>
+<body>
+  ${generarPortada_v3(datos)}
+  ${generarIndice_v3()}
+  ${seccionSegura('I', () => generarSeccionI_v3(datos))}
+  ${seccionSegura('II', () => generarSeccionII_v3(datos))}
+  ${seccionSegura('III', () => generarSeccionIII_v3(contenido))}
+  ${seccionSegura('IV', () => generarSeccionIV_v3(contenido))}
+  ${seccionSegura('V', () => generarSeccionV_v3(datos))}
+  ${seccionSegura('VI', () => generarSeccionVI_v3(datos, contenido))}
+  ${seccionSegura('VII', () => generarSeccionVII_v3(contenido))}
+  ${seccionSegura('VIII', () => generarSeccionVIII_v3(contenido))}
+  ${seccionSegura('IX', () => generarSeccionIX_v3(datos, contenido))}
+  ${seccionSegura('Otrosies', () => generarOtrosies_v3(contenido))}
+  ${seccionSegura('X', () => generarSeccionX_v3(datos))}
+
+  <div class="footer">
+    <p>Recurso Especial en Materia de Contratacion &mdash; ${escaparHTML(datos.codigoRecurso)}</p>
+    <p>${escaparHTML(datos.datosFormulario.recurrente_denominacion)} | Expediente ${escaparHTML(datos.datosFormulario.expediente_numero)} | ${escaparHTML(datos.fechaGeneracion)}</p>
+    <p>Documento destinado a su presentacion ante ${escaparHTML(datos.datosFormulario.tribunal_competente)}.</p>
+  </div>
+</body>
+</html>`
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// V4 HTML Generator (Profundidad Juridica Maxima)
+// ══════════════════════════════════════════════════════════════════════════════
+
+/** Seccion VII V4: FUNDAMENTOS DE DERECHO (prosa juridica fluida) + Causas Nulidad dinamicas */
+function generarSeccionVII_v4(contenido: ContenidoRecursoV4): string {
+  const fundamentos = contenido.fundamentos ?? []
+  const causas = contenido.causasNulidad
+
+  let html = `
+  <div class="page-break"></div>
+  <h2 class="section-header">VII. FUNDAMENTOS DE DERECHO</h2>
+
+  <p>Al amparo de lo dispuesto en los articulos 44 y siguientes de la Ley 9/2017, de 8 de noviembre, de Contratos del Sector Publico, esta parte fundamenta el presente recurso especial en materia de contratacion en los siguientes motivos de Derecho, cada uno de los cuales constituye causa autonoma y suficiente para la estimacion del recurso:</p>`
+
+  // Fundamentos: prosa juridica continua (sin bloques etiquetados)
+  fundamentos.forEach((fund: FundamentoCascadaV4) => {
+    html += `
+    <div class="page-break"></div>
+    <h3>${escaparHTML(fund.ordinal)}.- ${escaparHTML(fund.titulo)}</h3>
+
+    <p>${escaparHTML(textoSeguro(fund.normaVulnerada))}</p>
+
+    <p>${escaparHTML(textoSeguro(fund.clausulaViciada))}</p>
+
+    <p>${escaparHTML(textoSeguro(fund.nexoJuridico))}</p>
+
+    <p>${escaparHTML(textoSeguro(fund.doctrinaJurisprudencia))}</p>
+
+    <p><strong>${escaparHTML(textoSeguro(fund.consecuenciaPretendida))}</strong></p>
+
+    ${fund.analisisJuridico ? escaparHTML(textoSeguro(fund.analisisJuridico)).split('\n').map(p => `<p>${p}</p>`).join('') : ''}`
+  })
+
+  // Causas de nulidad
+  if (causas) {
+    html += `
+    <div class="page-break"></div>
+    <h3>Causas de Nulidad de Pleno Derecho</h3>
+
+    <p>Las infracciones normativas acreditadas en los fundamentos precedentes determinan, a juicio de esta parte, las siguientes causas de nulidad de pleno derecho conforme a los articulos 47 y 48 de la Ley 39/2015, de 1 de octubre, del Procedimiento Administrativo Comun de las Administraciones Publicas, en relacion con el articulo 39 de la Ley 9/2017, de Contratos del Sector Publico:</p>`
+
+    if (esCausasDinamicas(causas)) {
+      // Formato dinamico: array de causas sin limite
+      causas.forEach((causa: CausaNulidadDinamica) => {
+        html += `
+        <h4>${escaparHTML(causa.ordinal)}.- ${escaparHTML(causa.titulo)} <em>(${escaparHTML(causa.base)})</em></h4>
+
+        ${escaparHTML(textoSeguro(causa.fundamentacion)).split('\n').map(p => `<p>${p}</p>`).join('')}
+
+        ${causa.jurisprudenciaAplicable ? `<p><em>${escaparHTML(textoSeguro(causa.jurisprudenciaAplicable))}</em></p>` : ''}`
+      })
+    } else {
+      // Retrocompatibilidad: formato legacy de 5 claves fijas
+      const lista: { clave: keyof SeccionCausasNulidadV4; numero: number }[] = [
+        { clave: 'infracciones_reglamentarias', numero: 1 },
+        { clave: 'igualdad_trato', numero: 2 },
+        { clave: 'contenido_imposible', numero: 3 },
+        { clave: 'buena_administracion', numero: 4 },
+        { clave: 'rgpd_concurrente', numero: 5 },
+      ]
+
+      lista.forEach(({ clave, numero }) => {
+        const causa = causas[clave] as CausaNulidadV4 | undefined
+        if (!causa) return
+        html += `
+        <h4>${numero}.- ${escaparHTML(causa.titulo)} <em>(${escaparHTML(causa.base)})</em></h4>
+
+        <p>${escaparHTML(textoSeguro(causa.fundamentacion))}</p>
+
+        ${causa.jurisprudenciaAplicable ? `<p><em>${escaparHTML(textoSeguro(causa.jurisprudenciaAplicable))}</em></p>` : ''}`
+      })
+    }
+  }
+
+  return html
+}
+
+/** Seccion VIII V4: MEDIDAS CAUTELARES con proporcionalidadMedida */
+function generarSeccionVIII_v4(contenido: ContenidoRecursoV4): string {
+  const c = contenido.cautelares
+  return `
+  <div class="page-break"></div>
+  <h2 class="section-header">VIII. MEDIDAS CAUTELARES</h2>
+
+  <p>Al amparo del articulo 56 de la LCSP, esta parte solicita la adopcion de la medida cautelar de <strong>suspension del procedimiento de adjudicacion</strong>, fundamentada en los siguientes presupuestos:</p>
+
+  <h3>Primero. Fumus Boni Iuris (Apariencia de Buen Derecho)</h3>
+  <div class="legal-block">
+    ${escaparHTML(textoSeguro(c?.fumusBoniIuris)).split('\n').map(p => `<p>${p}</p>`).join('')}
+  </div>
+
+  <h3>Segundo. Periculum in Mora (Riesgo de Perdida de Finalidad)</h3>
+  <div class="legal-block">
+    ${escaparHTML(textoSeguro(c?.periculumInMora)).split('\n').map(p => `<p>${p}</p>`).join('')}
+  </div>
+
+  <h3>Tercero. Ponderacion de Intereses</h3>
+  <div class="legal-block">
+    ${escaparHTML(textoSeguro(c?.ponderacionIntereses)).split('\n').map(p => `<p>${p}</p>`).join('')}
+  </div>
+
+  ${c?.proporcionalidadMedida ? `
+  <h3>Cuarto. Proporcionalidad de la Medida Cautelar</h3>
+  <div class="legal-block">
+    ${escaparHTML(textoSeguro(c.proporcionalidadMedida)).split('\n').map(p => `<p>${p}</p>`).join('')}
+  </div>` : ''}
+
+  <p>Por todo ello, se solicita a ese Tribunal que acuerde la <strong>suspension inmediata del procedimiento de adjudicacion</strong> hasta la resolucion del presente recurso.</p>`
+}
+
+// ─── Main v4 HTML Generator ─────────────────────────────────────────────────
+
+// ══════════════════════════════════════════════════════════════════════════════
+// v5: FORMATO FORENSE TRADICIONAL ESPANOL
+// ══════════════════════════════════════════════════════════════════════════════
+
+function generarCSS_forense(): string {
+  return `
+    @page { size: A4; margin: 2.54cm 2.54cm 2.54cm 3cm; }
+    @media print {
+      body { margin: 0; padding: 0; }
+      .page-break { page-break-before: always; }
+    }
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      font-size: 12pt;
+      line-height: 1.8;
+      color: #000;
+      max-width: 210mm;
+      margin: 0 auto;
+      padding: 20px 25px;
+    }
+    h2.seccion {
+      font-size: 14pt;
+      font-weight: bold;
+      text-transform: uppercase;
+      text-align: center;
+      letter-spacing: 0.5px;
+      margin: 40px 0 24px;
+      color: #000;
+      border: none;
+    }
+    h3 {
+      font-size: 12pt;
+      font-weight: bold;
+      color: #000;
+      margin: 28px 0 12px;
+    }
+    p {
+      margin: 0 0 12px;
+      text-align: justify;
+      text-indent: 1.5cm;
+    }
+    h2 + p, h3 + p, .no-indent { text-indent: 0; }
+    .centered { text-align: center; text-indent: 0; }
+    .dice {
+      text-align: center;
+      font-weight: bold;
+      font-size: 14pt;
+      text-indent: 0;
+      margin: 24px 0;
+    }
+    .tribunal {
+      text-align: center;
+      font-size: 14pt;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin: 40px 0 30px;
+      text-indent: 0;
+    }
+    em.latin { font-style: italic; }
+    blockquote {
+      margin: 12px 2cm;
+      font-style: italic;
+      font-size: 11pt;
+      text-indent: 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 10pt;
+    }
+    th, td {
+      border: 1px solid #000;
+      padding: 6px 8px;
+      text-align: left;
+      text-indent: 0;
+    }
+    th { background: #000; color: #fff; font-weight: bold; }
+    .firma {
+      text-align: center;
+      text-indent: 0;
+      margin-top: 40px;
+    }
+    .page-break { page-break-before: always; }
+  `
+}
+
+function generarEncabezamiento_v5(datos: DatosRecursoCompleto): string {
+  const f = datos.datosFormulario
+  const tribunal = escaparHTML(f.tribunal_competente)
+  const representante = escaparHTML(f.representante_nombre)
+  const titulo = escaparHTML(f.representante_titulo)
+  const empresa = escaparHTML(f.recurrente_denominacion)
+  const cif = escaparHTML(f.recurrente_cif)
+  const domicilio = escaparHTML(f.recurrente_domicilio)
+  const expediente = escaparHTML(f.expediente_numero)
+  const denominacion = escaparHTML(f.expediente_denominacion)
+  const organo = escaparHTML(f.organo_contratacion)
+
+  return `
+  <p class="tribunal">AL ${tribunal}</p>
+
+  <p class="no-indent">D./D&ntilde;a. <strong>${representante}</strong>, ${titulo}, en nombre y representaci&oacute;n de <strong>${empresa}</strong>, con CIF ${cif}, y domicilio a efectos de notificaciones en ${domicilio}${f.recurrente_email ? `, correo electr&oacute;nico ${escaparHTML(f.recurrente_email)}` : ''}, ante ese Tribunal comparece y, como mejor proceda en Derecho,</p>
+
+  <p class="dice">DICE:</p>
+
+  <p class="no-indent">Que, mediante el presente escrito, dentro del plazo legalmente establecido conforme al art&iacute;culo 50 de la Ley 9/2017, de 8 de noviembre, de Contratos del Sector P&uacute;blico (en adelante, LCSP), interpone <strong>RECURSO ESPECIAL EN MATERIA DE CONTRATACI&Oacute;N</strong> contra los pliegos reguladores del expediente n.&ordm; ${expediente}, denominado &laquo;${denominacion}&raquo;, promovido por ${organo}, al amparo de lo dispuesto en los art&iacute;culos 44 y siguientes de la LCSP, y ello en base a los siguientes</p>`
+}
+
+function generarHechos_v5(contenido: ContenidoRecursoV4): string {
+  const antecedentes = contenido.antecedentes ?? []
+  let html = `
+  <h2 class="seccion">HECHOS</h2>`
+
+  antecedentes.forEach((h: AntecedenteHecho) => {
+    html += `
+    <h3>${escaparHTML(h.ordinal)}.- ${escaparHTML(h.titulo)}</h3>
+    <p>${escaparHTML(textoSeguro(h.texto))} ${escaparHTML(h.documentoRef)}</p>`
+  })
+  return html
+}
+
+function generarFundamentos_v5(contenido: ContenidoRecursoV4): string {
+  const fundamentos = contenido.fundamentos ?? []
+  let html = `
+  <div class="page-break"></div>
+  <h2 class="seccion">FUNDAMENTOS DE DERECHO</h2>`
+
+  fundamentos.forEach((fund: FundamentoCascadaV4, idx: number) => {
+    if (idx > 0 && idx % 3 === 0) html += '<div class="page-break"></div>'
+
+    html += `
+    <h3>${escaparHTML(fund.ordinal)}.- ${escaparHTML(fund.titulo)}</h3>
+    <p>${escaparHTML(textoSeguro(fund.normaVulnerada))}</p>
+    <p>${escaparHTML(textoSeguro(fund.clausulaViciada))}</p>
+    <p>${escaparHTML(textoSeguro(fund.nexoJuridico))}</p>
+    <p>${escaparHTML(textoSeguro(fund.doctrinaJurisprudencia))}</p>
+    <p>${escaparHTML(textoSeguro(fund.consecuenciaPretendida))}</p>`
+
+    if (fund.analisisJuridico) {
+      const parrafos = textoSeguro(fund.analisisJuridico).split('\n').filter(p => p.trim())
+      parrafos.forEach(p => { html += `\n    <p>${escaparHTML(p)}</p>` })
+    }
+  })
+  return html
+}
+
+function generarCausasNulidad_v5(contenido: ContenidoRecursoV4): string {
+  const causas = contenido.causasNulidad
+  if (!causas) return ''
+
+  let html = `
+  <div class="page-break"></div>
+  <h2 class="seccion">CAUSAS DE NULIDAD DE PLENO DERECHO</h2>
+  <p>Las infracciones normativas acreditadas en los fundamentos de derecho precedentes determinan las siguientes causas de nulidad de pleno derecho:</p>`
+
+  if (esCausasDinamicas(causas)) {
+    causas.forEach((causa: CausaNulidadDinamica) => {
+      html += `
+      <h3>${escaparHTML(causa.ordinal)}.- ${escaparHTML(causa.titulo)} <em>(${escaparHTML(causa.base)})</em></h3>`
+      const parrafos = textoSeguro(causa.fundamentacion).split('\n').filter(p => p.trim())
+      parrafos.forEach(p => { html += `\n      <p>${escaparHTML(p)}</p>` })
+      if (causa.jurisprudenciaAplicable) {
+        html += `\n      <p><em>${escaparHTML(textoSeguro(causa.jurisprudenciaAplicable))}</em></p>`
+      }
+    })
+  } else {
+    // Legacy 5-key object fallback
+    const claves = Object.keys(causas) as (keyof SeccionCausasNulidadV4)[]
+    const ordinales = ['PRIMERA', 'SEGUNDA', 'TERCERA', 'CUARTA', 'QUINTA']
+    claves.forEach((clave, i) => {
+      const c = (causas as SeccionCausasNulidadV4)[clave] as CausaNulidadV4
+      if (!c) return
+      html += `
+      <h3>${ordinales[i] ?? `${i + 1}.ª`}.- ${escaparHTML(c.titulo)} <em>(${escaparHTML(c.base)})</em></h3>
+      <p>${escaparHTML(textoSeguro(c.fundamentacion))}</p>`
+      if (c.jurisprudenciaAplicable) {
+        html += `\n      <p><em>${escaparHTML(textoSeguro(c.jurisprudenciaAplicable))}</em></p>`
+      }
+    })
+  }
+  return html
+}
+
+function generarCautelares_v5(contenido: ContenidoRecursoV4): string {
+  const c = contenido.cautelares
+  if (!c) return ''
+
+  return `
+  <div class="page-break"></div>
+  <h2 class="seccion">MEDIDAS CAUTELARES</h2>
+  <p class="no-indent">De conformidad con lo previsto en el art&iacute;culo 49 de la LCSP, esta parte interesa la adopci&oacute;n de la medida cautelar de suspensi&oacute;n del procedimiento de licitaci&oacute;n, concurriendo los presupuestos legalmente exigidos que a continuaci&oacute;n se exponen.</p>
+  <p>${escaparHTML(textoSeguro(c.fumusBoniIuris))}</p>
+  <p>${escaparHTML(textoSeguro(c.periculumInMora))}</p>
+  <p>${escaparHTML(textoSeguro(c.ponderacionIntereses))}</p>
+  ${c.proporcionalidadMedida ? `<p>${escaparHTML(textoSeguro(c.proporcionalidadMedida))}</p>` : ''}`
+}
+
+function generarSuplico_v5(contenido: ContenidoRecursoV4): string {
+  const p = contenido.peticion
+  if (!p) return ''
+
+  return `
+  <div class="page-break"></div>
+  <h2 class="seccion">S&Uacute;PLICO</h2>
+  <p class="no-indent">Por todo lo expuesto,</p>
+  <p class="no-indent"><strong>SUPLICO AL TRIBUNAL</strong> ${escaparHTML(textoSeguro(p.principal))}</p>
+  <p class="no-indent"><strong>Con car&aacute;cter subsidiario,</strong> ${escaparHTML(textoSeguro(p.subsidiaria))}</p>
+  <p class="no-indent"><strong>Asimismo,</strong> ${escaparHTML(textoSeguro(p.cautelar))}</p>`
+}
+
+function generarOtrosies_v5(contenido: ContenidoRecursoV4): string {
+  const o = contenido.otrosies
+  if (!o) return ''
+
+  return `
+  <p class="no-indent" style="margin-top:30px;"><strong>PRIMER OTROS&Iacute; DIGO:</strong> ${escaparHTML(textoSeguro(o.proposicionPrueba))}</p>
+  <p class="no-indent"><strong>SEGUNDO OTROS&Iacute; DIGO:</strong> ${escaparHTML(textoSeguro(o.reclamacionExpediente))}</p>
+  <p class="no-indent"><strong>TERCER OTROS&Iacute; DIGO:</strong> ${escaparHTML(textoSeguro(o.notificaciones))}</p>`
+}
+
+function generarCierre_v5(datos: DatosRecursoCompleto): string {
+  const f = datos.datosFormulario
+  return `
+  <p class="firma" style="margin-top:50px;">En ${escaparHTML(f.tribunal_direccion ?? 'Madrid')}, a ${escaparHTML(datos.fechaGeneracion)}.</p>
+  <p class="firma" style="margin-top:20px;">Es justicia que pido en ${escaparHTML(f.tribunal_direccion ?? 'Madrid')}, en la fecha indicada.</p>
+  <p class="firma" style="margin-top:40px;"><strong>Fdo.: ${escaparHTML(f.representante_nombre)}</strong><br>${escaparHTML(f.representante_titulo)} de ${escaparHTML(f.recurrente_denominacion)}</p>`
+}
+
+function generarLegitimacion_v5(contenido: ContenidoRecursoV4): string {
+  const l = contenido.legitimacion
+  if (!l) return ''
+
+  return `
+  <h2 class="seccion">LEGITIMACI&Oacute;N ACTIVA</h2>
+  <p>${escaparHTML(textoSeguro(l.fundamentoLegal))}</p>
+  <p>${escaparHTML(textoSeguro(l.interesReal))}</p>
+  <p>${escaparHTML(textoSeguro(l.potencialLicitador))}</p>
+  <p>${escaparHTML(textoSeguro(l.perjuicioConcreto))}</p>
+  <p>${escaparHTML(textoSeguro(l.conclusionLegitimacion))}</p>`
+}
+
+function generarActoRecurrible_v5(contenido: ContenidoRecursoV4): string {
+  const a = contenido.actoRecurrible
+  if (!a) return ''
+
+  return `
+  <h2 class="seccion">ACTO RECURRIBLE</h2>
+  <p>${escaparHTML(textoSeguro(a.tipologia))}</p>
+  <p>${escaparHTML(textoSeguro(a.tramiteCualificado))}</p>
+  <p>${escaparHTML(textoSeguro(a.conexionLesion))}</p>
+  <p>${escaparHTML(textoSeguro(a.conclusionRecurribilidad))}</p>`
+}
+
+function generarRecursoHTML_v5(datos: DatosRecursoCompleto): string {
+  const contenido = datos.contenidoRecurso as ContenidoRecursoV4
+
+  return `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>REMC - ${escaparHTML(datos.codigoRecurso)} - ${escaparHTML(datos.datosFormulario.expediente_numero)}</title>
+  <style>${generarCSS_forense()}</style>
+</head>
+<body>
+  ${generarEncabezamiento_v5(datos)}
+  ${generarLegitimacion_v5(contenido)}
+  ${generarActoRecurrible_v5(contenido)}
+  ${generarHechos_v5(contenido)}
+  ${generarFundamentos_v5(contenido)}
+  ${generarCausasNulidad_v5(contenido)}
+  ${generarCautelares_v5(contenido)}
+  ${generarSuplico_v5(contenido)}
+  ${generarOtrosies_v5(contenido)}
+  ${generarCierre_v5(datos)}
+</body>
+</html>`
+}
+
+function generarRecursoHTML_v4(datos: DatosRecursoCompleto): string {
+  const contenido = datos.contenidoRecurso as ContenidoRecursoV4
+  // Cast to v3 for reused sections (field names are structurally compatible)
+  const contenidoV3 = contenido as unknown as ContenidoRecursoV3
+
+  return `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>REMC v4 - ${escaparHTML(datos.codigoRecurso)} - ${escaparHTML(datos.datosFormulario.expediente_numero)}</title>
+  <style>${generarCSS_v2()}</style>
+</head>
+<body>
+  ${generarPortada_v3(datos)}
+  ${generarIndice_v3()}
+  ${seccionSegura('I', () => generarSeccionI_v3(datos))}
+  ${seccionSegura('II', () => generarSeccionII_v3(datos))}
+  ${seccionSegura('III', () => generarSeccionIII_v3(contenidoV3))}
+  ${seccionSegura('IV', () => generarSeccionIV_v3(contenidoV3))}
+  ${seccionSegura('V', () => generarSeccionV_v3(datos))}
+  ${seccionSegura('VI', () => generarSeccionVI_v3(datos, contenidoV3))}
+  ${seccionSegura('VII', () => generarSeccionVII_v4(contenido))}
+  ${seccionSegura('VIII', () => generarSeccionVIII_v4(contenido))}
+  ${seccionSegura('IX', () => generarSeccionIX_v3(datos, contenidoV3))}
+  ${seccionSegura('Otrosies', () => generarOtrosies_v3(contenidoV3))}
+  ${seccionSegura('X', () => generarSeccionX_v3(datos))}
+
+  <div class="footer">
+    <p>Recurso Especial en Materia de Contratacion &mdash; ${escaparHTML(datos.codigoRecurso)}</p>
+    <p>${escaparHTML(datos.datosFormulario.recurrente_denominacion)} | Expediente ${escaparHTML(datos.datosFormulario.expediente_numero)} | ${escaparHTML(datos.fechaGeneracion)}</p>
+    <p>Documento destinado a su presentacion ante ${escaparHTML(datos.datosFormulario.tribunal_competente)}.</p>
+  </div>
+</body>
+</html>`
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// LEGACY v1 HTML Generator (para analisis existentes en BD)
+// ══════════════════════════════════════════════════════════════════════════════
+
+function generarCSS_legacy(): string {
   return `
     @page {
       size: A4;
@@ -53,12 +1708,10 @@ function generarCSS(): string {
       padding: 20px;
     }
 
-    /* Headings - sans-serif for contrast */
     h1, h2, h3, h4, h5 {
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     }
 
-    /* Cover page */
     .cover {
       text-align: center;
       padding: 100px 40px 60px;
@@ -109,10 +1762,8 @@ function generarCSS(): string {
       letter-spacing: 1px;
     }
 
-    /* Page break */
     .page-break { page-break-before: always; }
 
-    /* Section headers with Roman numerals */
     .section-header {
       color: #1e3a8a;
       font-size: 16pt;
@@ -121,13 +1772,6 @@ function generarCSS(): string {
       margin: 30px 0 20px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-    }
-    .section-subtitle {
-      color: #4a5568;
-      font-size: 10pt;
-      font-style: italic;
-      margin-top: -16px;
-      margin-bottom: 20px;
     }
 
     h2 {
@@ -150,7 +1794,6 @@ function generarCSS(): string {
 
     p { margin: 8px 0; text-align: justify; }
 
-    /* Tables */
     table {
       width: 100%;
       border-collapse: collapse;
@@ -174,7 +1817,6 @@ function generarCSS(): string {
     }
     tr:nth-child(even) { background: #f8fafc; }
 
-    /* Content blocks */
     .legal-block {
       background: #f8fafc;
       border-left: 4px solid #1e3a8a;
@@ -187,14 +1829,6 @@ function generarCSS(): string {
     .highlight-box {
       background: #eff6ff;
       border: 1px solid #bfdbfe;
-      border-radius: 8px;
-      padding: 16px 20px;
-      margin: 14px 0;
-    }
-
-    .warning-box {
-      background: #fffbeb;
-      border: 1px solid #fcd34d;
       border-radius: 8px;
       padding: 16px 20px;
       margin: 14px 0;
@@ -229,21 +1863,6 @@ function generarCSS(): string {
       border-radius: 4px;
     }
 
-    .checklist-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      margin: 6px 0;
-      font-size: 10pt;
-    }
-    .checklist-item .check {
-      color: #22c55e;
-      font-weight: 700;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-
-    /* Table of contents */
     .toc { margin: 20px 0; }
     .toc-entry {
       display: flex;
@@ -260,21 +1879,6 @@ function generarCSS(): string {
       margin-top: 6px;
     }
 
-    /* Version control table */
-    .version-table th { background: #334155; }
-
-    /* Document list */
-    .doc-list { list-style: none; padding: 0; }
-    .doc-list li {
-      padding: 8px 0;
-      border-bottom: 1px solid #f1f5f9;
-      font-size: 10pt;
-    }
-    .doc-list li strong {
-      color: #1e3a8a;
-      font-family: 'Segoe UI', system-ui, sans-serif;
-    }
-
     .badge {
       display: inline-block;
       padding: 2px 10px;
@@ -285,9 +1889,7 @@ function generarCSS(): string {
     }
     .badge-danger { background: #fee2e2; color: #991b1b; }
     .badge-warning { background: #fef3c7; color: #92400e; }
-    .badge-info { background: #dbeafe; color: #1e40af; }
 
-    /* Footer */
     .footer {
       text-align: center;
       color: #94a3b8;
@@ -297,744 +1899,155 @@ function generarCSS(): string {
       border-top: 1px solid #e2e8f0;
       font-family: 'Segoe UI', system-ui, sans-serif;
     }
-
-    /* Numbered paragraphs for legal style */
-    .numbered-content {
-      counter-reset: paragraph;
-    }
-    .numbered-content > p::before {
-      counter-increment: paragraph;
-      content: counter(paragraph) ". ";
-      font-weight: 700;
-      color: #1e3a8a;
-    }
-
-    ol.legal-list {
-      counter-reset: legal-item;
-      list-style: none;
-      padding-left: 0;
-    }
-    ol.legal-list li {
-      counter-increment: legal-item;
-      margin: 8px 0;
-      padding-left: 30px;
-      position: relative;
-    }
-    ol.legal-list li::before {
-      content: counter(legal-item) ".";
-      position: absolute;
-      left: 0;
-      font-weight: 700;
-      color: #1e3a8a;
-    }
-
-    ul.dash-list {
-      list-style: none;
-      padding-left: 20px;
-    }
-    ul.dash-list li::before {
-      content: "\\2014\\00a0";
-      color: #1e3a8a;
-    }
   `
 }
 
-// ─── Section Generators ──────────────────────────────────────────────────────
-
-function generarPortada(datos: DatosRecursoCompleto): string {
+function generarRecursoHTML_legacy(datos: DatosRecursoCompleto): string {
+  const contenido = datos.contenidoRecurso as ContenidoRecursoLegacy
   const f = datos.datosFormulario
-  return `
+  const clausulas = datos.clausulasImpugnadas
+
+  const portada = `
   <div class="cover">
     <h1>RECURSO ESPECIAL EN MATERIA<br>DE CONTRATACION</h1>
-    <p class="subtitle">Contra los pliegos del expediente n.&ordm; ${escaparHTML(f.expediente_numero)}</p>
-    ${f.expediente_denominacion ? `<p style="font-size: 11pt; color: #334155; max-width: 500px; margin: 0 auto 20px;">&laquo;${escaparHTML(f.expediente_denominacion)}&raquo;</p>` : ''}
-    <p style="font-size: 10pt; color: #64748b; margin-bottom: 20px;">Con solicitud de suspension del procedimiento</p>
-
+    <p class="subtitle">Arts. 44 a 60 de la Ley 9/2017, de Contratos del Sector Publico</p>
+    <p style="font-size: 11pt; color: #334155; max-width: 500px; margin: 0 auto 10px;">Contra los pliegos del expediente n.&ordm; ${escaparHTML(f.expediente_numero)}</p>
+    ${f.expediente_denominacion ? `<p style="font-size: 10pt; color: #4a5568; max-width: 500px; margin: 0 auto 20px;">&laquo;${escaparHTML(f.expediente_denominacion)}&raquo;</p>` : ''}
     <table class="meta-table">
-      <tr><td>Codigo:</td><td>${escaparHTML(datos.codigoRecurso)}</td></tr>
-      <tr><td>Cliente:</td><td>${escaparHTML(f.recurrente_denominacion)}</td></tr>
+      <tr><td>Recurrente:</td><td>${escaparHTML(f.recurrente_denominacion)}</td></tr>
       <tr><td>CIF:</td><td>${escaparHTML(f.recurrente_cif)}</td></tr>
       <tr><td>Expediente:</td><td>${escaparHTML(f.expediente_numero)}</td></tr>
-      <tr><td>Tipo contractual:</td><td>${escaparHTML(f.expediente_tipo_contractual)}</td></tr>
-      <tr><td>Procedimiento:</td><td>${escaparHTML(f.expediente_procedimiento)}</td></tr>
-      <tr><td>Organo contratacion:</td><td>${escaparHTML(f.organo_contratacion)}</td></tr>
       <tr><td>Tribunal:</td><td>${escaparHTML(f.tribunal_competente)}</td></tr>
       <tr><td>Fecha:</td><td>${escaparHTML(datos.fechaGeneracion)}</td></tr>
-      <tr><td>Version:</td><td>1.0 &mdash; Version final</td></tr>
     </table>
-
-    <div class="classification">EXTERNO &mdash; PRESENTACION OFICIAL</div>
+    <div class="classification">Recurso Especial &mdash; Art. 44 LCSP</div>
   </div>`
-}
 
-function generarControlVersiones(datos: DatosRecursoCompleto): string {
-  return `
+  const secI = `
   <div class="page-break"></div>
-  <h2 class="section-header">0. PORTADA TECNICA Y CONTROL DE VERSIONES</h2>
-  <p class="section-subtitle">Estandar de calidad documental en entornos de consultoria juridica y auditoria publica</p>
-
-  <h3>0.1. Identificacion Documental</h3>
-  <div class="legal-block">
-    <p><strong>Titulo:</strong> RECURSO ESPECIAL EN MATERIA DE CONTRATACION</p>
-    <p><strong>Subtitulo:</strong> Contra los pliegos del expediente n.&ordm; ${escaparHTML(datos.datosFormulario.expediente_numero)}</p>
-    <p><strong>Codigo interno:</strong> ${escaparHTML(datos.codigoRecurso)}</p>
-    <p><strong>Clasificacion:</strong> EXTERNO &mdash; PRESENTACION OFICIAL</p>
-  </div>
-
-  <h3>0.2. Control de Cambios</h3>
-  <table class="version-table">
-    <thead>
-      <tr><th>Version</th><th>Fecha</th><th>Responsable</th><th>Descripcion</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>0.1</td><td>${escaparHTML(datos.fechaGeneracion)}</td><td>Area Juridica</td><td>Primera redaccion automatizada</td></tr>
-      <tr><td>1.0</td><td>${escaparHTML(datos.fechaGeneracion)}</td><td>Direccion Juridica</td><td>Version final generada</td></tr>
-    </tbody>
-  </table>
-
-  <h3>0.3. Indice Ejecutivo</h3>
-  <div class="toc">
-    <div class="toc-entry main"><span>0. Portada Tecnica y Control de Versiones</span></div>
-    <div class="toc-entry main"><span>I. Encabezamiento Formal</span></div>
-    <div class="toc-entry main"><span>II. Comparecencia e Identidad del Recurrente</span></div>
-    <div class="toc-entry main"><span>III. Legitimacion Activa</span></div>
-    <div class="toc-entry main"><span>IV. Acto Recurrible</span></div>
-    <div class="toc-entry main"><span>V. Plazo, Computo, Registro</span></div>
-    <div class="toc-entry main"><span>VI. Antecedentes y Hechos</span></div>
-    <div class="toc-entry"><span>&nbsp;&nbsp;&nbsp;Hecho Primero &mdash; Publicacion</span></div>
-    <div class="toc-entry"><span>&nbsp;&nbsp;&nbsp;Hecho Segundo &mdash; Clausulas impugnadas</span></div>
-    <div class="toc-entry"><span>&nbsp;&nbsp;&nbsp;Hecho Tercero &mdash; Contexto sectorial</span></div>
-    <div class="toc-entry"><span>&nbsp;&nbsp;&nbsp;Hecho Cuarto &mdash; Efecto practico</span></div>
-    <div class="toc-entry"><span>&nbsp;&nbsp;&nbsp;Hecho Quinto &mdash; Perjuicio individualizado</span></div>
-    <div class="toc-entry main"><span>VII. Fundamentos de Derecho</span></div>
-    <div class="toc-entry"><span>&nbsp;&nbsp;&nbsp;Modulo 1 &mdash; Principios rectores LCSP</span></div>
-    <div class="toc-entry"><span>&nbsp;&nbsp;&nbsp;Modulo 2 &mdash; Proporcionalidad</span></div>
-    <div class="toc-entry"><span>&nbsp;&nbsp;&nbsp;Modulo 3 &mdash; Solvencia</span></div>
-    <div class="toc-entry"><span>&nbsp;&nbsp;&nbsp;Modulo 4 &mdash; Prescripciones tecnicas</span></div>
-    <div class="toc-entry"><span>&nbsp;&nbsp;&nbsp;Modulo 5 &mdash; Criterios de adjudicacion</span></div>
-    <div class="toc-entry"><span>&nbsp;&nbsp;&nbsp;Modulo 6 &mdash; Division en lotes</span></div>
-    <div class="toc-entry"><span>&nbsp;&nbsp;&nbsp;Modulo 7 &mdash; Condiciones de ejecucion</span></div>
-    <div class="toc-entry"><span>&nbsp;&nbsp;&nbsp;Modulo 8 &mdash; Modificaciones</span></div>
-    <div class="toc-entry"><span>&nbsp;&nbsp;&nbsp;Modulo 9 &mdash; Motivacion del expediente</span></div>
-    <div class="toc-entry"><span>&nbsp;&nbsp;&nbsp;Modulo 10 &mdash; Doctrina y jurisprudencia</span></div>
-    <div class="toc-entry main"><span>VIII. Medidas Cautelares</span></div>
-    <div class="toc-entry main"><span>IX. Peticion (Suplico)</span></div>
-    <div class="toc-entry main"><span>X. Documentacion, Anexos y Trazabilidad</span></div>
-    <div class="toc-entry main"><span>XI. Efectos, Ejecucion y Escenario Posterior</span></div>
-    <div class="toc-entry main"><span>XII. Arquitectura Estrategica Avanzada</span></div>
-    <div class="toc-entry main"><span>XIII. Checklist Final</span></div>
-  </div>
-
-  <h3>Lista de Anexos</h3>
-  <div class="toc">
-    <div class="toc-entry"><span>Anexo I &mdash; Poder de representacion</span></div>
-    <div class="toc-entry"><span>Anexo II &mdash; Escritura social y registro mercantil</span></div>
-    <div class="toc-entry"><span>Anexo III &mdash; Anuncio de licitacion</span></div>
-    <div class="toc-entry"><span>Anexo IV &mdash; PCAP</span></div>
-    <div class="toc-entry"><span>Anexo V &mdash; PPT</span></div>
-    <div class="toc-entry"><span>Anexo VI &mdash; Aclaraciones</span></div>
-    <div class="toc-entry"><span>Anexo VII &mdash; Comparativa sectorial</span></div>
-    <div class="toc-entry"><span>Anexo VIII &mdash; Informe economico</span></div>
-    <div class="toc-entry"><span>Anexo IX &mdash; Cronograma del procedimiento</span></div>
-    <div class="toc-entry"><span>Anexo X &mdash; Justificante de registro</span></div>
-  </div>`
-}
-
-function generarSeccionI(datos: DatosRecursoCompleto): string {
-  const f = datos.datosFormulario
-  return `
-  <div class="page-break"></div>
-  <h2 class="section-header">I. ENCABEZAMIENTO FORMAL</h2>
-  <p class="section-subtitle">Capa competencial y delimitacion del objeto procesal</p>
-
-  <h3>I.1. Organo ante el que se recurre</h3>
+  <h2 class="section-header">I. ENCABEZAMIENTO</h2>
   <div class="legal-block">
     <p><strong>AL ${escaparHTML(f.tribunal_competente).toUpperCase()}</strong></p>
-    ${f.tribunal_direccion ? `<p>Direccion: ${escaparHTML(f.tribunal_direccion)}</p>` : ''}
-    <p>El presente recurso se interpone al amparo de los articulos 44 y siguientes de la Ley 9/2017, de 8 de noviembre, de Contratos del Sector Publico (en adelante, LCSP), siendo competente ese Tribunal en virtud de la naturaleza del poder adjudicador y del contrato objeto de impugnacion.</p>
   </div>
+  <p>${escaparHTML(f.representante_nombre)}, en nombre y representacion de <strong>${escaparHTML(f.recurrente_denominacion)}</strong> (CIF: ${escaparHTML(f.recurrente_cif)}), interpone RECURSO ESPECIAL contra los pliegos del expediente n.&ordm; ${escaparHTML(f.expediente_numero)}.</p>`
 
-  <h3>I.2. Objeto del recurso</h3>
-  <div class="highlight-box">
-    <p><strong>Acto impugnado:</strong> Pliegos de Clausulas Administrativas Particulares (PCAP) y, en su caso, Pliego de Prescripciones Tecnicas (PPT) del expediente n.&ordm; ${escaparHTML(f.expediente_numero)}.</p>
-    <p><strong>Denominacion:</strong> &laquo;${escaparHTML(f.expediente_denominacion)}&raquo;</p>
-    <p><strong>Organo de contratacion:</strong> ${escaparHTML(f.organo_contratacion)}${f.organo_nivel ? ` (ambito ${escaparHTML(f.organo_nivel)})` : ''}</p>
-    <p><strong>Tipo contractual:</strong> ${escaparHTML(f.expediente_tipo_contractual)} &mdash; Procedimiento ${escaparHTML(f.expediente_procedimiento)}</p>
-    ${f.expediente_valor_estimado ? `<p><strong>Valor estimado:</strong> ${formatearMoneda(f.expediente_valor_estimado)}</p>` : ''}
-    ${f.expediente_presupuesto_base ? `<p><strong>Presupuesto base:</strong> ${formatearMoneda(f.expediente_presupuesto_base)}</p>` : ''}
-    ${f.expediente_duracion ? `<p><strong>Duracion:</strong> ${escaparHTML(f.expediente_duracion)}</p>` : ''}
-    ${f.expediente_cpv ? `<p><strong>CPV:</strong> ${escaparHTML(f.expediente_cpv)}</p>` : ''}
-    <p><strong>Con solicitud de suspension del procedimiento de adjudicacion.</strong></p>
-  </div>
-
-  <h3>I.3. Competencia</h3>
-  <p>La competencia de ese Tribunal para conocer del presente recurso especial en materia de contratacion resulta de los articulos 44 a 46 de la LCSP, atendida la naturaleza del poder adjudicador (${escaparHTML(f.organo_contratacion)}) y las caracteristicas del contrato objeto de licitacion${f.es_contrato_sara ? ', sujeto a regulacion armonizada (SARA)' : ''}.</p>
-  <p>El acto impugnado &mdash;los pliegos reguladores del procedimiento&mdash; constituye un acto de tramite cualificado susceptible de recurso especial conforme al articulo 44.2.a) de la LCSP, por cuanto establece condiciones que determinan directa e irremediablemente la concurrencia de los operadores economicos al procedimiento.</p>`
-}
-
-function generarSeccionII(datos: DatosRecursoCompleto): string {
-  const f = datos.datosFormulario
-  return `
-  <div class="page-break"></div>
-  <h2 class="section-header">II. COMPARECENCIA E IDENTIDAD DEL RECURRENTE</h2>
-  <p class="section-subtitle">Capa de standing &mdash; Legitimacion formal y material</p>
-
-  <h3>II.1. Parte Recurrente</h3>
-  <div class="legal-block">
-    <p>D./D.&ordf; <strong>${escaparHTML(f.representante_nombre)}</strong>, en calidad de <strong>${escaparHTML(f.representante_titulo)}</strong> de la entidad mercantil:</p>
-    <table style="margin: 12px 0; border: none;">
-      <tr><td style="border: none; font-weight: 700; width: 200px;">Denominacion social:</td><td style="border: none;">${escaparHTML(f.recurrente_denominacion)}</td></tr>
-      <tr><td style="border: none; font-weight: 700;">CIF:</td><td style="border: none;">${escaparHTML(f.recurrente_cif)}</td></tr>
-      <tr><td style="border: none; font-weight: 700;">Domicilio social:</td><td style="border: none;">${escaparHTML(f.recurrente_domicilio)}</td></tr>
-      ${f.recurrente_registro_mercantil ? `<tr><td style="border: none; font-weight: 700;">Registro Mercantil:</td><td style="border: none;">${escaparHTML(f.recurrente_registro_mercantil)}</td></tr>` : ''}
-      ${f.recurrente_objeto_social ? `<tr><td style="border: none; font-weight: 700;">Objeto social:</td><td style="border: none;">${escaparHTML(f.recurrente_objeto_social)}</td></tr>` : ''}
-      ${f.recurrente_cnae ? `<tr><td style="border: none; font-weight: 700;">CNAE:</td><td style="border: none;">${escaparHTML(f.recurrente_cnae)}</td></tr>` : ''}
-      ${f.recurrente_email ? `<tr><td style="border: none; font-weight: 700;">Email notificaciones:</td><td style="border: none;">${escaparHTML(f.recurrente_email)}</td></tr>` : ''}
-      ${f.recurrente_telefono ? `<tr><td style="border: none; font-weight: 700;">Telefono:</td><td style="border: none;">${escaparHTML(f.recurrente_telefono)}</td></tr>` : ''}
-    </table>
-    <p>Ante ese Tribunal comparece y, como mejor proceda en Derecho, <strong>EXPONE:</strong></p>
-  </div>
-
-  <h3>II.2. Capacidad y Habilitacion</h3>
-  <p>La entidad recurrente ostenta plena <strong>capacidad de obrar</strong> conforme al articulo 65 de la LCSP, acreditada mediante su constitucion regular e inscripcion en el Registro Mercantil${f.recurrente_registro_mercantil ? ` (${escaparHTML(f.recurrente_registro_mercantil)})` : ''}.</p>
-  <p>Asimismo, declara expresamente que <strong>no concurre</strong> en la entidad ninguna de las prohibiciones de contratar previstas en el articulo 71 de la LCSP, encontrandose al corriente de sus obligaciones tributarias y con la Seguridad Social.</p>
-
-  <h3>II.3. Representacion</h3>
-  <p>La representacion se ejerce por D./D.&ordf; ${escaparHTML(f.representante_nombre)}, en calidad de ${escaparHTML(f.representante_titulo)}, con facultades suficientes para interponer recursos administrativos, solicitar medidas cautelares y comparecer ante tribunales administrativos${f.representante_facultades ? `, segun consta en ${escaparHTML(f.representante_facultades)}` : ''}, cuyo documento acreditativo se acompana como <strong>Anexo I</strong> (Doc. 1).</p>`
-}
-
-function generarSeccionIII(datos: DatosRecursoCompleto): string {
-  const c = datos.contenidoRecurso.legitimacion
-  return `
+  const c = contenido
+  const secIII = `
   <div class="page-break"></div>
   <h2 class="section-header">III. LEGITIMACION ACTIVA</h2>
-  <p class="section-subtitle">Capa central de admision &mdash; Nucleo de supervivencia del recurso</p>
+  <div class="legal-block">${escaparHTML(textoSeguro(c?.legitimacion?.interesReal)).split('\n').map(p => `<p>${p}</p>`).join('')}</div>
+  <div class="legal-block">${escaparHTML(textoSeguro(c?.legitimacion?.potencialLicitador)).split('\n').map(p => `<p>${p}</p>`).join('')}</div>
+  <div class="legal-block">${escaparHTML(textoSeguro(c?.legitimacion?.perjuicioConcreto)).split('\n').map(p => `<p>${p}</p>`).join('')}</div>`
 
-  <p>La legitimacion activa se sustenta en el articulo 48 de la LCSP, que reconoce legitimacion a &laquo;las personas fisicas o juridicas cuyos derechos o intereses legitimos se hayan visto perjudicados o puedan resultar afectados por las decisiones objeto de recurso&raquo;. Dicho precepto debe interpretarse conforme al principio de tutela judicial efectiva (art. 24 CE) y al principio de efectividad de los remedios en contratacion publica.</p>
-
-  <h3>III.1. Interes Real y Efectivo</h3>
-  <div class="legal-block">
-    ${escaparHTML(c.interesReal).split('\n').map(p => `<p>${p}</p>`).join('')}
-  </div>
-
-  <h3>III.2. Potencial Licitador</h3>
-  <div class="legal-block">
-    ${escaparHTML(c.potencialLicitador).split('\n').map(p => `<p>${p}</p>`).join('')}
-  </div>
-
-  <h3>III.3. Perjuicio Concreto Derivado de la Infraccion</h3>
-  <div class="legal-block">
-    ${escaparHTML(c.perjuicioConcreto).split('\n').map(p => `<p>${p}</p>`).join('')}
-  </div>
-
-  <p>En consecuencia, concurre legitimacion activa plena conforme al articulo 48 LCSP, acreditandose interes real, condicion de potencial licitador y perjuicio concreto e individualizado derivado de las clausulas impugnadas.</p>`
-}
-
-function generarSeccionIV(datos: DatosRecursoCompleto): string {
-  const c = datos.contenidoRecurso.actoRecurrible
-  return `
+  const secIV = `
   <div class="page-break"></div>
   <h2 class="section-header">IV. ACTO RECURRIBLE</h2>
-  <p class="section-subtitle">Analisis de recurribilidad y efectos</p>
+  <div class="legal-block">${escaparHTML(textoSeguro(c?.actoRecurrible?.tipologia)).split('\n').map(p => `<p>${p}</p>`).join('')}</div>
+  <div class="legal-block">${escaparHTML(textoSeguro(c?.actoRecurrible?.tramiteCualificado)).split('\n').map(p => `<p>${p}</p>`).join('')}</div>`
 
-  <h3>IV.1. Tipologia del Acto Impugnable</h3>
-  <div class="legal-block">
-    ${escaparHTML(c.tipologia).split('\n').map(p => `<p>${p}</p>`).join('')}
-  </div>
-
-  <h3>IV.2. Acto de Tramite Cualificado</h3>
-  <div class="legal-block">
-    ${escaparHTML(c.tramiteCualificado).split('\n').map(p => `<p>${p}</p>`).join('')}
-  </div>
-
-  <h3>IV.3. Conexion entre Acto y Lesion</h3>
-  <div class="legal-block">
-    ${escaparHTML(c.conexionLesion).split('\n').map(p => `<p>${p}</p>`).join('')}
-  </div>
-
-  <p>En definitiva, el acto impugnado es plenamente susceptible de recurso especial conforme al articulo 44.2.a) de la LCSP, produce efectos juridicos directos e inmediatos y genera lesion concreta en la esfera de derechos e intereses del recurrente.</p>`
-}
-
-function generarSeccionV(datos: DatosRecursoCompleto): string {
-  const f = datos.datosFormulario
-  return `
+  const secVI = `
   <div class="page-break"></div>
-  <h2 class="section-header">V. PLAZO, COMPUTO, REGISTRO Y COMPLIANCE DE ADMISIBILIDAD</h2>
-  <p class="section-subtitle">Capa critica de supervivencia procesal</p>
-
-  <p>El plazo para la interposicion del recurso especial es de <strong>15 dias habiles</strong>, conforme al articulo 50 de la LCSP. Dicho plazo es preclusivo, improrrogable y de orden publico.</p>
-
-  <h3>V.1. Computo del Plazo</h3>
-  <div class="highlight-box">
-    <table style="border: none;">
-      <tr><td style="border: none; font-weight: 700; width: 200px;">Dies a quo:</td><td style="border: none;">${formatearFecha(f.dies_a_quo) !== 'N/D' ? formatearFecha(f.dies_a_quo) : 'Dia siguiente a la publicacion valida del acto impugnado'}</td></tr>
-      <tr><td style="border: none; font-weight: 700;">Dies ad quem:</td><td style="border: none;">${formatearFecha(f.dies_ad_quem) !== 'N/D' ? formatearFecha(f.dies_ad_quem) : 'Decimoquinto dia habil desde el dies a quo'}</td></tr>
-      ${f.fecha_publicacion_perfil ? `<tr><td style="border: none; font-weight: 700;">Publicacion perfil:</td><td style="border: none;">${escaparHTML(f.fecha_publicacion_perfil)}</td></tr>` : ''}
-      ${f.fecha_publicacion_doue ? `<tr><td style="border: none; font-weight: 700;">Publicacion DOUE:</td><td style="border: none;">${escaparHTML(f.fecha_publicacion_doue)}</td></tr>` : ''}
-      ${f.es_contrato_sara !== undefined ? `<tr><td style="border: none; font-weight: 700;">Contrato SARA:</td><td style="border: none;">${f.es_contrato_sara ? 'Si' : 'No'}</td></tr>` : ''}
-      <tr><td style="border: none; font-weight: 700;">Fecha presentacion:</td><td style="border: none;">${escaparHTML(datos.fechaGeneracion)}</td></tr>
-    </table>
-  </div>
-
-  <div class="legal-block">
-    <p>El presente recurso se interpone dentro del plazo legal de <strong>15 dias habiles</strong> previsto en el articulo 50 LCSP, computado desde el dia siguiente a la publicacion valida del acto impugnado${f.dies_a_quo ? ` (${escaparHTML(f.dies_a_quo)})` : ''}, finalizando dicho plazo el dia ${f.dies_ad_quem ? escaparHTML(f.dies_ad_quem) : '[dies ad quem]'}, siendo presentado en fecha ${escaparHTML(datos.fechaGeneracion)}, por tanto <strong>dentro del termino legalmente establecido</strong>.</p>
-  </div>
-
-  <h3>V.2. Canal y Forma de Presentacion</h3>
-  <p>El recurso se presenta por via electronica ante el registro del Tribunal competente, conforme a la obligacion de tramitacion electronica. Se adjunta como <strong>Anexo X</strong> (Doc. 10) el justificante de registro electronico acreditativo de la tempestividad de la presentacion.</p>
-
-  <h3>V.3. Estrategia Preventiva</h3>
-  <p>A fin de evitar cualquier requerimiento de subsanacion que pudiera comprometer la eficacia de la solicitud cautelar, se acompana desde el inicio la documentacion integra relacionada en la Seccion X del presente recurso.</p>`
-}
-
-function generarSeccionVI(datos: DatosRecursoCompleto): string {
-  const h = datos.contenidoRecurso.hechos
-  const clausulas = datos.clausulasImpugnadas
-  return `
-  <div class="page-break"></div>
-  <h2 class="section-header">VI. ANTECEDENTES Y HECHOS</h2>
-  <p class="section-subtitle">Cronologia probatoria &mdash; Construccion de credibilidad</p>
-
-  <h3>HECHO PRIMERO &mdash; Publicacion y Documentos de la Licitacion</h3>
-  <div class="legal-block">
-    ${escaparHTML(h.hecho1_publicacion).split('\n').map(p => `<p>${p}</p>`).join('')}
-  </div>
-
-  <h3>HECHO SEGUNDO &mdash; Clausulas Impugnadas</h3>
-  <div class="legal-block">
-    ${escaparHTML(h.hecho2_clausulas).split('\n').map(p => `<p>${p}</p>`).join('')}
-  </div>
-  ${clausulas.length > 0 ? `
-  <h4>Detalle de las Clausulas Impugnadas</h4>
-  ${clausulas.map((cl, idx) => `
+  <h2 class="section-header">VI. HECHOS</h2>
+  <h3>PRIMERO.</h3><div class="legal-block">${escaparHTML(textoSeguro(c?.hechos?.hecho1_publicacion)).split('\n').map(p => `<p>${p}</p>`).join('')}</div>
+  <h3>SEGUNDO.</h3><div class="legal-block">${escaparHTML(textoSeguro(c?.hechos?.hecho2_clausulas)).split('\n').map(p => `<p>${p}</p>`).join('')}</div>
+  ${clausulas.length > 0 ? clausulas.map((cl, idx) => `
   <div class="clausula-card">
-    <div class="clausula-header">Clausula ${idx + 1}: ${escaparHTML(cl.controlId)} &mdash; ${escaparHTML(cl.requisitoId)}</div>
-    <div class="clausula-meta">
-      Norma fuente: ${escaparHTML(cl.normaFuente)} |
-      Prioridad: <span class="badge ${cl.prioridad === 'ALTA' || cl.prioridad === 'CRITICA' ? 'badge-danger' : 'badge-warning'}">${escaparHTML(cl.prioridad)}</span>
-    </div>
+    <div class="clausula-header">Clausula ${idx + 1}: ${escaparHTML(cl.controlId)}</div>
+    <div class="clausula-meta">Norma: ${escaparHTML(cl.normaFuente)} | <span class="badge ${cl.prioridad === 'ALTA' || cl.prioridad === 'CRITICA' ? 'badge-danger' : 'badge-warning'}">${escaparHTML(cl.prioridad)}</span></div>
     ${cl.textoClausula ? `<div class="clausula-text">&laquo;${escaparHTML(cl.textoClausula)}&raquo;</div>` : ''}
-    ${cl.evidenciaPliego ? `<p style="font-size: 9pt; color: #64748b; margin-top: 6px;"><strong>Evidencia:</strong> ${escaparHTML(cl.evidenciaPliego)}</p>` : ''}
-  </div>`).join('')}
-  ` : ''}
+  </div>`).join('') : ''}
+  <h3>TERCERO.</h3><div class="legal-block">${escaparHTML(textoSeguro(c?.hechos?.hecho3_contexto)).split('\n').map(p => `<p>${p}</p>`).join('')}</div>
+  <h3>CUARTO.</h3><div class="legal-block">${escaparHTML(textoSeguro(c?.hechos?.hecho4_efecto)).split('\n').map(p => `<p>${p}</p>`).join('')}</div>
+  <h3>QUINTO.</h3><div class="legal-block">${escaparHTML(textoSeguro(c?.hechos?.hecho5_perjuicio)).split('\n').map(p => `<p>${p}</p>`).join('')}</div>`
 
-  <h3>HECHO TERCERO &mdash; Contexto Tecnico y de Mercado</h3>
-  <div class="legal-block">
-    ${escaparHTML(h.hecho3_contexto).split('\n').map(p => `<p>${p}</p>`).join('')}
-  </div>
-
-  <h3>HECHO CUARTO &mdash; Efecto Practico de las Clausulas</h3>
-  <div class="legal-block">
-    ${escaparHTML(h.hecho4_efecto).split('\n').map(p => `<p>${p}</p>`).join('')}
-  </div>
-
-  <h3>HECHO QUINTO &mdash; Perjuicio Individualizado</h3>
-  <div class="legal-block">
-    ${escaparHTML(h.hecho5_perjuicio).split('\n').map(p => `<p>${p}</p>`).join('')}
-  </div>`
-}
-
-function generarSeccionVII(datos: DatosRecursoCompleto): string {
-  const fd = datos.contenidoRecurso.fundamentos
-  return `
+  const fd = c?.fundamentos
+  const secVII = `
   <div class="page-break"></div>
   <h2 class="section-header">VII. FUNDAMENTOS DE DERECHO</h2>
-  <p class="section-subtitle">Arquitectura en modulos de impugnacion</p>
-
-  <h3>MODULO 1 &mdash; Principios Rectores de la LCSP (Art. 1 y concordantes)</h3>
-  <div class="legal-block">
-    ${escaparHTML(fd.modulo1_principios).split('\n').map(p => `<p>${p}</p>`).join('')}
-  </div>
-
+  <h3>PRIMERO.</h3><div class="legal-block">${escaparHTML(textoSeguro(fd?.modulo1_principios)).split('\n').map(p => `<p>${p}</p>`).join('')}</div>
+  <h3>SEGUNDO.</h3><div class="legal-block">${escaparHTML(textoSeguro(fd?.modulo2_proporcionalidad)).split('\n').map(p => `<p>${p}</p>`).join('')}</div>
+  <h3>TERCERO.</h3><div class="legal-block">${escaparHTML(textoSeguro(fd?.modulo3_solvencia)).split('\n').map(p => `<p>${p}</p>`).join('')}</div>
+  <h3>CUARTO.</h3><div class="legal-block">${escaparHTML(textoSeguro(fd?.modulo4_tecnicas)).split('\n').map(p => `<p>${p}</p>`).join('')}</div>
+  <h3>QUINTO.</h3><div class="legal-block">${escaparHTML(textoSeguro(fd?.modulo5_criterios)).split('\n').map(p => `<p>${p}</p>`).join('')}</div>
   <div class="page-break"></div>
-  <h3>MODULO 2 &mdash; Proporcionalidad (Test Completo)</h3>
-  <div class="legal-block">
-    ${escaparHTML(fd.modulo2_proporcionalidad).split('\n').map(p => `<p>${p}</p>`).join('')}
-  </div>
+  <h3>SEXTO.</h3><div class="legal-block">${escaparHTML(textoSeguro(fd?.modulo6_lotes)).split('\n').map(p => `<p>${p}</p>`).join('')}</div>
+  <h3>SEPTIMO.</h3><div class="legal-block">${escaparHTML(textoSeguro(fd?.modulo7_ejecucion)).split('\n').map(p => `<p>${p}</p>`).join('')}</div>
+  <h3>OCTAVO.</h3><div class="legal-block">${escaparHTML(textoSeguro(fd?.modulo8_modificaciones)).split('\n').map(p => `<p>${p}</p>`).join('')}</div>
+  <h3>NOVENO.</h3><div class="legal-block">${escaparHTML(textoSeguro(fd?.modulo9_motivacion)).split('\n').map(p => `<p>${p}</p>`).join('')}</div>
+  <h3>DECIMO.</h3><div class="legal-block">${escaparHTML(textoSeguro(fd?.modulo10_doctrina)).split('\n').map(p => `<p>${p}</p>`).join('')}</div>`
 
-  <h3>MODULO 3 &mdash; Solvencia Economica y Tecnica (Arts. 87-90 LCSP)</h3>
-  <div class="legal-block">
-    ${escaparHTML(fd.modulo3_solvencia).split('\n').map(p => `<p>${p}</p>`).join('')}
-  </div>
-
-  <div class="page-break"></div>
-  <h3>MODULO 4 &mdash; Prescripciones Tecnicas: Neutralidad y Equivalencias</h3>
-  <div class="legal-block">
-    ${escaparHTML(fd.modulo4_tecnicas).split('\n').map(p => `<p>${p}</p>`).join('')}
-  </div>
-
-  <h3>MODULO 5 &mdash; Criterios de Adjudicacion (Art. 145 LCSP)</h3>
-  <div class="legal-block">
-    ${escaparHTML(fd.modulo5_criterios).split('\n').map(p => `<p>${p}</p>`).join('')}
-  </div>
-
-  <div class="page-break"></div>
-  <h3>MODULO 6 &mdash; Division en Lotes (Art. 99 LCSP)</h3>
-  <div class="legal-block">
-    ${escaparHTML(fd.modulo6_lotes).split('\n').map(p => `<p>${p}</p>`).join('')}
-  </div>
-
-  <h3>MODULO 7 &mdash; Condiciones Especiales de Ejecucion (Art. 202 LCSP)</h3>
-  <div class="legal-block">
-    ${escaparHTML(fd.modulo7_ejecucion).split('\n').map(p => `<p>${p}</p>`).join('')}
-  </div>
-
-  <h3>MODULO 8 &mdash; Modificaciones y Clausulas-Trampa</h3>
-  <div class="legal-block">
-    ${escaparHTML(fd.modulo8_modificaciones).split('\n').map(p => `<p>${p}</p>`).join('')}
-  </div>
-
-  <div class="page-break"></div>
-  <h3>MODULO 9 &mdash; Motivacion Insuficiente del Expediente</h3>
-  <div class="legal-block">
-    ${escaparHTML(fd.modulo9_motivacion).split('\n').map(p => `<p>${p}</p>`).join('')}
-  </div>
-
-  <h3>MODULO 10 &mdash; Doctrina Administrativa y Jurisprudencia</h3>
-  <div class="legal-block">
-    ${escaparHTML(fd.modulo10_doctrina).split('\n').map(p => `<p>${p}</p>`).join('')}
-  </div>`
-}
-
-function generarSeccionVIII(datos: DatosRecursoCompleto): string {
-  const c = datos.contenidoRecurso.cautelares
-  return `
+  const secVIII = `
   <div class="page-break"></div>
   <h2 class="section-header">VIII. MEDIDAS CAUTELARES</h2>
-  <p class="section-subtitle">Modulo de control de danos &mdash; Proteccion de la finalidad del recurso</p>
+  <div class="legal-block">${escaparHTML(textoSeguro(c?.cautelares?.fumusBoniIuris)).split('\n').map(p => `<p>${p}</p>`).join('')}</div>
+  <div class="legal-block">${escaparHTML(textoSeguro(c?.cautelares?.periculumInMora)).split('\n').map(p => `<p>${p}</p>`).join('')}</div>
+  <div class="legal-block">${escaparHTML(textoSeguro(c?.cautelares?.ponderacionIntereses)).split('\n').map(p => `<p>${p}</p>`).join('')}</div>`
 
-  <p>La solicitud cautelar no es un complemento accesorio: es un instrumento de preservacion de la eficacia del procedimiento revisor. Si no se articula correctamente, el contrato puede adjudicarse, formalizarse y entrar en ejecucion, con lo que el recurso perderia su finalidad legitima.</p>
-
-  <h3>VIII.1. Fumus Boni Iuris (Apariencia de Buen Derecho)</h3>
-  <div class="legal-block">
-    ${escaparHTML(c.fumusBoniIuris).split('\n').map(p => `<p>${p}</p>`).join('')}
-  </div>
-
-  <h3>VIII.2. Periculum in Mora (Riesgo de Perdida de Finalidad)</h3>
-  <div class="legal-block">
-    ${escaparHTML(c.periculumInMora).split('\n').map(p => `<p>${p}</p>`).join('')}
-  </div>
-
-  <h3>VIII.3. Ponderacion de Intereses</h3>
-  <div class="legal-block">
-    ${escaparHTML(c.ponderacionIntereses).split('\n').map(p => `<p>${p}</p>`).join('')}
-  </div>
-
-  <div class="highlight-box">
-    <p><strong>SOLICITUD CAUTELAR:</strong> Se solicita al Tribunal que acuerde la <strong>suspension inmediata del procedimiento de adjudicacion</strong> hasta la resolucion del presente recurso, comunicandolo de forma urgente al organo de contratacion a fin de que paralice formalmente todas las actuaciones del procedimiento.</p>
-  </div>`
-}
-
-function generarSeccionIX(datos: DatosRecursoCompleto): string {
-  const p = datos.contenidoRecurso.peticion
-  const clausulas = datos.clausulasImpugnadas
-  return `
+  const pe = c?.peticion
+  const secIX = `
   <div class="page-break"></div>
-  <h2 class="section-header">IX. PETICION (SUPLICO)</h2>
-  <p class="section-subtitle">Estructura principal + subsidiaria + cautelar</p>
-
-  <div class="legal-block" style="border-left-color: #1e3a8a; background: #eff6ff;">
-    <h3 style="margin-top: 0; color: #1e3a8a;">SUPLICO AL TRIBUNAL:</h3>
-
-    <h4>A) Peticion Principal</h4>
-    ${escaparHTML(p.principal).split('\n').map(pr => `<p>${pr}</p>`).join('')}
-    ${clausulas.length > 0 ? `
-    <p>En particular, se solicita la anulacion de las siguientes clausulas no conformes con la legalidad vigente:</p>
-    <table>
-      <thead>
-        <tr><th>#</th><th>Control</th><th>Norma</th><th>Clausula impugnada</th><th>Prioridad</th></tr>
-      </thead>
-      <tbody>
-        ${clausulas.map((cl, idx) => `
-        <tr>
-          <td>${idx + 1}</td>
-          <td>${escaparHTML(cl.controlId)}</td>
-          <td>${escaparHTML(cl.normaFuente)}</td>
-          <td>${escaparHTML(cl.textoClausula).substring(0, 120)}${cl.textoClausula.length > 120 ? '...' : ''}</td>
-          <td><span class="badge ${cl.prioridad === 'ALTA' || cl.prioridad === 'CRITICA' ? 'badge-danger' : 'badge-warning'}">${escaparHTML(cl.prioridad)}</span></td>
-        </tr>`).join('')}
-      </tbody>
-    </table>
-    ` : ''}
-
-    <h4>B) Peticion Subsidiaria</h4>
-    ${escaparHTML(p.subsidiaria).split('\n').map(pr => `<p>${pr}</p>`).join('')}
-
-    <h4>C) Peticion Cautelar</h4>
-    ${escaparHTML(p.cautelar).split('\n').map(pr => `<p>${pr}</p>`).join('')}
-
-    <p style="margin-top: 16px;"><strong>Todo ello con los demas pronunciamientos que procedan en Derecho.</strong></p>
-
-    <p style="margin-top: 20px; text-align: right;">${escaparHTML(datos.datosFormulario.recurrente_domicilio ? datos.datosFormulario.recurrente_domicilio.split(',').pop()?.trim() || '' : '')}, a ${escaparHTML(datos.fechaGeneracion)}</p>
-    <p style="text-align: right; margin-top: 12px;"><strong>Fdo.: ${escaparHTML(datos.datosFormulario.representante_nombre)}</strong></p>
-    <p style="text-align: right; font-size: 9pt; color: #64748b;">${escaparHTML(datos.datosFormulario.representante_titulo)} de ${escaparHTML(datos.datosFormulario.recurrente_denominacion)}</p>
+  <h2 class="section-header">IX. SUPLICO</h2>
+  <div class="legal-block" style="background: #eff6ff;">
+    <p><strong>SUPLICO AL TRIBUNAL:</strong></p>
+    <h4>A) Principal</h4>${escaparHTML(textoSeguro(pe?.principal)).split('\n').map(p => `<p>${p}</p>`).join('')}
+    <h4>B) Subsidiaria</h4>${escaparHTML(textoSeguro(pe?.subsidiaria)).split('\n').map(p => `<p>${p}</p>`).join('')}
+    <h4>C) Cautelar</h4>${escaparHTML(textoSeguro(pe?.cautelar)).split('\n').map(p => `<p>${p}</p>`).join('')}
+    <p style="margin-top: 30px; text-align: right;"><strong>Fdo.: ${escaparHTML(f.representante_nombre)}</strong></p>
   </div>`
-}
 
-function generarSeccionX(datos: DatosRecursoCompleto): string {
-  const f = datos.datosFormulario
-  const clausulas = datos.clausulasImpugnadas
-
-  const documentos = [
-    { num: 1, titulo: 'Poder de representacion', desc: 'Escritura de poder o acreditacion de cargo con facultades para interponer recursos y solicitar cautelares.', acredita: 'Seccion II.3 (Representacion)' },
-    { num: 2, titulo: 'Escrituras sociales y registro mercantil', desc: 'Escritura de constitucion, nombramiento del administrador y certificacion registral actualizada.', acredita: 'Seccion II.1 (Identidad)' },
-    { num: 3, titulo: 'Pliego de Clausulas Administrativas Particulares (PCAP)', desc: 'Version integra publicada del PCAP del expediente.', acredita: 'Hecho Segundo (Clausulas impugnadas)' },
-    { num: 4, titulo: 'Pliego de Prescripciones Tecnicas (PPT)', desc: 'Version integra del PPT sin alteraciones.', acredita: 'Hecho Segundo / Modulo 4' },
-    { num: 5, titulo: 'Anuncio de licitacion / DOUE', desc: `Publicacion en perfil del contratante${f.fecha_publicacion_perfil ? ` (${escaparHTML(f.fecha_publicacion_perfil)})` : ''}${f.fecha_publicacion_doue ? ` y DOUE (${escaparHTML(f.fecha_publicacion_doue)})` : ''}.`, acredita: 'Hecho Primero (Publicacion) / Seccion V (Plazo)' },
-    { num: 6, titulo: 'Aclaraciones, rectificaciones y respuestas', desc: 'Respuestas oficiales, correcciones publicadas y modificaciones de pliegos.', acredita: 'Hecho Primero' },
-    { num: 7, titulo: 'Comparativa de licitaciones similares', desc: 'Pliegos de otros organos con exigencias habituales del sector y umbrales comparables.', acredita: 'Hecho Tercero / Modulo 2 (Proporcionalidad)' },
-    { num: 8, titulo: 'Informe tecnico', desc: 'Analisis de requisitos tecnicos y evaluacion de alternativas menos restrictivas.', acredita: 'Modulo 2 / Modulo 3 (Solvencia)' },
-    { num: 9, titulo: 'Informe economico', desc: 'Estudio de mercado, impacto sobre competencia y estimacion de operadores excluidos.', acredita: 'Modulo 2 / Seccion VIII (Cautelares)' },
-    { num: 10, titulo: 'Justificante de registro del recurso', desc: 'Resguardo electronico con fecha, hora y numero de registro.', acredita: 'Seccion V (Plazo y tempestividad)' },
-    { num: 11, titulo: 'Certificados de clasificacion empresarial', desc: 'Certificados de clasificacion del contratista vigentes, si procede.', acredita: 'Seccion III (Legitimacion)' },
-    { num: 12, titulo: 'Cuentas anuales', desc: 'Ultimas cuentas anuales depositadas acreditativas de solvencia economica.', acredita: 'Seccion III (Potencial licitador)' },
-    { num: 13, titulo: 'Certificados de buena ejecucion', desc: 'Certificados de contratos similares ejecutados satisfactoriamente.', acredita: 'Seccion III (Experiencia acreditada)' },
-    { num: 14, titulo: 'Organigrama tecnico', desc: 'Estructura organizativa y medios humanos disponibles.', acredita: 'Seccion III (Medios tecnicos)' },
-    { num: 15, titulo: 'Cronograma del procedimiento', desc: 'Calendario del procedimiento con fechas estimadas de cada fase.', acredita: 'Seccion VIII (Periculum in mora)' },
-  ]
-
-  return `
-  <div class="page-break"></div>
-  <h2 class="section-header">X. DOCUMENTACION, ANEXOS Y TRAZABILIDAD</h2>
-  <p class="section-subtitle">Paquete probatorio &mdash; Sistema de evidencia y control</p>
-
-  <p>En el recurso especial, la prueba es esencialmente documental. Lo que no se aporta documentalmente, practicamente no existe para el Tribunal. El paquete probatorio cumple tres funciones: acreditar hechos sin margen de duda, blindar legitimacion y admisibilidad, y facilitar al Tribunal la localizacion inmediata de cada evidencia.</p>
-
-  <h3>X.1. Indice de Documentos</h3>
-  <table>
-    <thead>
-      <tr><th>Doc.</th><th>Titulo</th><th>Descripcion</th><th>Acredita</th></tr>
-    </thead>
-    <tbody>
-      ${documentos.map(d => `
-      <tr>
-        <td style="text-align: center; font-weight: 700;">${d.num}</td>
-        <td><strong>${d.titulo}</strong></td>
-        <td>${d.desc}</td>
-        <td style="font-size: 9pt;">${d.acredita}</td>
-      </tr>`).join('')}
-    </tbody>
-  </table>
-
-  <h3>X.2. Trazabilidad Clausulas Impugnadas &harr; Documentos</h3>
-  ${clausulas.length > 0 ? `
-  <table>
-    <thead>
-      <tr><th>Clausula</th><th>Control</th><th>Norma</th><th>Referencia Hechos</th><th>Referencia Fundamentos</th></tr>
-    </thead>
-    <tbody>
-      ${clausulas.map((cl, idx) => `
-      <tr>
-        <td>${idx + 1}</td>
-        <td>${escaparHTML(cl.controlId)}</td>
-        <td>${escaparHTML(cl.normaFuente)}</td>
-        <td>Hecho Segundo</td>
-        <td>Modulo ${idx < 3 ? '1-3' : idx < 6 ? '4-6' : '7-10'}</td>
-      </tr>`).join('')}
-    </tbody>
-  </table>
-  ` : '<p>No se han identificado clausulas impugnadas especificas.</p>'}
-
-  <h3>X.3. Criterios de Calidad</h3>
-  <ul class="dash-list">
-    <li>Cada anexo incluye portada individual con titulo, expediente, fecha y finalidad probatoria.</li>
-    <li>Las clausulas impugnadas se encuentran resaltadas en los documentos correspondientes.</li>
-    <li>Existe coherencia absoluta entre hechos, fundamentos y documento citado.</li>
-    <li>Todos los documentos son integros y coinciden con las versiones oficiales publicadas.</li>
-    <li>Formato: PDF unico con indice, marcadores y numeracion correlativa.</li>
-  </ul>`
-}
-
-function generarSeccionXI(datos: DatosRecursoCompleto): string {
-  const e = datos.contenidoRecurso.efectos
-  return `
-  <div class="page-break"></div>
-  <h2 class="section-header">XI. EFECTOS, EJECUCION Y ESCENARIO POSTERIOR</h2>
-  <p class="section-subtitle">Fase post-resolucion y preparacion contenciosa</p>
-
-  <p>El recurso especial no termina con la resolucion del Tribunal. La verdadera estrategia comienza tras el pronunciamiento. La resolucion del Tribunal Administrativo de Recursos Contractuales es ejecutiva, agota la via administrativa, vincula al organo de contratacion y puede ser recurrida ante la jurisdiccion contencioso-administrativa.</p>
-
-  <h3>XI.1. Escenarios de Resolucion</h3>
-  <div class="legal-block">
-    ${escaparHTML(e.escenariosResolucion).split('\n').map(p => `<p>${p}</p>`).join('')}
-  </div>
-
-  <h3>XI.2. Matriz de Decision Post-Recurso</h3>
-  <table>
-    <thead>
-      <tr><th>Resultado</th><th>Consecuencia</th><th>Accion Recomendada</th></tr>
-    </thead>
-    <tbody>
-      <tr><td><strong>Estimacion integra</strong></td><td>Pliego anulado, procedimiento reiniciado</td><td>Supervisar nueva redaccion, preparar oferta</td></tr>
-      <tr><td><strong>Estimacion parcial</strong></td><td>Correccion puntual, procedimiento continua</td><td>Evaluar lesion residual, valorar impugnacion judicial</td></tr>
-      <tr><td><strong>Desestimacion</strong></td><td>Procedimiento continua, adjudicacion inmediata</td><td>Activar plan contencioso, solicitar cautelar judicial</td></tr>
-    </tbody>
-  </table>
-
-  <h3>XI.3. Plan Contencioso</h3>
-  <div class="legal-block">
-    ${escaparHTML(e.planContencioso).split('\n').map(p => `<p>${p}</p>`).join('')}
-  </div>`
-}
-
-function generarSeccionXII(datos: DatosRecursoCompleto): string {
-  const est = datos.contenidoRecurso.estrategia
-  return `
-  <div class="page-break"></div>
-  <h2 class="section-header">XII. ARQUITECTURA ESTRATEGICA AVANZADA</h2>
-  <p class="section-subtitle">Metodologia consultora &mdash; Diseno del recurso como instrumento de posicionamiento</p>
-
-  <h3>XII.1. Piramide de Fuerza: Seleccion de Motivos</h3>
-  <div class="legal-block">
-    ${escaparHTML(est.piramideFuerza).split('\n').map(p => `<p>${p}</p>`).join('')}
-  </div>
-
-  <h3>XII.2. Matriz de Riesgos</h3>
-  <div class="legal-block">
-    ${escaparHTML(est.matrizRiesgos).split('\n').map(p => `<p>${p}</p>`).join('')}
-  </div>
-
-  <table>
-    <thead>
-      <tr><th>Riesgo</th><th>Probabilidad</th><th>Impacto</th><th>Accion Preventiva</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>Inadmision</td><td><span class="badge badge-info">Bajo</span></td><td><span class="badge badge-danger">Critico</span></td><td>Revision formal exhaustiva completada</td></tr>
-      <tr><td>Desestimacion</td><td><span class="badge badge-warning">Medio</span></td><td><span class="badge badge-danger">Alto</span></td><td>Refuerzo probatorio y doctrinal</td></tr>
-      <tr><td>No cautelar</td><td><span class="badge badge-warning">Medio</span></td><td><span class="badge badge-danger">Alto</span></td><td>Intensificacion de periculum in mora</td></tr>
-    </tbody>
-  </table>
-
-  <h3>XII.3. Argumentacion Economica</h3>
-  <div class="legal-block">
-    ${escaparHTML(est.argumentoEconomico).split('\n').map(p => `<p>${p}</p>`).join('')}
-  </div>`
-}
-
-function generarSeccionXIII(datos: DatosRecursoCompleto): string {
-  const clausulas = datos.clausulasImpugnadas
-  const f = datos.datosFormulario
-  return `
-  <div class="page-break"></div>
-  <h2 class="section-header">XIII. CHECKLIST FINAL</h2>
-  <p class="section-subtitle">Auditoria interna del recurso &mdash; Sistema de control de calidad</p>
-
-  <h3>BLOQUE A: ADMISIBILIDAD</h3>
-  <p><em>Control formal y competencial &mdash; &iquest;Puede el Tribunal entrar al fondo sin obstaculos formales?</em></p>
-
-  <h4>1. Legitimacion</h4>
-  <div class="checklist-item"><span class="check">[OK]</span><span>Interes real y efectivo acreditado (art. 48 LCSP)</span></div>
-  <div class="checklist-item"><span class="check">[OK]</span><span>Potencial licitador demostrado con experiencia documentada</span></div>
-  <div class="checklist-item"><span class="check">[OK]</span><span>Perjuicio concreto identificado con cadena causal</span></div>
-  <div class="checklist-item"><span class="check">[OK]</span><span>Prueba documental de legitimacion incorporada</span></div>
-
-  <h4>2. Plazo</h4>
-  <div class="checklist-item"><span class="check">[OK]</span><span>Dies a quo correctamente identificado${f.dies_a_quo ? ` (${escaparHTML(f.dies_a_quo)})` : ''}</span></div>
-  <div class="checklist-item"><span class="check">[OK]</span><span>Calendario de dias habiles verificado (excluidos sabados, domingos y festivos)</span></div>
-  <div class="checklist-item"><span class="check">[OK]</span><span>Dies ad quem determinado${f.dies_ad_quem ? ` (${escaparHTML(f.dies_ad_quem)})` : ''}</span></div>
-  <div class="checklist-item"><span class="check">[OK]</span><span>Justificante de registro electronico incorporado (Doc. 10)</span></div>
-
-  <h4>3. Acto Recurrible</h4>
-  <div class="checklist-item"><span class="check">[OK]</span><span>Acto identificado: Pliegos (PCAP/PPT) del expediente ${escaparHTML(f.expediente_numero)}</span></div>
-  <div class="checklist-item"><span class="check">[OK]</span><span>Naturaleza juridica calificada: Acto de tramite cualificado (art. 44.2.a LCSP)</span></div>
-  <div class="checklist-item"><span class="check">[OK]</span><span>Efectos juridicos directos argumentados</span></div>
-
-  <h4>4. Representacion</h4>
-  <div class="checklist-item"><span class="check">[OK]</span><span>Poder o acreditacion de cargo con facultades suficientes (Doc. 1)</span></div>
-  <div class="checklist-item"><span class="check">[OK]</span><span>Incluye facultad para interponer recursos y solicitar cautelares</span></div>
-  <div class="checklist-item"><span class="check">[OK]</span><span>Vigencia del cargo/poder acreditada</span></div>
-
-  <h4>5. Tribunal</h4>
-  <div class="checklist-item"><span class="check">[OK]</span><span>Competencia objetiva y territorial verificada: ${escaparHTML(f.tribunal_competente)}</span></div>
-  <div class="checklist-item"><span class="check">[OK]</span><span>Naturaleza del poder adjudicador correctamente analizada</span></div>
-  <div class="checklist-item"><span class="check">[OK]</span><span>Fundamentacion expresa de competencia (arts. 44-46 LCSP)</span></div>
-
-  <h3 style="margin-top: 30px;">BLOQUE B: FONDO</h3>
-  <p><em>Consistencia argumental y solidez juridica &mdash; &iquest;Esta el recurso preparado para ser estimado?</em></p>
-
-  <h4>1. Hechos</h4>
-  <div class="checklist-item"><span class="check">[OK]</span><span>Redaccion objetiva y cronologica (5 hechos estructurados)</span></div>
-  <div class="checklist-item"><span class="check">[OK]</span><span>Citas literales de clausulas impugnadas con referencia a documento</span></div>
-  <div class="checklist-item"><span class="check">[OK]</span><span>Separacion estricta entre hechos y fundamentos</span></div>
-
-  <h4>2. Clausulas Impugnadas</h4>
-  ${clausulas.length > 0 ? clausulas.map((cl, idx) => `
-  <div class="checklist-item"><span class="check">[OK]</span><span>Clausula ${idx + 1} (${escaparHTML(cl.controlId)}): ${escaparHTML(cl.normaFuente)} &mdash; Prioridad ${escaparHTML(cl.prioridad)}</span></div>`).join('') : '<div class="checklist-item"><span class="check">[--]</span><span>Sin clausulas impugnadas especificas identificadas</span></div>'}
-
-  <h4>3. Test de Proporcionalidad</h4>
-  <div class="checklist-item"><span class="check">[OK]</span><span>Idoneidad analizada</span></div>
-  <div class="checklist-item"><span class="check">[OK]</span><span>Necesidad examinada (alternativas menos restrictivas)</span></div>
-  <div class="checklist-item"><span class="check">[OK]</span><span>Proporcionalidad estricta argumentada</span></div>
-  <div class="checklist-item"><span class="check">[OK]</span><span>Impacto competitivo considerado</span></div>
-
-  <h4>4. Peticion (Suplico)</h4>
-  <div class="checklist-item"><span class="check">[OK]</span><span>Coherencia entre fundamentos y suplico verificada</span></div>
-  <div class="checklist-item"><span class="check">[OK]</span><span>Peticion principal clara y ejecutable</span></div>
-  <div class="checklist-item"><span class="check">[OK]</span><span>Peticion subsidiaria operativa</span></div>
-  <div class="checklist-item"><span class="check">[OK]</span><span>Retroaccion solicitada expresamente</span></div>
-
-  <h3 style="margin-top: 30px;">BLOQUE C: CAUTELAR</h3>
-  <p><em>Control de eficacia inmediata &mdash; &iquest;Se protege realmente la finalidad del recurso?</em></p>
-
-  <div class="checklist-item"><span class="check">[OK]</span><span>Fumus boni iuris con motivos principales seleccionados (top 2-3)</span></div>
-  <div class="checklist-item"><span class="check">[OK]</span><span>Periculum in mora con riesgo concreto y actual</span></div>
-  <div class="checklist-item"><span class="check">[OK]</span><span>Cronograma del procedimiento referenciado (Doc. 15)</span></div>
-  <div class="checklist-item"><span class="check">[OK]</span><span>Ponderacion de intereses completada</span></div>
-  <div class="checklist-item"><span class="check">[OK]</span><span>Solicitud expresa de suspension formulada</span></div>
-
-  <h3 style="margin-top: 30px;">Matriz de Validacion Final</h3>
-  <table>
-    <thead>
-      <tr><th>Area</th><th>Nivel de Riesgo</th><th>Estado</th></tr>
-    </thead>
-    <tbody>
-      <tr><td><strong>Admisibilidad</strong></td><td><span class="badge badge-info">Bajo</span></td><td style="color: #22c55e; font-weight: 700;">VERIFICADO</td></tr>
-      <tr><td><strong>Fondo juridico</strong></td><td><span class="badge badge-info">Bajo</span></td><td style="color: #22c55e; font-weight: 700;">VERIFICADO</td></tr>
-      <tr><td><strong>Cautelar</strong></td><td><span class="badge badge-info">Bajo</span></td><td style="color: #22c55e; font-weight: 700;">VERIFICADO</td></tr>
-      <tr><td><strong>Coherencia global</strong></td><td><span class="badge badge-info">Bajo</span></td><td style="color: #22c55e; font-weight: 700;">VERIFICADO</td></tr>
-    </tbody>
-  </table>
-
-  <div class="warning-box" style="margin-top: 20px;">
-    <p><strong>REGLA DE ORO FINAL:</strong> El recurso esta listo para presentar cuando no existe riesgo relevante de inadmision, los motivos principales son solidos y priorizados, la prueba documental es trazable, la cautelar esta tecnicamente blindada, el suplico es ejecutable sin ambiguedad y puede convertirse en demanda contenciosa sin reestructuracion.</p>
-  </div>`
-}
-
-// ─── Main Export Functions ───────────────────────────────────────────────────
-
-export function generarRecursoHTML(datos: DatosRecursoCompleto): string {
   return `<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>REMC - ${escaparHTML(datos.codigoRecurso)} - ${escaparHTML(datos.datosFormulario.expediente_numero)}</title>
-  <style>${generarCSS()}</style>
+  <title>REMC - ${escaparHTML(datos.codigoRecurso)} - ${escaparHTML(f.expediente_numero)}</title>
+  <style>${generarCSS_legacy()}</style>
 </head>
 <body>
-  ${generarPortada(datos)}
-  ${generarControlVersiones(datos)}
-  ${generarSeccionI(datos)}
-  ${generarSeccionII(datos)}
-  ${generarSeccionIII(datos)}
-  ${generarSeccionIV(datos)}
-  ${generarSeccionV(datos)}
-  ${generarSeccionVI(datos)}
-  ${generarSeccionVII(datos)}
-  ${generarSeccionVIII(datos)}
-  ${generarSeccionIX(datos)}
-  ${generarSeccionX(datos)}
-  ${generarSeccionXI(datos)}
-  ${generarSeccionXII(datos)}
-  ${generarSeccionXIII(datos)}
-
+  ${portada}
+  ${secI}
+  ${secIII}
+  ${secIV}
+  ${secVI}
+  ${secVII}
+  ${secVIII}
+  ${secIX}
   <div class="footer">
-    <p>Recurso Especial en Materia de Contratacion &mdash; ${escaparHTML(datos.codigoRecurso)}</p>
-    <p>${escaparHTML(datos.datosFormulario.recurrente_denominacion)} | Expediente ${escaparHTML(datos.datosFormulario.expediente_numero)} | ${escaparHTML(datos.fechaGeneracion)}</p>
-    <p>Documento confidencial destinado exclusivamente a su presentacion ante ${escaparHTML(datos.datosFormulario.tribunal_competente)}.</p>
+    <p>REMC &mdash; ${escaparHTML(datos.codigoRecurso)} | ${escaparHTML(f.recurrente_denominacion)} | ${escaparHTML(datos.fechaGeneracion)}</p>
   </div>
 </body>
 </html>`
+}
+
+// ─── Public API ─────────────────────────────────────────────────────────────
+
+export function generarRecursoHTML(datos: DatosRecursoCompleto): string {
+  // Safety: if contenidoRecurso is a string (edge case), parse it
+  if (typeof datos.contenidoRecurso === 'string') {
+    try {
+      datos = { ...datos, contenidoRecurso: JSON.parse(datos.contenidoRecurso as unknown as string) }
+    } catch {
+      console.error('[recurso-service] contenidoRecurso es string no-JSON:', String(datos.contenidoRecurso).slice(0, 100))
+      throw new Error('El contenido del recurso tiene formato invalido')
+    }
+  }
+
+  const version = (datos.contenidoRecurso as unknown as Record<string, unknown>)?._version
+  console.log(`[recurso-service] Renderizando recurso version=${version}, claves=[${Object.keys(datos.contenidoRecurso).join(', ')}]`)
+
+  if (esFormatoV5(datos.contenidoRecurso)) {
+    return generarRecursoHTML_v5(datos)
+  }
+  if (esFormatoV4(datos.contenidoRecurso)) {
+    return generarRecursoHTML_v4(datos)
+  }
+  if (esFormatoV3(datos.contenidoRecurso)) {
+    return generarRecursoHTML_v3(datos)
+  }
+  if (esFormatoV2(datos.contenidoRecurso)) {
+    return generarRecursoHTML_v2(datos)
+  }
+  return generarRecursoHTML_legacy(datos)
 }
 
 export function abrirRecursoImprimible(html: string): void {
@@ -1042,7 +2055,20 @@ export function abrirRecursoImprimible(html: string): void {
   if (ventanaImpresion) {
     ventanaImpresion.document.write(html)
     ventanaImpresion.document.close()
-    // Auto-activar impresion despues de un breve retraso para renderizado
     setTimeout(() => ventanaImpresion.print(), 500)
+  } else {
+    descargarComoHTML(html, 'recurso-remc.html')
   }
+}
+
+function descargarComoHTML(html: string, nombre: string): void {
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = nombre
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+  URL.revokeObjectURL(url)
 }
