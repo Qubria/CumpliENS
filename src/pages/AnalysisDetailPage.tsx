@@ -150,6 +150,9 @@ function VistaProgreso({ analisis, progreso }: {
 
   const minutosRestantes = Math.ceil(tiempoRestante / 60)
 
+  // Progreso REMC: usar seccionActualREMC / 9 para que S1 ya muestre 11%
+  const pctREMC = seccionActualREMC > 0 ? Math.round((seccionActualREMC / 9) * 100) : 0
+
   return (
     <div className="min-h-[60vh] flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
@@ -174,143 +177,151 @@ function VistaProgreso({ analisis, progreso }: {
         {/* Title */}
         <div className="text-center mb-6">
           <h2 className="text-lg font-semibold tracking-tight text-text-heading mb-1">
-            {estaCompleto ? 'Analisis completado' : esGenerandoRecurso ? 'Generando Recurso REMC' : 'Analizando documentos'}
+            {estaCompleto ? 'Analisis completado' : 'Analizando documentos'}
           </h2>
-          {esGenerandoRecurso && seccionActualREMC > 0 ? (
-            <p className="text-sm text-text-muted">
-              Seccion {seccionActualREMC} de 9
-              <span className="mx-1.5 text-border">·</span>
-              <span className="text-primary font-medium">{SECCIONES_REMC[seccionActualREMC - 1]?.etiqueta}</span>
-              {minutosRestantes > 0 && (
-                <>
-                  <span className="mx-1.5 text-border">·</span>
-                  <span className="text-text-placeholder">~{minutosRestantes} min</span>
-                </>
-              )}
-            </p>
-          ) : (
-            <p className="text-sm text-text-muted">
-              {descripcionActual ?? 'Procesando...'}
-            </p>
-          )}
+          <p className="text-sm text-text-muted">
+            {descripcionActual ?? 'Procesando...'}
+          </p>
         </div>
 
-        {/* Progress bar */}
-        {esGenerandoRecurso ? (
-          /* REMC-specific progress bar: section-based */
-          <div className="w-full mb-6">
-            <div className="flex justify-between items-center mb-1.5">
-              <span className="text-[11px] font-semibold text-primary">
-                {seccionActualREMC > 0 ? Math.round(((seccionActualREMC - 1) / 9) * 100) : 0}%
-              </span>
-              <span className="text-[11px] text-text-placeholder">{seccionActualREMC}/9</span>
-            </div>
-            <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
-              <motion.div
-                className="h-full rounded-full bg-primary"
-                initial={{ width: "0%" }}
-                animate={{ width: `${seccionActualREMC > 0 ? ((seccionActualREMC - 1) / 9) * 100 : 0}%` }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-              />
-            </div>
-          </div>
-        ) : (
-          /* General pipeline progress bar */
-          <div className="w-full h-1 bg-muted rounded-full mb-8 overflow-hidden">
-            <motion.div
-              className="h-full bg-primary rounded-full"
-              initial={{ width: "0%" }}
-              animate={{ width: `${porcentajeActual}%` }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-            />
-          </div>
-        )}
+        {/* General pipeline progress bar (always visible) */}
+        <div className="w-full h-1 bg-muted rounded-full mb-6 overflow-hidden">
+          <motion.div
+            className="h-full bg-primary rounded-full"
+            initial={{ width: "0%" }}
+            animate={{ width: `${porcentajeActual}%` }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          />
+        </div>
 
-        {/* REMC detailed sections panel */}
-        {esGenerandoRecurso ? (
-          <div className="space-y-1.5 mb-6">
-            {SECCIONES_REMC.map((sec, i) => {
-              const secStatus: StepStatus = sec.id < seccionActualREMC
-                ? 'done'
-                : sec.id === seccionActualREMC
-                ? 'active'
-                : 'pending'
-              return (
-                <motion.div
-                  key={sec.id}
-                  initial={{ opacity: 0, x: -8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.05 }}
-                  className="flex items-center gap-2.5 py-0.5"
+        {/* General pipeline steps checklist */}
+        <div className="space-y-2.5">
+          {pasos.map(([clave, paso], i) => {
+            const status = getStepStatus(clave)
+            return (
+              <motion.div
+                key={clave}
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.08 }}
+                className="flex items-center gap-2.5"
+              >
+                {status === 'done' ? (
+                  <CheckCircle2 className="h-4 w-4 text-cumple-icon flex-shrink-0" />
+                ) : status === 'active' ? (
+                  <Loader2 className="h-4 w-4 text-primary animate-spin flex-shrink-0" />
+                ) : (
+                  <Circle className="h-4 w-4 text-border flex-shrink-0" />
+                )}
+                <span
+                  className={`text-[13px] leading-tight ${
+                    status === 'done'
+                      ? 'text-text-muted'
+                      : status === 'active'
+                      ? 'text-text-heading font-medium'
+                      : 'text-text-placeholder'
+                  }`}
                 >
-                  {secStatus === 'done' ? (
-                    <CheckCircle2 className="h-4 w-4 text-cumple-icon flex-shrink-0" />
-                  ) : secStatus === 'active' ? (
-                    <Loader2 className="h-4 w-4 text-primary animate-spin flex-shrink-0" />
-                  ) : (
-                    <Circle className="h-4 w-4 text-border flex-shrink-0" />
-                  )}
-                  <span
-                    className={`text-[13px] leading-tight ${
-                      secStatus === 'done'
-                        ? 'text-text-muted line-through decoration-text-placeholder/30'
-                        : secStatus === 'active'
-                        ? 'text-text-heading font-semibold'
-                        : 'text-text-placeholder'
-                    }`}
-                  >
-                    {sec.etiqueta}
+                  {paso.etiqueta}
+                </span>
+              </motion.div>
+            )
+          })}
+        </div>
+
+        {/* REMC detailed sections panel (expands below pipeline when generating recurso) */}
+        <AnimatePresence>
+          {esGenerandoRecurso && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="overflow-hidden"
+            >
+              <div className="mt-6 pt-5 border-t border-border">
+                {/* REMC header + progress */}
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-[12px] font-semibold text-text-heading">
+                    Recurso REMC
                   </span>
-                  {secStatus === 'active' && (
-                    <motion.span
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: [0.4, 1, 0.4] }}
-                      transition={{ duration: 1.5, repeat: Infinity }}
-                      className="text-[10px] text-primary font-medium ml-auto"
-                    >
-                      ~{Math.ceil(sec.tiempoEstimadoSeg / 60)} min
-                    </motion.span>
-                  )}
-                </motion.div>
-              )
-            })}
-          </div>
-        ) : (
-          /* General pipeline steps checklist */
-          <div className="space-y-2.5">
-            {pasos.map(([clave, paso], i) => {
-              const status = getStepStatus(clave)
-              return (
-                <motion.div
-                  key={clave}
-                  initial={{ opacity: 0, x: -8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.08 }}
-                  className="flex items-center gap-2.5"
-                >
-                  {status === 'done' ? (
-                    <CheckCircle2 className="h-4 w-4 text-cumple-icon flex-shrink-0" />
-                  ) : status === 'active' ? (
-                    <Loader2 className="h-4 w-4 text-primary animate-spin flex-shrink-0" />
-                  ) : (
-                    <Circle className="h-4 w-4 text-border flex-shrink-0" />
-                  )}
-                  <span
-                    className={`text-[13px] leading-tight ${
-                      status === 'done'
-                        ? 'text-text-muted'
-                        : status === 'active'
-                        ? 'text-text-heading font-medium'
-                        : 'text-text-placeholder'
-                    }`}
-                  >
-                    {paso.etiqueta}
+                  <span className="text-[11px] text-text-muted">
+                    {seccionActualREMC > 0 ? `${seccionActualREMC}/9` : '...'}
+                    {minutosRestantes > 0 && ` · ~${minutosRestantes} min`}
                   </span>
-                </motion.div>
-              )
-            })}
-          </div>
-        )}
+                </div>
+
+                {/* REMC progress bar */}
+                <div className="w-full h-2 bg-muted rounded-full mb-4 overflow-hidden relative">
+                  <motion.div
+                    className="h-full rounded-full bg-primary"
+                    initial={{ width: "0%" }}
+                    animate={{ width: `${pctREMC}%` }}
+                    transition={{ duration: 0.6, ease: "easeOut" }}
+                  />
+                  {/* Shimmer overlay to show activity */}
+                  <motion.div
+                    className="absolute inset-0 rounded-full"
+                    style={{
+                      background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%)',
+                      backgroundSize: '200% 100%',
+                    }}
+                    animate={{ backgroundPosition: ['200% 0', '-200% 0'] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+                  />
+                </div>
+
+                {/* 9 REMC sections list */}
+                <div className="space-y-1">
+                  {SECCIONES_REMC.map((sec, i) => {
+                    const secStatus: StepStatus = sec.id < seccionActualREMC
+                      ? 'done'
+                      : sec.id === seccionActualREMC
+                      ? 'active'
+                      : 'pending'
+                    return (
+                      <motion.div
+                        key={sec.id}
+                        initial={{ opacity: 0, x: -6 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.1 + i * 0.04 }}
+                        className="flex items-center gap-2 py-0.5"
+                      >
+                        {secStatus === 'done' ? (
+                          <CheckCircle2 className="h-3.5 w-3.5 text-cumple-icon flex-shrink-0" />
+                        ) : secStatus === 'active' ? (
+                          <Loader2 className="h-3.5 w-3.5 text-primary animate-spin flex-shrink-0" />
+                        ) : (
+                          <Circle className="h-3.5 w-3.5 text-border flex-shrink-0" />
+                        )}
+                        <span
+                          className={`text-[12px] leading-tight ${
+                            secStatus === 'done'
+                              ? 'text-text-muted'
+                              : secStatus === 'active'
+                              ? 'text-text-heading font-semibold'
+                              : 'text-text-placeholder'
+                          }`}
+                        >
+                          {sec.etiqueta}
+                        </span>
+                        {secStatus === 'active' && (
+                          <motion.span
+                            animate={{ opacity: [0.4, 1, 0.4] }}
+                            transition={{ duration: 1.5, repeat: Infinity }}
+                            className="text-[10px] text-primary font-medium ml-auto"
+                          >
+                            ~{Math.ceil(sec.tiempoEstimadoSeg / 60)} min
+                          </motion.span>
+                        )}
+                      </motion.div>
+                    )
+                  })}
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   )
