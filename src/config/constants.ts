@@ -38,6 +38,19 @@ export const PASOS_PIPELINE: Record<string, { etiqueta: string; rango: [number, 
   FALLIDO: { etiqueta: 'Error en el proceso', rango: [0, 0] },
 }
 
+// Secciones del Recurso REMC (9 secciones v5 forense)
+export const SECCIONES_REMC = [
+  { id: 1, etiqueta: 'Antecedentes de hecho', tiempoEstimadoSeg: 100 },
+  { id: 2, etiqueta: 'Fundamentos de Derecho I-II', tiempoEstimadoSeg: 130 },
+  { id: 3, etiqueta: 'Fundamentos de Derecho III-IV', tiempoEstimadoSeg: 130 },
+  { id: 4, etiqueta: 'Fundamentos de Derecho V-VI', tiempoEstimadoSeg: 130 },
+  { id: 5, etiqueta: 'Fundamentos de Derecho VII-VIII', tiempoEstimadoSeg: 130 },
+  { id: 6, etiqueta: 'Fundamentos de Derecho IX-X', tiempoEstimadoSeg: 130 },
+  { id: 7, etiqueta: 'Causas de nulidad', tiempoEstimadoSeg: 100 },
+  { id: 8, etiqueta: 'Medidas cautelares y suplico', tiempoEstimadoSeg: 75 },
+  { id: 9, etiqueta: 'Legitimacion y otrosies', tiempoEstimadoSeg: 115 },
+] as const
+
 // Dimensiones de seguridad ENS
 export const DIMENSIONES_ENS = [
   { id: 'confidencialidad', etiqueta: 'Confidencialidad', abreviatura: 'C' },

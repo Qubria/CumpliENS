@@ -16,7 +16,7 @@ import {
   descargarInformeGraficoPDF, descargarInformeGraficoWord,
 } from '@/services/download-service'
 import type { ContenidoRecurso, ClausulaImpugnada } from '@/types/recurso'
-import { PASOS_PIPELINE, DIMENSIONES_ENS, CATEGORIAS_ENS } from '@/config/constants'
+import { PASOS_PIPELINE, SECCIONES_REMC, DIMENSIONES_ENS, CATEGORIAS_ENS } from '@/config/constants'
 import type { PrioridadHallazgo } from '@/types/database'
 import type { DimensionDataItem } from '@/components/charts/RadarDimensions'
 import type { CategoryBarItem } from '@/components/charts/CategoryBars'
@@ -107,6 +107,13 @@ export function AnalysisDetailPage() {
   return <VistaResultados analisis={analisis} hallazgos={hallazgos ?? []} datosRecurso={datosRecurso ?? null} />
 }
 
+// ─── Parsear seccion REMC del texto de descripcion ───────────────
+function extraerSeccionREMC(descripcion: string | null): number {
+  if (!descripcion) return 0
+  const match = descripcion.match(/\((\d+)\/9\)/)
+  return match?.[1] ? parseInt(match[1], 10) : 0
+}
+
 // ─── Progress view (diseño-style) ────────────────────────────────
 function VistaProgreso({ analisis, progreso }: {
   analisis: { estado: string; porcentaje_progreso: number; descripcion_paso_actual: string | null }
@@ -130,6 +137,18 @@ function VistaProgreso({ analisis, progreso }: {
   }
 
   const estaCompleto = estadoActual === 'COMPLETADO'
+  const esGenerandoRecurso = estadoActual === 'GENERANDO_RECURSO'
+  const seccionActualREMC = esGenerandoRecurso ? extraerSeccionREMC(descripcionActual) : 0
+
+  // Tiempo estimado restante (solo durante REMC)
+  const tiempoRestante = useMemo(() => {
+    if (!esGenerandoRecurso || seccionActualREMC === 0) return 0
+    return SECCIONES_REMC
+      .filter(s => s.id >= seccionActualREMC)
+      .reduce((sum, s) => sum + s.tiempoEstimadoSeg, 0)
+  }, [esGenerandoRecurso, seccionActualREMC])
+
+  const minutosRestantes = Math.ceil(tiempoRestante / 60)
 
   return (
     <div className="min-h-[60vh] flex items-center justify-center px-4">
@@ -153,59 +172,145 @@ function VistaProgreso({ analisis, progreso }: {
         </div>
 
         {/* Title */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-6">
           <h2 className="text-lg font-semibold tracking-tight text-text-heading mb-1">
-            {estaCompleto ? 'Analisis completado' : 'Analizando documentos'}
+            {estaCompleto ? 'Analisis completado' : esGenerandoRecurso ? 'Generando Recurso REMC' : 'Analizando documentos'}
           </h2>
-          <p className="text-sm text-text-muted">
-            {descripcionActual ?? 'Procesando...'}
-          </p>
+          {esGenerandoRecurso && seccionActualREMC > 0 ? (
+            <p className="text-sm text-text-muted">
+              Seccion {seccionActualREMC} de 9
+              <span className="mx-1.5 text-border">·</span>
+              <span className="text-primary font-medium">{SECCIONES_REMC[seccionActualREMC - 1]?.etiqueta}</span>
+              {minutosRestantes > 0 && (
+                <>
+                  <span className="mx-1.5 text-border">·</span>
+                  <span className="text-text-placeholder">~{minutosRestantes} min</span>
+                </>
+              )}
+            </p>
+          ) : (
+            <p className="text-sm text-text-muted">
+              {descripcionActual ?? 'Procesando...'}
+            </p>
+          )}
         </div>
 
-        {/* Thin progress bar */}
-        <div className="w-full h-1 bg-muted rounded-full mb-8 overflow-hidden">
-          <motion.div
-            className="h-full bg-primary rounded-full"
-            initial={{ width: "0%" }}
-            animate={{ width: `${porcentajeActual}%` }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-          />
-        </div>
-
-        {/* Steps checklist */}
-        <div className="space-y-2.5">
-          {pasos.map(([clave, paso], i) => {
-            const status = getStepStatus(clave)
-            return (
+        {/* Progress bar */}
+        {esGenerandoRecurso ? (
+          /* REMC-specific progress bar: section-based */
+          <div className="w-full mb-6">
+            <div className="flex justify-between items-center mb-1.5">
+              <span className="text-[11px] font-semibold text-primary">
+                {seccionActualREMC > 0 ? Math.round(((seccionActualREMC - 1) / 9) * 100) : 0}%
+              </span>
+              <span className="text-[11px] text-text-placeholder">{seccionActualREMC}/9</span>
+            </div>
+            <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
               <motion.div
-                key={clave}
-                initial={{ opacity: 0, x: -8 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.08 }}
-                className="flex items-center gap-2.5"
-              >
-                {status === 'done' ? (
-                  <CheckCircle2 className="h-4 w-4 text-cumple-icon flex-shrink-0" />
-                ) : status === 'active' ? (
-                  <Loader2 className="h-4 w-4 text-primary animate-spin flex-shrink-0" />
-                ) : (
-                  <Circle className="h-4 w-4 text-border flex-shrink-0" />
-                )}
-                <span
-                  className={`text-[13px] leading-tight ${
-                    status === 'done'
-                      ? 'text-text-muted'
-                      : status === 'active'
-                      ? 'text-text-heading font-medium'
-                      : 'text-text-placeholder'
-                  }`}
+                className="h-full rounded-full bg-primary"
+                initial={{ width: "0%" }}
+                animate={{ width: `${seccionActualREMC > 0 ? ((seccionActualREMC - 1) / 9) * 100 : 0}%` }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+              />
+            </div>
+          </div>
+        ) : (
+          /* General pipeline progress bar */
+          <div className="w-full h-1 bg-muted rounded-full mb-8 overflow-hidden">
+            <motion.div
+              className="h-full bg-primary rounded-full"
+              initial={{ width: "0%" }}
+              animate={{ width: `${porcentajeActual}%` }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+            />
+          </div>
+        )}
+
+        {/* REMC detailed sections panel */}
+        {esGenerandoRecurso ? (
+          <div className="space-y-1.5 mb-6">
+            {SECCIONES_REMC.map((sec, i) => {
+              const secStatus: StepStatus = sec.id < seccionActualREMC
+                ? 'done'
+                : sec.id === seccionActualREMC
+                ? 'active'
+                : 'pending'
+              return (
+                <motion.div
+                  key={sec.id}
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                  className="flex items-center gap-2.5 py-0.5"
                 >
-                  {paso.etiqueta}
-                </span>
-              </motion.div>
-            )
-          })}
-        </div>
+                  {secStatus === 'done' ? (
+                    <CheckCircle2 className="h-4 w-4 text-cumple-icon flex-shrink-0" />
+                  ) : secStatus === 'active' ? (
+                    <Loader2 className="h-4 w-4 text-primary animate-spin flex-shrink-0" />
+                  ) : (
+                    <Circle className="h-4 w-4 text-border flex-shrink-0" />
+                  )}
+                  <span
+                    className={`text-[13px] leading-tight ${
+                      secStatus === 'done'
+                        ? 'text-text-muted line-through decoration-text-placeholder/30'
+                        : secStatus === 'active'
+                        ? 'text-text-heading font-semibold'
+                        : 'text-text-placeholder'
+                    }`}
+                  >
+                    {sec.etiqueta}
+                  </span>
+                  {secStatus === 'active' && (
+                    <motion.span
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: [0.4, 1, 0.4] }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                      className="text-[10px] text-primary font-medium ml-auto"
+                    >
+                      ~{Math.ceil(sec.tiempoEstimadoSeg / 60)} min
+                    </motion.span>
+                  )}
+                </motion.div>
+              )
+            })}
+          </div>
+        ) : (
+          /* General pipeline steps checklist */
+          <div className="space-y-2.5">
+            {pasos.map(([clave, paso], i) => {
+              const status = getStepStatus(clave)
+              return (
+                <motion.div
+                  key={clave}
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.08 }}
+                  className="flex items-center gap-2.5"
+                >
+                  {status === 'done' ? (
+                    <CheckCircle2 className="h-4 w-4 text-cumple-icon flex-shrink-0" />
+                  ) : status === 'active' ? (
+                    <Loader2 className="h-4 w-4 text-primary animate-spin flex-shrink-0" />
+                  ) : (
+                    <Circle className="h-4 w-4 text-border flex-shrink-0" />
+                  )}
+                  <span
+                    className={`text-[13px] leading-tight ${
+                      status === 'done'
+                        ? 'text-text-muted'
+                        : status === 'active'
+                        ? 'text-text-heading font-medium'
+                        : 'text-text-placeholder'
+                    }`}
+                  >
+                    {paso.etiqueta}
+                  </span>
+                </motion.div>
+              )
+            })}
+          </div>
+        )}
       </div>
     </div>
   )
