@@ -408,6 +408,19 @@ function VistaResultados({ analisis, hallazgos, datosRecurso }: {
   }
 
   function generarHTMLInformeGrafico(): string {
+    // Extraer datos del recurso generado (fundamentos, causas nulidad, etc.)
+    const contenidoRec = datosRecurso?.contenido_recurso as Record<string, unknown> | undefined
+    const fundamentos = (contenidoRec && Array.isArray(contenidoRec.fundamentos))
+      ? (contenidoRec.fundamentos as Array<{ ordinal: string; titulo: string }>).map(f => ({ ordinal: f.ordinal, titulo: f.titulo }))
+      : []
+    const causasRaw = contenidoRec?.causasNulidad
+    const causasNulidad = Array.isArray(causasRaw)
+      ? (causasRaw as Array<{ ordinal: string; base: string; titulo: string; hallazgosVinculados?: string[] }>).map(c => ({
+          ordinal: c.ordinal, base: c.base, titulo: c.titulo, hallazgosVinculados: c.hallazgosVinculados ?? [],
+        }))
+      : []
+    const antecedentes = contenidoRec && Array.isArray(contenidoRec.antecedentes) ? contenidoRec.antecedentes : []
+
     const resultado = generarInformeGraficoHTML({
       organizacion: datosRecurso?.organo_contratacion ?? datosRecurso?.recurrente_denominacion ?? 'Organizacion',
       nombreDocumento: datosRecurso?.expediente_denominacion ?? datosRecurso?.expediente_numero ?? 'Documento Analizado',
@@ -432,6 +445,16 @@ function VistaResultados({ analisis, hallazgos, datosRecurso }: {
       totalNormasReferenciadas: analisis.total_normas_referenciadas ?? 0,
       perfilSectorial: analisis.perfil_sectorial,
       proveedoresNube: analisis.proveedores_nube ?? [],
+      recurso: (fundamentos.length > 0 || causasNulidad.length > 0) ? {
+        fundamentos,
+        causasNulidad,
+        totalAntecedentes: antecedentes.length,
+        valorEstimado: datosRecurso?.expediente_valor_estimado ?? undefined,
+        presupuestoBase: datosRecurso?.expediente_presupuesto_base ?? undefined,
+        expediente: datosRecurso?.expediente_numero ?? '',
+        recurrente: datosRecurso?.recurrente_denominacion ?? '',
+        tribunal: datosRecurso?.tribunal_competente ?? '',
+      } : undefined,
     })
     return resultado
   }

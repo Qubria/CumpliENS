@@ -1,7 +1,7 @@
 /**
- * Informe Grafico ENS v5 — 100% graficos, cero texto, cero tarjetas, cero tablas.
- * Solo barras, waffle, heatmap, matrices y numeros grandes.
- * CERO SVG — todo CSS divs. Compatible html2canvas.
+ * Informe Grafico ENS v6 — 10 paginas, datos reales del recurso.
+ * Incluye fundamentos de derecho, causas de nulidad, datos del expediente.
+ * CERO SVG — todo CSS divs. Compatible html2canvas / window.print().
  */
 
 import type { InformeCumplimiento } from '@/types/analysis'
@@ -11,6 +11,10 @@ function esc(t: string | null | undefined): string {
   return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 }
 function pct(n: number, t: number): number { return t > 0 ? Math.round((n / t) * 100) : 0 }
+function fmtEur(n: number | undefined): string {
+  if (!n) return '—'
+  return n.toLocaleString('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })
+}
 
 const P = {
   ok: '#059669', parc: '#D97706', nc: '#DC2626', na: '#CBD5E1',
@@ -22,14 +26,28 @@ const P = {
   dim: ['#4F46E5', '#0891B2', '#D97706', '#DB2777', '#7C3AED'] as string[],
 } as const
 
+// Colores por base juridica de nulidad
+const baseColors: Record<string, string> = {
+  'LPAC': '#3B82F6', 'LCSP': '#7C3AED', 'CE': '#DC2626', 'CDFUE': '#059669',
+  'RGPD': '#D97706', 'RD 311': '#0891B2', 'Directiva': '#6366F1', 'LOPDGDD': '#EA580C',
+}
+
+function getBaseColor(base: string): string {
+  for (const [key, color] of Object.entries(baseColors)) {
+    if (base.includes(key)) return color
+  }
+  return P.indigo
+}
+
 const CSS = `
-  @page { size: A4; margin: 14mm 16mm 16mm 16mm; }
-  @media print { .pb { page-break-before: always; } body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+  @page { size: A4; margin: 0; }
+  @media print { .pb { page-break-before: always; } body { margin: 14mm 16mm 16mm 16mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 8pt; color: ${P.txt}; max-width: 210mm; margin: 0 auto; background: #fff; }
   .pb { page-break-before: always; }
   .nb { break-inside: avoid; }
   .badge { display: inline-block; padding: 1px 7px; border-radius: 8px; font-size: 6.5pt; font-weight: 700; }
+  .sec-title { font-size: 11pt; font-weight: 800; color: ${P.navy}; margin-bottom: 8px; }
 `
 
 // ─── Waffle Chart 10x10 ─────────────────────────────────────────────────────
@@ -193,8 +211,7 @@ function heatmap(hallazgos: InformeCumplimiento['hallazgos']): string {
   return html
 }
 
-// ─── NUEVO: Barras de incumplimiento (reemplaza tarjetas) ───────────────────
-// Cada control NO_CONFORME o PARCIAL como barra horizontal, largo = severidad
+// ─── Barras de incumplimiento (top 20) ──────────────────────────────────────
 
 function incumplimientoBars(hallazgos: InformeCumplimiento['hallazgos']): string {
   const crit = hallazgos
@@ -234,15 +251,12 @@ function incumplimientoBars(hallazgos: InformeCumplimiento['hallazgos']): string
   }).join('')
 }
 
-// ─── NUEVO: Risk Matrix (prioridad x cumplimiento) ──────────────────────────
-// Grid 4x2: filas=prioridad (CRIT/ALTA/MED/BAJA), cols=(NC, PARC)
+// ─── Risk Matrix (prioridad x cumplimiento) ─────────────────────────────────
 
 function riskMatrix(hallazgos: InformeCumplimiento['hallazgos']): string {
   const grid: Record<string, { NC: number; PC: number }> = {
-    CRITICA: { NC: 0, PC: 0 },
-    ALTA: { NC: 0, PC: 0 },
-    MEDIA: { NC: 0, PC: 0 },
-    BAJA: { NC: 0, PC: 0 },
+    CRITICA: { NC: 0, PC: 0 }, ALTA: { NC: 0, PC: 0 },
+    MEDIA: { NC: 0, PC: 0 }, BAJA: { NC: 0, PC: 0 },
   }
   hallazgos.forEach(h => {
     const row = grid[h.prioridad]
@@ -252,17 +266,14 @@ function riskMatrix(hallazgos: InformeCumplimiento['hallazgos']): string {
   })
 
   const rowColors: Record<string, { bg: string; txt: string }> = {
-    CRITICA: { bg: '#DC2626', txt: '#fff' },
-    ALTA: { bg: '#EA580C', txt: '#fff' },
-    MEDIA: { bg: '#F59E0B', txt: '#fff' },
-    BAJA: { bg: '#22C55E', txt: '#fff' },
+    CRITICA: { bg: '#DC2626', txt: '#fff' }, ALTA: { bg: '#EA580C', txt: '#fff' },
+    MEDIA: { bg: '#F59E0B', txt: '#fff' }, BAJA: { bg: '#22C55E', txt: '#fff' },
   }
 
   const max = Math.max(...Object.values(grid).map(r => Math.max(r.NC, r.PC)), 1)
 
   return `
   <div style="display:table;width:100%;max-width:400px;margin:0 auto;border-collapse:collapse;">
-    <!-- Header -->
     <div style="display:table-row;">
       <div style="display:table-cell;width:70px;padding:6px;"></div>
       <div style="display:table-cell;padding:6px;text-align:center;font-size:7pt;font-weight:800;color:${P.nc};letter-spacing:0.5px;">NO CONFORME</div>
@@ -287,8 +298,7 @@ function riskMatrix(hallazgos: InformeCumplimiento['hallazgos']): string {
   </div>`
 }
 
-// ─── NUEVO: Subgroup mini stacked bars ──────────────────────────────────────
-// Cada subgrupo (org.1, org.2, op.pl, op.acc...) como barra apilada
+// ─── Subgroup mini stacked bars ─────────────────────────────────────────────
 
 function subgroupBars(hallazgos: InformeCumplimiento['hallazgos']): string {
   const subs: Record<string, { ok: number; pc: number; nc: number; na: number }> = {}
@@ -322,8 +332,7 @@ function subgroupBars(hallazgos: InformeCumplimiento['hallazgos']): string {
   }).join('')
 }
 
-// ─── NUEVO: Treemap de incumplimientos ──────────────────────────────────────
-// Rectangulos proporcionales al numero de NC por subgrupo
+// ─── Treemap de incumplimientos ─────────────────────────────────────────────
 
 function treemap(hallazgos: InformeCumplimiento['hallazgos']): string {
   const subs: Record<string, { nc: number; pc: number }> = {}
@@ -336,7 +345,6 @@ function treemap(hallazgos: InformeCumplimiento['hallazgos']): string {
     if (h.nivel_cumplimiento === 'PARCIALMENTE_CONFORME') s.pc++
   })
 
-  // Solo mostrar subgrupos con problemas, ordenados por severidad
   const items = Object.entries(subs)
     .filter(([, d]) => d.nc + d.pc > 0)
     .sort((a, b) => (b[1].nc * 2 + b[1].pc) - (a[1].nc * 2 + a[1].pc))
@@ -349,7 +357,7 @@ function treemap(hallazgos: InformeCumplimiento['hallazgos']): string {
   return `<div style="line-height:0;font-size:0;">
     ${items.map(([sub, d]) => {
       const score = d.nc * 2 + d.pc
-      const severity = d.nc > d.pc ? 1 : 0.5 // more NC = more red
+      const severity = d.nc > d.pc ? 1 : 0.5
       const size = Math.max(40, Math.round((score / maxScore) * 90))
       const bg = severity > 0.7 ? P.nc : P.parc
       const bgA = severity > 0.7 ? P.ncBg : P.parcBg
@@ -388,7 +396,7 @@ function actionPlan(hallazgos: InformeCumplimiento['hallazgos']): string {
   </div>`
 }
 
-// ─── NUEVO: Compliance comparison bars (OK vs NC por marco) ─────────────────
+// ─── Compliance comparison bars (OK vs NC por marco) ────────────────────────
 
 function comparisonBars(hallazgos: InformeCumplimiento['hallazgos']): string {
   const grupos: Record<string, { ok: number; nc: number; total: number }> = {}
@@ -430,8 +438,164 @@ function comparisonBars(hallazgos: InformeCumplimiento['hallazgos']): string {
   }).join('')
 }
 
+// ─── NUEVO: Fundamentos de Derecho chart ────────────────────────────────────
+// Barras horizontales: cada fundamento con titulo + barra de controles NC relacionados
+
+function fundamentosChart(
+  fundamentos: NonNullable<InformeCumplimiento['recurso']>['fundamentos'],
+  hallazgos: InformeCumplimiento['hallazgos']
+): string {
+  if (fundamentos.length === 0) return '<div style="font-size:8pt;color:#94A3B8;padding:16px;">Sin datos de fundamentos</div>'
+
+  // Mapeo tematico aproximado: fundamento → prefijos de control relacionados
+  const temaMap: Record<string, string[]> = {
+    PRIMERO: ['org', 'op', 'mp'],     // Principios rectores → todos
+    SEGUNDO: ['org', 'op', 'mp'],     // Proporcionalidad → todos
+    TERCERO: ['org'],                  // Solvencia tecnica → organizativo
+    CUARTO: ['op', 'mp'],             // Prescripciones tecnicas → operacional + proteccion
+    QUINTO: ['org', 'op', 'mp'],      // Criterios adjudicacion → todos
+    SEXTO: ['org', 'op', 'mp'],       // Lotes → todos
+    SEPTIMO: ['op', 'mp'],            // Condiciones ejecucion → operacional + proteccion
+    OCTAVO: ['op', 'mp'],             // Modificaciones → operacional + proteccion
+    NOVENO: ['org', 'op', 'mp'],      // Motivacion → todos
+    DECIMO: ['org', 'op', 'mp'],      // Sintesis → todos
+  }
+
+  // Contar NC+PARC por prefijo
+  const ncByPrefix: Record<string, number> = {}
+  hallazgos.forEach(h => {
+    if (h.nivel_cumplimiento === 'NO_CONFORME' || h.nivel_cumplimiento === 'PARCIALMENTE_CONFORME') {
+      const prefix = h.control_id.split('.')[0] ?? '?'
+      ncByPrefix[prefix] = (ncByPrefix[prefix] ?? 0) + 1
+    }
+  })
+
+  const totalNC = hallazgos.filter(h => h.nivel_cumplimiento === 'NO_CONFORME' || h.nivel_cumplimiento === 'PARCIALMENTE_CONFORME').length
+
+  // Asignar a cada fundamento un "peso" basado en los controles NC de sus marcos relacionados
+  const fundData = fundamentos.map(f => {
+    const prefixes = temaMap[f.ordinal] ?? ['org', 'op', 'mp']
+    const relatedNC = prefixes.reduce((sum, p) => sum + (ncByPrefix[p] ?? 0), 0)
+    // Ponderar: si cubre todos los marcos, dividir entre el total para no inflar
+    const weight = prefixes.length === 3 ? Math.round(relatedNC * 0.4) : relatedNC
+    return { ...f, weight }
+  })
+
+  const maxW = Math.max(...fundData.map(f => f.weight), 1)
+
+  // Colores alternados por severidad
+  const ordColors: Record<string, string> = {
+    PRIMERO: '#4F46E5', SEGUNDO: '#0891B2', TERCERO: '#7C3AED', CUARTO: '#DB2777',
+    QUINTO: '#D97706', SEXTO: '#059669', SEPTIMO: '#DC2626', OCTAVO: '#EA580C',
+    NOVENO: '#3B82F6', DECIMO: '#991B1B',
+  }
+
+  return fundData.map(f => {
+    const barW = Math.max((f.weight / maxW) * 100, 3)
+    const color = ordColors[f.ordinal] ?? P.indigo
+    return `
+    <div class="nb" style="display:table;width:100%;margin:4px 0;">
+      <div style="display:table-cell;width:68px;vertical-align:middle;text-align:right;padding-right:8px;">
+        <span style="font-size:7pt;font-weight:900;color:${color};">${esc(f.ordinal)}</span>
+      </div>
+      <div style="display:table-cell;vertical-align:middle;">
+        <div style="font-size:6.5pt;font-weight:600;color:${P.txt};margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:380px;">${esc(f.titulo)}</div>
+        <div style="width:100%;height:14px;background:#F1F5F9;border-radius:4px;overflow:hidden;">
+          <div style="width:${barW.toFixed(1)}%;height:14px;background:${color};border-radius:4px;"></div>
+        </div>
+      </div>
+      <div style="display:table-cell;width:40px;vertical-align:middle;text-align:right;">
+        <span style="font-size:9pt;font-weight:900;color:${color};">${f.weight}</span>
+      </div>
+    </div>`
+  }).join('') + `
+  <div style="margin-top:8px;font-size:6.5pt;color:${P.mut};text-align:right;">
+    Total controles con incumplimiento: ${totalNC}
+  </div>`
+}
+
+// ─── NUEVO: Causas de Nulidad chart ─────────────────────────────────────────
+// Barras horizontales: cada causa con # hallazgos vinculados, color por base juridica
+
+function causasNulidadChart(
+  causas: NonNullable<InformeCumplimiento['recurso']>['causasNulidad']
+): string {
+  if (causas.length === 0) return '<div style="font-size:8pt;color:#94A3B8;padding:16px;">Sin causas de nulidad</div>'
+
+  const maxH = Math.max(...causas.map(c => c.hallazgosVinculados.length), 1)
+
+  return causas.map(c => {
+    const color = getBaseColor(c.base)
+    const barW = Math.max((c.hallazgosVinculados.length / maxH) * 100, 3)
+    return `
+    <div class="nb" style="margin:6px 0;padding:8px;background:${P.sub};border-radius:8px;border-left:4px solid ${color};">
+      <div style="display:table;width:100%;margin-bottom:4px;">
+        <div style="display:table-cell;vertical-align:middle;">
+          <span style="font-size:8pt;font-weight:900;color:${P.navy};">${esc(c.ordinal)}</span>
+          <span style="font-size:7pt;font-weight:600;color:${P.txt};margin-left:6px;">${esc(c.titulo)}</span>
+        </div>
+        <div style="display:table-cell;width:70px;text-align:right;vertical-align:middle;">
+          <span class="badge" style="background:${color}18;color:${color};font-size:6pt;">${esc(c.base)}</span>
+        </div>
+      </div>
+      <div style="display:table;width:100%;">
+        <div style="display:table-cell;vertical-align:middle;">
+          <div style="width:100%;height:16px;background:#E2E8F0;border-radius:4px;overflow:hidden;">
+            <div style="width:${barW.toFixed(1)}%;height:16px;background:${color};border-radius:4px;"></div>
+          </div>
+        </div>
+        <div style="display:table-cell;width:50px;vertical-align:middle;text-align:right;">
+          <span style="font-size:11pt;font-weight:900;color:${color};">${c.hallazgosVinculados.length}</span>
+          <span style="font-size:6pt;color:${P.mut};"> ctrl</span>
+        </div>
+      </div>
+    </div>`
+  }).join('') + `
+  <div style="margin-top:10px;">
+    <div style="font-size:7pt;font-weight:700;color:${P.mut};margin-bottom:4px;">BASES JURIDICAS</div>
+    <div>
+      ${[...new Set(causas.map(c => c.base))].map(base => {
+        const color = getBaseColor(base)
+        return `<span style="display:inline-block;margin:2px 6px 2px 0;"><span style="display:inline-block;width:8px;height:8px;background:${color};border-radius:2px;vertical-align:middle;"></span><span style="font-size:6.5pt;vertical-align:middle;margin-left:3px;">${esc(base)}</span></span>`
+      }).join('')}
+    </div>
+  </div>`
+}
+
+// ─── NUEVO: Datos del expediente tabla ──────────────────────────────────────
+
+function datosExpedienteTable(recurso: NonNullable<InformeCumplimiento['recurso']>, informe: InformeCumplimiento): string {
+  const rows = [
+    { label: 'Expediente', value: recurso.expediente },
+    { label: 'Recurrente', value: recurso.recurrente },
+    { label: 'Tribunal', value: recurso.tribunal },
+    { label: 'Valor Estimado', value: fmtEur(recurso.valorEstimado) },
+    { label: 'Presupuesto Base', value: fmtEur(recurso.presupuestoBase) },
+    { label: 'Categoria ENS', value: informe.categoriaENS },
+    { label: 'Antecedentes de Hecho', value: `${recurso.totalAntecedentes} hechos` },
+    { label: 'Fundamentos de Derecho', value: `${recurso.fundamentos.length} fundamentos` },
+    { label: 'Causas de Nulidad', value: `${recurso.causasNulidad.length} causas` },
+    { label: 'Controles Analizados', value: `${informe.totalControles}` },
+    { label: 'Controles No Conformes', value: `${informe.cantidadNoConforme}` },
+    { label: 'Fecha Analisis', value: informe.fechaAnalisis },
+  ].filter(r => r.value && r.value !== '—')
+
+  return `
+  <div style="border:1px solid ${P.bord};border-radius:10px;overflow:hidden;">
+    ${rows.map((r, i) => `
+    <div style="display:table;width:100%;${i > 0 ? `border-top:1px solid ${P.bord};` : ''}">
+      <div style="display:table-cell;width:40%;padding:8px 12px;background:${i % 2 === 0 ? P.sub : '#fff'};vertical-align:middle;">
+        <span style="font-size:7.5pt;font-weight:700;color:${P.mut};text-transform:uppercase;letter-spacing:0.5px;">${esc(r.label)}</span>
+      </div>
+      <div style="display:table-cell;padding:8px 12px;background:${i % 2 === 0 ? P.sub : '#fff'};vertical-align:middle;">
+        <span style="font-size:8.5pt;font-weight:700;color:${P.txt};">${esc(r.value)}</span>
+      </div>
+    </div>`).join('')}
+  </div>`
+}
+
 // ═══════════════════════════════════════════════════════════════════════════════
-// MAIN
+// MAIN - 10 PAGINAS
 // ═══════════════════════════════════════════════════════════════════════════════
 
 export function generarInformeGraficoHTML(informe: InformeCumplimiento): string {
@@ -458,6 +622,8 @@ export function generarInformeGraficoHTML(informe: InformeCumplimiento): string 
 
   const catColors: Record<string, string> = { Organizativo: '#3B82F6', Operacional: P.indigo, Proteccion: '#7C3AED', Otros: P.mut }
 
+  const rec = informe.recurso
+
   return `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -467,23 +633,38 @@ export function generarInformeGraficoHTML(informe: InformeCumplimiento): string 
 </head>
 <body>
 
-<!-- P1: HERO DASHBOARD -->
+<!-- P1: PORTADA EJECUTIVA -->
 <div style="padding:40px 20px 20px;text-align:center;">
   <div style="display:inline-block;width:44px;height:44px;background:${P.indigo};border-radius:12px;margin-bottom:14px;"></div>
-  <div style="font-size:20pt;font-weight:800;color:${P.navy};letter-spacing:-0.5px;">CUMPLIMIENTO ENS</div>
-  <div style="font-size:8pt;color:${P.mut};margin-bottom:24px;">${esc(informe.nombreDocumento)}</div>
+  <div style="font-size:20pt;font-weight:800;color:${P.navy};letter-spacing:-0.5px;">INFORME DE CUMPLIMIENTO ENS</div>
+  <div style="font-size:8pt;color:${P.mut};margin-bottom:6px;">${esc(informe.nombreDocumento)}</div>
+  ${rec ? `
+  <div style="margin:8px auto;max-width:420px;">
+    <div style="display:table;width:100%;background:${P.sub};border:1px solid ${P.bord};border-radius:8px;margin-bottom:12px;">
+      ${[
+        { l: 'Expediente', v: rec.expediente },
+        { l: 'Recurrente', v: rec.recurrente },
+        { l: 'Tribunal', v: rec.tribunal },
+      ].map((m, i, a) => `<div style="display:table-cell;padding:8px;text-align:center;${i < a.length - 1 ? `border-right:1px solid ${P.bord};` : ''}width:${(100/a.length).toFixed(0)}%;">
+        <div style="font-size:6pt;color:${P.light};text-transform:uppercase;letter-spacing:0.5px;">${m.l}</div>
+        <div style="font-size:7.5pt;font-weight:700;color:${P.txt};margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(m.v)}</div>
+      </div>`).join('')}
+    </div>
+  </div>
+  ` : ''}
   <div style="display:inline-block;padding:20px 44px;border-radius:18px;background:${tasaC}08;border:2.5px solid ${tasaC};">
     <div style="font-size:72pt;font-weight:900;color:${tasaC};line-height:1;letter-spacing:-3px;">${tasa}%</div>
+    <div style="font-size:7pt;color:${P.mut};margin-top:4px;">TASA DE CUMPLIMIENTO GLOBAL</div>
   </div>
   <div style="max-width:420px;margin:20px auto 0;">
     ${stackedBar(informe.cantidadConforme, informe.cantidadParcial, informe.cantidadNoConforme, informe.cantidadNoAplica, 24)}
   </div>
   <div style="display:table;width:100%;max-width:480px;margin:20px auto 0;table-layout:fixed;">
     ${[
-      { v: `${tasa}%`, l: 'GLOBAL', c: tasaC },
       { v: `${informe.cantidadConforme}`, l: 'CONFORME', c: P.ok },
       { v: `${informe.cantidadNoConforme}`, l: 'NO CONF.', c: P.nc },
       { v: `${informe.cantidadParcial}`, l: 'PARCIAL', c: P.parc },
+      { v: `${informe.cantidadNoAplica}`, l: 'N/A', c: P.na },
     ].map(k => `<div style="display:table-cell;padding:4px;">
       <div style="border:1px solid ${P.bord};border-radius:10px;padding:12px 6px;text-align:center;border-top:3px solid ${k.c};">
         <div style="font-size:26pt;font-weight:900;color:${k.c};line-height:1;">${k.v}</div>
@@ -508,11 +689,11 @@ export function generarInformeGraficoHTML(informe: InformeCumplimiento): string 
 <div class="pb" style="padding:20px;">
   <div style="display:table;width:100%;">
     <div style="display:table-cell;width:260px;vertical-align:top;padding-right:20px;">
-      <div style="font-size:11pt;font-weight:800;color:${P.navy};margin-bottom:10px;">Distribucion</div>
+      <div class="sec-title">Distribucion</div>
       ${waffle(okPct, parcPct, ncPct)}
     </div>
     <div style="display:table-cell;vertical-align:top;">
-      <div style="font-size:11pt;font-weight:800;color:${P.navy};margin-bottom:10px;">Dimensiones</div>
+      <div class="sec-title">Dimensiones de Seguridad</div>
       ${dimGauges(informe.dimensiones)}
     </div>
   </div>
@@ -522,11 +703,11 @@ export function generarInformeGraficoHTML(informe: InformeCumplimiento): string 
 <div class="pb" style="padding:20px;">
   <div style="display:table;width:100%;">
     <div style="display:table-cell;width:55%;vertical-align:top;padding-right:16px;">
-      <div style="font-size:11pt;font-weight:800;color:${P.navy};margin-bottom:8px;">Cumplimiento por Marco</div>
+      <div class="sec-title">Cumplimiento por Marco</div>
       ${Object.entries(catData).map(([cat, { ok, t }]) => hBar(cat, pct(ok, t), 100, catColors[cat] ?? P.indigo)).join('')}
     </div>
     <div style="display:table-cell;width:45%;vertical-align:top;padding-left:16px;">
-      <div style="font-size:11pt;font-weight:800;color:${P.navy};margin-bottom:8px;">Riesgo</div>
+      <div class="sec-title">Distribucion de Riesgo</div>
       ${vBars([
         { label: 'CRIT', value: risk.CRITICA, color: '#DC2626', bg: P.critBg },
         { label: 'ALTA', value: risk.ALTA, color: '#EA580C', bg: P.altBg },
@@ -539,35 +720,53 @@ export function generarInformeGraficoHTML(informe: InformeCumplimiento): string 
 
 <!-- P4: MAPA HEATMAP -->
 <div class="pb" style="padding:20px;">
-  <div style="font-size:11pt;font-weight:800;color:${P.navy};margin-bottom:6px;">Mapa de Controles</div>
+  <div class="sec-title">Mapa de Controles ENS</div>
   <div style="margin-bottom:8px;">
-    <span style="display:inline-block;width:10px;height:10px;background:${P.ok};border-radius:2px;vertical-align:middle;"></span><span style="font-size:7pt;vertical-align:middle;margin:0 8px 0 3px;">OK</span>
+    <span style="display:inline-block;width:10px;height:10px;background:${P.ok};border-radius:2px;vertical-align:middle;"></span><span style="font-size:7pt;vertical-align:middle;margin:0 8px 0 3px;">Conforme</span>
     <span style="display:inline-block;width:10px;height:10px;background:${P.parc};border-radius:2px;vertical-align:middle;"></span><span style="font-size:7pt;vertical-align:middle;margin:0 8px 0 3px;">Parcial</span>
-    <span style="display:inline-block;width:10px;height:10px;background:${P.nc};border-radius:2px;vertical-align:middle;"></span><span style="font-size:7pt;vertical-align:middle;margin:0 8px 0 3px;">No conf.</span>
+    <span style="display:inline-block;width:10px;height:10px;background:${P.nc};border-radius:2px;vertical-align:middle;"></span><span style="font-size:7pt;vertical-align:middle;margin:0 8px 0 3px;">No conforme</span>
     <span style="display:inline-block;width:10px;height:10px;background:#D1D5DB;border-radius:2px;vertical-align:middle;"></span><span style="font-size:7pt;vertical-align:middle;margin-left:3px;">N/A</span>
   </div>
   ${heatmap(informe.hallazgos)}
 </div>
 
-<!-- P5: BARRAS INCUMPLIMIENTO + RISK MATRIX -->
+<!-- P5: FUNDAMENTOS DE DERECHO -->
+${rec && rec.fundamentos.length > 0 ? `
+<div class="pb" style="padding:20px;">
+  <div class="sec-title">Fundamentos de Derecho del Recurso</div>
+  <div style="font-size:7pt;color:${P.mut};margin-bottom:10px;">Controles con incumplimiento vinculados a cada fundamento juridico</div>
+  ${fundamentosChart(rec.fundamentos, informe.hallazgos)}
+</div>
+` : ''}
+
+<!-- P6: CAUSAS DE NULIDAD -->
+${rec && rec.causasNulidad.length > 0 ? `
+<div class="pb" style="padding:20px;">
+  <div class="sec-title">Causas de Nulidad de Pleno Derecho</div>
+  <div style="font-size:7pt;color:${P.mut};margin-bottom:10px;">Base juridica y controles ENS vinculados a cada causa de nulidad invocada</div>
+  ${causasNulidadChart(rec.causasNulidad)}
+</div>
+` : ''}
+
+<!-- P7: BARRAS INCUMPLIMIENTO + RISK MATRIX -->
 <div class="pb" style="padding:20px;">
   <div style="display:table;width:100%;">
     <div style="display:table-cell;width:58%;vertical-align:top;padding-right:16px;">
-      <div style="font-size:11pt;font-weight:800;color:${P.navy};margin-bottom:8px;">Incumplimientos</div>
+      <div class="sec-title">Top 20 Incumplimientos</div>
       ${incumplimientoBars(informe.hallazgos)}
     </div>
     <div style="display:table-cell;width:42%;vertical-align:top;padding-left:16px;">
-      <div style="font-size:11pt;font-weight:800;color:${P.navy};margin-bottom:8px;">Matriz de Riesgo</div>
+      <div class="sec-title">Matriz de Riesgo</div>
       ${riskMatrix(informe.hallazgos)}
     </div>
   </div>
 </div>
 
-<!-- P6: COMPARATIVA + TREEMAP -->
+<!-- P8: COMPARATIVA + TREEMAP -->
 <div class="pb" style="padding:20px;">
   <div style="display:table;width:100%;">
     <div style="display:table-cell;width:50%;vertical-align:top;padding-right:14px;">
-      <div style="font-size:11pt;font-weight:800;color:${P.navy};margin-bottom:8px;">Conforme vs No Conforme</div>
+      <div class="sec-title">Conforme vs No Conforme</div>
       <div style="text-align:center;margin-bottom:6px;">
         <span style="font-size:7pt;color:${P.ok};font-weight:700;">&#9664; CONFORME</span>
         <span style="font-size:7pt;color:${P.mut};margin:0 8px;">|</span>
@@ -576,27 +775,38 @@ export function generarInformeGraficoHTML(informe: InformeCumplimiento): string 
       ${comparisonBars(informe.hallazgos)}
     </div>
     <div style="display:table-cell;width:50%;vertical-align:top;padding-left:14px;">
-      <div style="font-size:11pt;font-weight:800;color:${P.navy};margin-bottom:8px;">Mapa de Problemas</div>
+      <div class="sec-title">Mapa de Problemas</div>
       ${treemap(informe.hallazgos)}
     </div>
   </div>
 </div>
 
-<!-- P7: SUBGROUP BARS + PLAN ACCION -->
+<!-- P9: SUBGROUP BARS + PLAN ACCION -->
 <div class="pb" style="padding:20px;">
-  <div style="font-size:11pt;font-weight:800;color:${P.navy};margin-bottom:8px;">Detalle por Subgrupo</div>
-  ${subgroupBars(informe.hallazgos)}
+  <div style="display:table;width:100%;">
+    <div style="display:table-cell;width:50%;vertical-align:top;padding-right:14px;">
+      <div class="sec-title">Detalle por Subgrupo</div>
+      ${subgroupBars(informe.hallazgos)}
+    </div>
+    <div style="display:table-cell;width:50%;vertical-align:top;padding-left:14px;">
+      <div class="sec-title">Plan de Accion</div>
+      ${actionPlan(informe.hallazgos)}
+    </div>
+  </div>
 </div>
 
-<!-- P8: PLAN ACCION -->
+<!-- P10: DATOS DEL PROCEDIMIENTO -->
+${rec ? `
 <div class="pb" style="padding:20px;">
-  <div style="font-size:11pt;font-weight:800;color:${P.navy};margin-bottom:10px;">Plan de Accion</div>
-  ${actionPlan(informe.hallazgos)}
+  <div class="sec-title">Datos del Procedimiento</div>
+  <div style="font-size:7pt;color:${P.mut};margin-bottom:12px;">Resumen de datos del expediente y recurso generado</div>
+  ${datosExpedienteTable(rec, informe)}
 </div>
+` : ''}
 
 <!-- Footer -->
 <div style="text-align:center;font-size:6.5pt;color:${P.light};padding:10px;border-top:1px solid ${P.bord};margin-top:16px;">
-  ${esc(informe.organizacion)} &middot; ${esc(informe.categoriaENS)} &middot; ${esc(informe.fechaAnalisis)} &middot; CumpliENS
+  ${esc(informe.organizacion)} &middot; ${esc(informe.categoriaENS)} &middot; ${esc(informe.fechaAnalisis)}
 </div>
 
 </body>

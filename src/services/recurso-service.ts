@@ -1363,9 +1363,9 @@ function generarSeccionVIII_v4(contenido: ContenidoRecursoV4): string {
 
 function generarCSS_forense(): string {
   return `
-    @page { size: A4; margin: 2.54cm 2.54cm 2.54cm 3cm; }
+    @page { size: A4; margin: 0; }
     @media print {
-      body { margin: 0; padding: 0; }
+      body { margin: 2.54cm 2.54cm 2.54cm 3cm; padding: 0; }
       .page-break { page-break-before: always; }
     }
     body {

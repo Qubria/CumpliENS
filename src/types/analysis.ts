@@ -102,4 +102,15 @@ export interface InformeCumplimiento {
   totalNormasReferenciadas?: number
   perfilSectorial?: string | null
   proveedoresNube?: string[]
+  // Datos del recurso generado (opcional para retrocompat)
+  recurso?: {
+    fundamentos: Array<{ ordinal: string; titulo: string }>
+    causasNulidad: Array<{ ordinal: string; base: string; titulo: string; hallazgosVinculados: string[] }>
+    totalAntecedentes: number
+    valorEstimado?: number
+    presupuestoBase?: number
+    expediente: string
+    recurrente: string
+    tribunal: string
+  }
 }
